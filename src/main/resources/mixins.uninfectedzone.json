@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "com.aljun.uninfectedzone.core.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mixins.zombiegame.refmap.json",
+  "mixins": [
+    "EntityMixin",
+    "HuskMixin",
+    "MobCategoryMixin",
+    "MobMixin",
+    "ZombieMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
