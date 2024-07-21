@@ -6,6 +6,7 @@ import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
 import com.aljun.uninfectedzone.deafult.entity.InfectionConvertTypes;
 import com.aljun.uninfectedzone.deafult.zombie.abilities.ZombieAbilities;
 import com.aljun.uninfectedzone.deafult.zombie.zombieLikes.ZombieLikes;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +26,11 @@ public class UninfectedZoneDefaultRegister {
     @SubscribeEvent
     public static void registerInfectionConvertTypes(RegistryEvent.Register<InfectionConvertType> event) {
         InfectionConvertTypes.register(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerStructureFeatures(RegistryEvent.Register<StructureFeature<?>> event) {
+
     }
 
 }

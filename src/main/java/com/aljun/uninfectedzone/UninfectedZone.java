@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 public class UninfectedZone {
 
     public static final String MOD_ID = "uninfectedzone";
+    public static boolean debugMode = true;
 
     public UninfectedZone() {
         System.out.println("aaa");

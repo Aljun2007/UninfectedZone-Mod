@@ -31,9 +31,14 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
         return this.getSupportedMobs().containsKey(mobType.getRegistryName());
     }
 
-    private void load(Mob mob) {
+    public void load(Mob mob) {
         if (mob != null) {
-            this.equip(mob);
+            ZombieMainGoal zombieMainGoal = this.createMainGoal(mob);
+            zombieMainGoal.getZombie().goalSelector.removeAllGoals();
+            //zombieMainGoal.getZombie().targetSelector.removeAllGoals();
+            zombieMainGoal.getZombie().goalSelector.addGoal(1, zombieMainGoal);
+            this.registerAbilities(zombieMainGoal);
+            this.registerGoals(zombieMainGoal);
         }
     }
 
@@ -45,12 +50,6 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
     }
 
     public void equip(Mob mob) {
-        ZombieMainGoal zombieMainGoal = this.createMainGoal(mob);
-        zombieMainGoal.getZombie().goalSelector.removeAllGoals();
-        //zombieMainGoal.getZombie().targetSelector.removeAllGoals();
-        zombieMainGoal.getZombie().goalSelector.addGoal(1, zombieMainGoal);
-        this.registerAbilities(zombieMainGoal);
-        this.registerGoals(zombieMainGoal);
     }
 
     public static void init() {
@@ -65,4 +64,8 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
     public abstract void registerAbilities(ZombieMainGoal zombieMainGoal);
 
     public abstract void registerGoals(ZombieMainGoal zombieMainGoal);
+
+    public void attributes(Mob mob) {
+
+    }
 }

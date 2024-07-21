@@ -1,6 +1,7 @@
 package com.aljun.uninfectedzone.core.command;
 
 import com.aljun.uninfectedzone.UninfectedZone;
+import com.aljun.uninfectedzone.core.command.debug.DEBUGCommand;
 import com.aljun.uninfectedzone.core.command.zombie.ZombieCommand;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -15,6 +16,7 @@ public class UninfectedZoneCommands {
 
     public static LiteralCommandNode<CommandSourceStack> registry(CommandDispatcher<CommandSourceStack> dispatcher) {
         ZombieCommand.register(ROOT);
+        DEBUGCommand.register(ROOT);
         return dispatcher.register(ROOT);
     }
 }

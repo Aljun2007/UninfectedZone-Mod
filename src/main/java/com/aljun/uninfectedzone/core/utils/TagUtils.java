@@ -3,6 +3,7 @@ package com.aljun.uninfectedzone.core.utils;
 import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.*;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 
 public class TagUtils {
@@ -25,7 +26,7 @@ public class TagUtils {
             return varSet.defaultVar();
         }
         if (tag[0].contains(varSet.KEY)) {
-            return varSet.tagType.readFromTag(tag[0]);
+            return varSet.tagType.readFromTag(tag[0].get(varSet.KEY));
         } else {
             return varSet.defaultVar();
         }
@@ -54,6 +55,10 @@ public class TagUtils {
 
     public static CompoundTag getRoot(LivingEntity livingEntity) {
         return livingEntity.getPersistentData();
+    }
+
+    public static CompoundTag getRoot(ItemStack itemStack) {
+        return itemStack.getTag();
     }
 
     public abstract static class TagType<T> {
@@ -149,7 +154,7 @@ public class TagUtils {
             @Override
             public String readFromTag(Tag tag) {
                 if (tag instanceof StringTag) {
-                    return ((StringTag) tag).getAsString();
+                    return tag.getAsString();
                 } else throw new IllegalArgumentException();
             }
         };
