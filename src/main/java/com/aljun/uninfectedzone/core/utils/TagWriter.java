@@ -14,15 +14,21 @@ public class TagWriter<V> extends TagReader<V> {
     }
 
     public void set(V var) {
+        if (root == null) {
+            return;
+        }
         if (!varSet.verify(var)) {
             logger.error("", new IllegalArgumentException("Value : " + var.toString() + " is illegal, replaced : " + varSet.defaultVar()));
             var = varSet.defaultVar();
         }
-        this.lastParentTag.put(varSet.KEY, varSet.tagType.writeToTag(var));
+        this.lastParentTag.put(varSet.KEY, varSet.varType.writeToTag(var));
     }
 
     @Override
     public void updateLastVarTag() {
+        if (this.root == null) {
+            return;
+        }
         final CompoundTag[] tag = {this.root};
         varSet.NAMESPACE.forEach((var) -> {
             if (!tag[0].contains(var))
@@ -30,7 +36,7 @@ public class TagWriter<V> extends TagReader<V> {
             tag[0] = tag[0].getCompound(var);
         });
         if (!tag[0].contains(varSet.KEY))
-            tag[0].put(varSet.KEY, varSet.tagType.writeToTag(varSet.defaultVarSup.get()));
+            tag[0].put(varSet.KEY, varSet.varType.writeToTag(varSet.defaultVarSup.get()));
         this.lastParentTag = tag[0];
         this.lastVarTag = tag[0].get(varSet.KEY);
     }

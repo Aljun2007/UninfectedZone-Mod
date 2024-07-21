@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "ic2:dust",
+          "weight": 5
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "uninfectedzone:loaded_mod",
+          "mod_ids": [
+            "ic2"
+          ]
+        }
+      ],
+      "rolls": 4.0
+    }
+  ]
+}

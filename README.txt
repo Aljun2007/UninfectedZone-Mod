@@ -1,46 +1,29 @@
+这是我的世界模组 UninfectedZone-1.18.2 的源码
 
-Source installation information for modders
--------------------------------------------
-This code follows the Minecraft Forge installation methodology. It will apply
-some small patches to the vanilla MCP source code, giving you and it access 
-to some of the data and functions you need to build a successful mod.
+计划发布：8月底
 
-Note also that the patches are built against "un-renamed" MCP source code (aka
-SRG Names) - this means that you will not be able to read them directly against
-normal code.
+模组更新迟缓原因：
+    1.高中学业
+    2.独立开发
+    3.重写逻辑以求更好的流畅度
+    4.重新平衡数值以获得更好游玩体验
 
-Setup Process:
-==============================
+目前已经完成的内容：
+    1.基础框架基本完成搭建（注册表，各种接口）
+    2.僵尸大部分行为完成（破坏方块，搭建方块等）
+    3.旧版大部分功能完成迁移
 
-Step 1: Open your command-line and browse to the folder where you extracted the zip file.
-
-Step 2: You're left with a choice.
-If you prefer to use Eclipse:
-1. Run the following command: `gradlew genEclipseRuns` (`./gradlew genEclipseRuns` if you are on Mac/Linux)
-2. Open Eclipse, Import > Existing Gradle Project > Select Folder 
-   or run `gradlew eclipse` to generate the project.
-
-If you prefer to use IntelliJ:
-1. Open IDEA, and import project.
-2. Select your build.gradle file and have it import.
-3. Run the following command: `gradlew genIntellijRuns` (`./gradlew genIntellijRuns` if you are on Mac/Linux)
-4. Refresh the Gradle Project in IDEA if required.
-
-If at any point you are missing libraries in your IDE, or you've run into problems you can 
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
-
-Mapping Names:
-=============================
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license, if you do not agree with it you can change your mapping names to other crowdsourced names in your 
-build.gradle. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
-
-Additional Resources: 
-=========================
-Community Documentation: http://mcforge.readthedocs.io/en/latest/gettingstarted/  
-LexManos' Install Video: https://www.youtube.com/watch?v=8VEdtQLuLO0  
-Forge Forum: https://forums.minecraftforge.net/  
-Forge Discord: https://discord.gg/UvedJ9m  
+正式发布前计划内容：
+    1.可视化配置文件（可能很耗时）
+    2.感染系统（已完成构思，不废时）
+    3.废弃幸存者营地、废弃军事基地、废弃实验室等结构自然生成（不废时）
+    4.攻城（尸潮，尸群迁徙）（不废时）
+    5.安全区系统（预警系统，无线电系统）（）
+    6.剧情（世界观之类的啦，已经完成构思啦）
+    7.更多游戏模式（已经完成构思了）
+    8.更多僵尸类型（废时）
+    9.更多模组联动
+        目前计划代码关联：
+            1.村民警卫（与旧版一致）（一点也不废时）
+            2.各种亡灵模组（僵尸兼容）（一点也不废时）
+            3.各种枪械模组如TaCZ（宝箱战利品，也许会做能开枪的僵尸）（可能耗时）

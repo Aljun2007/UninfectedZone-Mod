@@ -13,12 +13,12 @@ public class TestZombie extends ZombieLike {
     }
 
     @Override
-    public void registerAbilities(ZombieMainGoal zombieMainGoal) {
+    protected void registerAbilities(ZombieMainGoal zombieMainGoal) {
 
     }
 
     @Override
-    public void registerGoals(ZombieMainGoal zombieMainGoal) {
+    protected void registerGoals(ZombieMainGoal zombieMainGoal) {
         zombieMainGoal.getZombie().goalSelector.addGoal(1, new BreakAndBuildZombieMeleeAttackGoal(zombieMainGoal, zombieMainGoal.getZombie()));
     }
 

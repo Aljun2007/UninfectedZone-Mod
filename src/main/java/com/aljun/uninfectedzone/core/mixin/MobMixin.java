@@ -1,6 +1,6 @@
 package com.aljun.uninfectedzone.core.mixin;
 
-import com.aljun.uninfectedzone.core.utils.ZombieLoadUtils;
+import com.aljun.uninfectedzone.core.utils.ZombieUtils;
 import net.minecraft.world.entity.Mob;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,7 +12,7 @@ public class MobMixin {
     @Inject(method = "registerGoals", at = @At("TAIL"))
     public void registerGoalsMixin(CallbackInfo ci) {
         Mob mob = (Mob) (Object) this;
-        if (ZombieLoadUtils.hasLoadedIfAbsentMainGoal(mob)) {
+        if (ZombieUtils.hasLoadedIfAbsentMainGoal(mob)) {
             mob.goalSelector.removeAllGoals();
         }
     }

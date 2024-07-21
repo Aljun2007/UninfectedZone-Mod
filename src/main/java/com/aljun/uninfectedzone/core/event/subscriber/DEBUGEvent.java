@@ -1,7 +1,7 @@
 package com.aljun.uninfectedzone.core.event.subscriber;
 
 
-import com.aljun.uninfectedzone.core.debug.DEBUG;
+import com.aljun.uninfectedzone.core.debug.Debug;
 import com.aljun.uninfectedzone.core.utils.TagUtils;
 import com.mojang.logging.LogUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -11,8 +11,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class DEBUGEvent {
             ServerPlayer player = (ServerPlayer) event.getPlayer();
 
             ItemStack stack = player.getMainHandItem();
-            if (TagUtils.fastRead(TagUtils.getRoot(stack), DEBUG.SNATCHER_ITEM)) {
+            if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.SNATCHER_ITEM)) {
                 if (event.getTarget() instanceof LivingEntity livingEntity) {
                     player.addItem(livingEntity.getItemBySlot(EquipmentSlot.MAINHAND).copy());
                     player.addItem(livingEntity.getItemBySlot(EquipmentSlot.OFFHAND).copy());
@@ -40,23 +40,24 @@ public class DEBUGEvent {
                     player.addItem(livingEntity.getItemBySlot(EquipmentSlot.FEET).copy());
                 }
             }
-            if (TagUtils.fastRead(TagUtils.getRoot(stack), DEBUG.KILLER_ITEM)) {
+            if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.KILLER_ITEM)) {
                 event.getTarget().kill();
             }
         }
     }
 
     @SubscribeEvent
-    public static void onUse(LivingEntityUseItemEvent event) {
+    public static void onUse(EntityItemPickupEvent event) {
         if (!event.getEntity().getLevel().isClientSide()) {
             if (event.getEntity() instanceof ServerPlayer player) {
-                ItemStack stack = event.getItem();
-                if (TagUtils.fastRead(TagUtils.getRoot(stack), DEBUG.HEAL_ITEM)) {
+                ItemStack stack = event.getItem().getItem();
+                if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.HEAL_ITEM)) {
                     player.removeAllEffects();
+                    player.clearFire();
                     player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 10, 8));
                     player.addEffect(new MobEffectInstance(MobEffects.HEAL, 10, 8));
                 }
-                if (TagUtils.fastRead(TagUtils.getRoot(stack), DEBUG.DAY_ITEM)) {
+                if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.DAY_ITEM)) {
                     try {
                         for (ServerLevel serverlevel : Objects.requireNonNull(event.getEntity().getServer()).getAllLevels()) {
                             serverlevel.setDayTime(1000L);
@@ -64,7 +65,7 @@ public class DEBUGEvent {
                     } catch (NullPointerException ignore) {
                     }
                 }
-                if (TagUtils.fastRead(TagUtils.getRoot(stack), DEBUG.NIGHT_ITEM)) {
+                if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.NIGHT_ITEM)) {
                     try {
                         for (ServerLevel serverlevel : Objects.requireNonNull(event.getEntity().getServer()).getAllLevels()) {
                             serverlevel.setDayTime(13000L);
