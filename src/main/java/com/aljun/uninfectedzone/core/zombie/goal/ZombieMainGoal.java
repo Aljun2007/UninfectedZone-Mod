@@ -43,6 +43,7 @@ public class ZombieMainGoal extends Goal {
         this.MOVE_CONTROL.tick();
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     public <T extends ZombieAbility> ZombieAbilityInstance<T> getAbilityInstanceOrAbsent(T ability) {
         if (!this.hasAbility(ability)) return null;

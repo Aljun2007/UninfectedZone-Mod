@@ -8,11 +8,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class VarSet<V> {
+    public final String ID;
+    public final VarType<V> varType;
     final ArrayList<String> NAMESPACE;
     final String KEY;
     final Function<V, Boolean> verifyFunc;
     final Supplier<V> defaultVarSup;
-    final VarType<V> varType;
 
     private VarSet(Builder<V> builder, String key) {
         this.NAMESPACE = new ArrayList<>(builder.NAMESPACE);
@@ -20,6 +21,12 @@ public class VarSet<V> {
         this.verifyFunc = builder.verifyFunc;
         this.defaultVarSup = builder.defaultVarSup;
         this.varType = builder.varType;
+        final String[] id = {""};
+        NAMESPACE.forEach((a) -> {
+            id[0] = id[0] + a + "\\";
+        });
+        id[0] = id[0] + key;
+        this.ID = id[0];
     }
 
     public static <T> VarSet.Builder<T> builder(String root, VarType<T> varType) {

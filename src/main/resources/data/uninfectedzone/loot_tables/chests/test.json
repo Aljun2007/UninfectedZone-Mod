@@ -17,7 +17,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "ic2:dust",
+          "name": "minecraft:diamond",
           "weight": 5
         }
       ],
@@ -25,7 +25,7 @@
         {
           "condition": "uninfectedzone:loaded_mod",
           "mod_ids": [
-            "ic2"
+            "tacz"
           ]
         }
       ],

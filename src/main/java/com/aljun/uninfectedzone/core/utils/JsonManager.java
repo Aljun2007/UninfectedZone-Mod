@@ -6,7 +6,11 @@ import org.slf4j.Logger;
 
 public class JsonManager {
     private static final Logger LOGGER = LogUtils.getLogger();
-    public JsonObject jsonObject;
+    public final JsonObject jsonObject;
+
+    public JsonManager(JsonObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
 
     public <T> void refresh(VarSet<T> varSet) {
         final JsonObject[] jsonObjects = {jsonObject};

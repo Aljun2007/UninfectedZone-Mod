@@ -1,5 +1,6 @@
 package com.aljun.uninfectedzone;
 
+import com.aljun.uninfectedzone.core.forgeRegister.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.modlinkage.tazc.LinkageGunMod;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
@@ -7,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.util.Objects;
 
 @Mod(UninfectedZone.MOD_ID)
 public class UninfectedZone {
@@ -40,5 +42,17 @@ public class UninfectedZone {
 
     public static String getAbsPath() {
         return gamePath;
+    }
+
+    public static void afterRegister() {
+
+        UninfectedZoneRegistry.ZOMBIE_LIKES.get().forEach((like) -> {
+            try {
+                LOGGER.info(Objects.requireNonNull(like.getRegistryName()).toString());
+            } catch (NullPointerException ignored) {
+            }
+        });
+
+
     }
 }
