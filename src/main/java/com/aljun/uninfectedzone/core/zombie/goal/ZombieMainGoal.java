@@ -13,14 +13,14 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 public class ZombieMainGoal extends Goal {
-    private final Mob ZOMBIE;
+    private final Mob mob;
     private final HashMap<String, ZombieAbilityInstance<?>> abilities = new HashMap<>();
     private final ZombieAwareness AWARENESS;
     private final ZombieMoveControl MOVE_CONTROL;
     private boolean isInInitialization = true;
 
     public ZombieMainGoal(Mob zombie, Function<ZombieMainGoal, ZombieAwareness> awarenessFunction, Function<ZombieMainGoal, ZombieMoveControl> moveControlFunction) {
-        this.ZOMBIE = zombie;
+        this.mob = zombie;
         this.AWARENESS = awarenessFunction.apply(this);
         this.MOVE_CONTROL = moveControlFunction.apply(this);
     }
@@ -84,12 +84,31 @@ public class ZombieMainGoal extends Goal {
     }
 
     public Mob getZombie() {
-        return this.ZOMBIE;
+        return this.mob;
     }
 
-    public void zombieAttack() {
-
+    public void broadcast(int id) {
+        this.abilities.forEach((key, ability) -> ability.receiveBroadcast(id));
+        this.mob.goalSelector.getAvailableGoals().forEach((g) -> {
+            if (g.getGoal() instanceof BroadcastReceiver receiver) {
+                receiver.receiveBroadcast(id);
+            }
+        });
+        this.mob.targetSelector.getAvailableGoals().forEach((g) -> {
+            if (g.getGoal() instanceof BroadcastReceiver receiver) {
+                receiver.receiveBroadcast(id);
+            }
+        });
     }
 
+    public interface BroadcastReceiver {
+        default void receiveBroadcast(int id) {
+        }
+    }
+
+    public static class BroadcastIDs {
+        public static final int HURT = 0;
+        public static final int DEATH = 1;
+    }
 
 }

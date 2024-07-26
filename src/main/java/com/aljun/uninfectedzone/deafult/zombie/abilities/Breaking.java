@@ -14,6 +14,7 @@ import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -50,6 +51,8 @@ public class Breaking extends ZombieAbility {
     public static class BreakingInstance extends ZombieAbilityInstance<Breaking> {
 
         public static final List<Block> BLACK_LIST = new ArrayList<>();
+        private final static Runnable NULL_RUNNABLE = () -> {
+        };
 
         static {
             BLACK_LIST.add(Blocks.BEDROCK);
@@ -65,6 +68,7 @@ public class Breaking extends ZombieAbility {
         private boolean isDone = true;
         private ServerLevel level;
         private long startTime = 0L;
+        private Runnable failBreak = NULL_RUNNABLE;
 
         public BreakingInstance(Breaking ability, ZombieMainGoal main) {
             super(ability, main);
@@ -72,11 +76,16 @@ public class Breaking extends ZombieAbility {
         }
 
         public boolean checkToStartBreak(BlockPos pos) {
-            if (!canBreakBlockFromGameRules()) {
+            return this.checkToStartBreak(pos, NULL_RUNNABLE);
+        }
+
+        public boolean checkToStartBreak(BlockPos pos, Runnable failBreak) {
+            if (!canBreakBlockFromGameRules() && ForgeHooks.canEntityDestroy(this.level, pos, this.mob)) {
                 return false;
             }
 
             if (canStart(pos, this.mob.getLevel().getBlockState(pos))) {
+                this.failBreak = failBreak;
                 this.startBreak(pos);
                 return true;
             }
@@ -101,7 +110,7 @@ public class Breaking extends ZombieAbility {
             this.progress = 0f;
             this.isDone = false;
             this.startTime = this.mob.getLevel().getGameTime();
-            if (!this.mob.isSwimming()) {
+            if (!this.mob.swinging) {
                 this.mob.swing(InteractionHand.MAIN_HAND);
             }
         }
@@ -109,7 +118,7 @@ public class Breaking extends ZombieAbility {
         private static boolean isPositionCorrect(Mob mob, BlockPos pos) {
             return mob.getLevel().getBlockState(pos).canEntityDestroy(mob.getLevel(), pos, mob)
                     && !mob.getLevel().isOutsideBuildHeight(pos)
-                    && mob.getEyePosition().distanceTo(MathUtils.blockPosToVec3(pos)) <= 3d;
+                    && mob.getEyePosition().distanceToSqr(MathUtils.blockPosToVec3(pos)) <= 25d;
         }
 
         private static boolean isStateCorrect(BlockState state) {
@@ -151,20 +160,25 @@ public class Breaking extends ZombieAbility {
                     this.mob.getLookControl().setLookAt(MathUtils.blockPosToVec3(pos));
                 }
 
-                this.state = this.level.getBlockState(this.pos);
-                this.progress += getBreakProgress(this.state, this.mob, this.pos);
-                if (this.progress >= 1f) {
-                    this.succeedBreak();
+                if (mob.getEyePosition().distanceToSqr(MathUtils.blockPosToVec3(pos)) <= 16d) {
+                    this.state = this.level.getBlockState(this.pos);
+                    this.progress += getBreakProgress(this.state, this.mob, this.pos);
+                    if (this.progress >= 1f) {
+                        this.succeedBreak();
+                    } else {
+                        this.level.destroyBlockProgress(this.mob.getId(), this.pos, (int) (progress * 10f) - 1);
+                        if (!this.mob.swinging) {
+                            this.mob.swing(InteractionHand.MAIN_HAND);
+                        }
+                        if ((this.mob.getLevel().getGameTime() - this.startTime) % 4L == 0) {
+                            SoundType soundType = this.state.getSoundType();
+                            this.mob.getLevel().playSound(null, this.pos, soundType.getHitSound(), SoundSource.BLOCKS,
+                                    (soundType.getVolume() + 1.0F) / 8.0F, soundType.getPitch() * 0.5F);
+                        }
+                    }
                 } else {
-                    this.level.destroyBlockProgress(this.mob.getId(), this.pos, (int) (progress * 10f) - 1);
-                    if (!this.mob.swinging) {
-                        this.mob.swing(InteractionHand.MAIN_HAND);
-                    }
-                    if ((this.mob.getLevel().getGameTime() - this.startTime) % 4L == 0) {
-                        SoundType soundType = this.state.getSoundType();
-                        this.mob.getLevel().playSound(null, this.pos, soundType.getHitSound(), SoundSource.BLOCKS,
-                                (soundType.getVolume() + 1.0F) / 8.0F, soundType.getPitch() * 0.5F);
-                    }
+                    this.level.destroyBlockProgress(this.mob.getId(), pos, -1);
+                    this.progress = 0f;
                 }
             } else {
                 this.failBreak();
@@ -206,6 +220,8 @@ public class Breaking extends ZombieAbility {
 
         private void failBreak() {
             if (!this.isDone()) {
+                this.failBreak.run();
+                this.failBreak = NULL_RUNNABLE;
                 this.level.destroyBlockProgress(this.mob.getId(), pos, -1);
                 this.isDone = true;
             }
@@ -270,10 +286,29 @@ public class Breaking extends ZombieAbility {
             }
         }
 
-        public void stop() {
+
+        @Override
+        public void receiveBroadcast(int id) {
+            if (id == ZombieMainGoal.BroadcastIDs.DEATH) {
+                this.failBreak();
+            } else if (id == ZombieMainGoal.BroadcastIDs.HURT) {
+                if (this.mob.getLastDamageSource() != null) {
+                    if (this.mob.getLastDamageSource().getEntity() != null) {
+                        if (this.mob.getLastDamageSource().getEntity() instanceof LivingEntity) {
+                            this.failBreak();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void fail() {
             this.failBreak();
         }
 
+        public void stop() {
+            this.failBreak = NULL_RUNNABLE;
+            this.failBreak();
+        }
     }
-
 }

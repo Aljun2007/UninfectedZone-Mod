@@ -4,7 +4,7 @@ package com.aljun.uninfectedzone.core.zombie.abilities;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.world.entity.Mob;
 
-public abstract class ZombieAbilityInstance<T extends ZombieAbility> {
+public abstract class ZombieAbilityInstance<T extends ZombieAbility> implements ZombieMainGoal.BroadcastReceiver {
     public final T ABILITY;
     public final ZombieMainGoal MAIN_GOAL;
 

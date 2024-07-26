@@ -1,7 +1,7 @@
 package com.aljun.uninfectedzone.core.utils;
 
 import com.aljun.uninfectedzone.UninfectedZone;
-import com.aljun.uninfectedzone.core.forgeRegister.UninfectedZoneRegistry;
+import com.aljun.uninfectedzone.core.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
 import net.minecraft.resources.ResourceLocation;
@@ -45,7 +45,7 @@ public class ZombieUtils {
     }
 
     @Nullable
-    public ZombieMainGoal getMainGoalOrAbsent(Mob mob) {
+    public static ZombieMainGoal getMainGoalOrAbsent(Mob mob) {
         final ZombieMainGoal[] result = {null};
         mob.goalSelector.getAvailableGoals().forEach((goal) -> {
                     if (goal.getGoal().getClass().equals(ZombieMainGoal.class)) {

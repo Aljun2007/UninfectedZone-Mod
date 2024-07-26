@@ -1,9 +1,7 @@
 package com.aljun.uninfectedzone.deafult.event.register;
 
-import com.aljun.uninfectedzone.core.entity.InfectionConvertType;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
-import com.aljun.uninfectedzone.deafult.entity.InfectionConvertTypes;
 import com.aljun.uninfectedzone.deafult.zombie.abilities.ZombieAbilities;
 import com.aljun.uninfectedzone.deafult.zombie.zombieLikes.ZombieLikes;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -21,11 +19,6 @@ public class UninfectedZoneDefaultRegister {
     @SubscribeEvent
     public static void registerZombieAbilities(RegistryEvent.Register<ZombieAbility> event) {
         ZombieAbilities.register(event.getRegistry());
-    }
-
-    @SubscribeEvent
-    public static void registerInfectionConvertTypes(RegistryEvent.Register<InfectionConvertType> event) {
-        InfectionConvertTypes.register(event.getRegistry());
     }
 
     @SubscribeEvent

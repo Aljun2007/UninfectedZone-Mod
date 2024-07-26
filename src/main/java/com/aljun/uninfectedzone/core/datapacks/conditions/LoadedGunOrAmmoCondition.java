@@ -10,19 +10,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadedModCondition implements LootItemCondition {
+public class LoadedGunOrAmmoCondition implements LootItemCondition {
     final List<String> modIDs;
 
-    LoadedModCondition(List<String> p_81923_) {
+    LoadedGunOrAmmoCondition(List<String> p_81923_) {
         this.modIDs = p_81923_;
     }
 
     public static LootItemCondition.Builder modID(String... modIDs) {
-        return () -> new LoadedModCondition(new ArrayList<>(List.of(modIDs)));
+        return () -> new LoadedGunOrAmmoCondition(new ArrayList<>(List.of(modIDs)));
     }
 
     public @NotNull LootItemConditionType getType() {
-        return UninfectedZoneLootItemConditions.LOADED_MOD;
+        return UninfectedZoneLootItemConditions.LOADED_GUN;
     }
 
     public boolean test(LootContext p_81930_) {
@@ -34,22 +34,22 @@ public class LoadedModCondition implements LootItemCondition {
         return true;
     }
 
-    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<LoadedModCondition> {
-        public void serialize(@NotNull JsonObject jsonObject, @NotNull LoadedModCondition loadedModCondition, @NotNull JsonSerializationContext p_81945_) {
+    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<LoadedGunOrAmmoCondition> {
+        public void serialize(@NotNull JsonObject jsonObject, @NotNull LoadedGunOrAmmoCondition loadedGunOrAmmoCondition, @NotNull JsonSerializationContext p_81945_) {
             JsonArray array = new JsonArray();
-            for (String modID : loadedModCondition.modIDs) {
+            for (String modID : loadedGunOrAmmoCondition.modIDs) {
                 array.add(new JsonPrimitive(modID));
             }
             jsonObject.add("mod_ids", array);
         }
 
-        public @NotNull LoadedModCondition deserialize(@NotNull JsonObject jsonObject, @NotNull JsonDeserializationContext context) {
+        public @NotNull LoadedGunOrAmmoCondition deserialize(@NotNull JsonObject jsonObject, @NotNull JsonDeserializationContext context) {
             JsonArray array = jsonObject.getAsJsonArray("mod_ids");
             List<String> mod_ids = new ArrayList<>();
             array.forEach((jsonElement) -> {
                 mod_ids.add(jsonElement.getAsString());
             });
-            return new LoadedModCondition(mod_ids);
+            return new LoadedGunOrAmmoCondition(mod_ids);
         }
     }
 }

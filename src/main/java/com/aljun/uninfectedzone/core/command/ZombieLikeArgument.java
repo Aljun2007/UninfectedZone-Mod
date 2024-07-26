@@ -1,6 +1,6 @@
 package com.aljun.uninfectedzone.core.command;
 
-import com.aljun.uninfectedzone.core.forgeRegister.UninfectedZoneRegistry;
+import com.aljun.uninfectedzone.core.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.utils.ComponentUtils;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;

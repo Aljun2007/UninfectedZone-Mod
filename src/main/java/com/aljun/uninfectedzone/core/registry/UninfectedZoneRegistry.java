@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.core.forgeRegister;
+package com.aljun.uninfectedzone.core.registry;
 
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
@@ -17,7 +17,6 @@ public class UninfectedZoneRegistry {
     public static Supplier<IForgeRegistry<ZombieLike>> ZOMBIE_LIKES;
     public static Supplier<IForgeRegistry<ZombieSpeedType>> ZOMBIE_SPEED_TYPES;
     public static Supplier<IForgeRegistry<ZombieAbility>> ZOMBIE_ABILITIES;
-//    public static Supplier<IForgeRegistry<InfectionConvertType>> INFECTION_CONVERT_TYPES;
 
     public static void register(NewRegistryEvent event) {
 
@@ -40,20 +39,14 @@ public class UninfectedZoneRegistry {
                 .setMaxID(MAX_VARINT)
                 .setDefaultKey(new ResourceLocation("dummy"))
         );
-//        INFECTION_CONVERT_TYPES = event.create(new RegistryBuilder<InfectionConvertType>().setName(
-//                        Keys.INFECTION_CONVERT_TYPES.location())
-//                .setType(InfectionConvertType.class)
-//                .setMaxID(MAX_VARINT)
-//                .setDefaultKey(new ResourceLocation("dummy"))
-//        );
 
     }
 
     public static class Keys {
+
         public static final ResourceKey<Registry<ZombieLike>> ZOMBIE_LIKES = key("zombie_like");
         public static final ResourceKey<Registry<ZombieSpeedType>> ZOMBIE_SPEED_TYPES = key("zombie_speed_type");
         public static final ResourceKey<Registry<ZombieAbility>> ZOMBIE_ABILITIES = key("zombie_ability");
-//        public static final ResourceKey<Registry<InfectionConvertType>> INFECTION_CONVERT_TYPES = key("infection_convert_type");
 
         private static <T> ResourceKey<Registry<T>> key(String name) {
             return ResourceKey.createRegistryKey(new ResourceLocation(name));

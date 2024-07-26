@@ -97,7 +97,7 @@ public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.Us
     public void stop() {
         LivingEntity livingentity = this.ZOMBIE.getTarget();
         if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
-            this.ZOMBIE.setTarget((LivingEntity) null);
+            this.ZOMBIE.setTarget(null);
         }
 
         this.ZOMBIE.setAggressive(false);
@@ -122,6 +122,7 @@ public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.Us
                 this.pathedTargetY = livingentity.getY();
                 this.pathedTargetZ = livingentity.getZ();
                 this.ticksUntilNextPathRecalculation = 4 + this.ZOMBIE.getRandom().nextInt(7);
+
                 if (this.canPenalize) {
                     this.ticksUntilNextPathRecalculation += failedPathFindingPenalty;
                     if (this.ZOMBIE.getNavigation().getPath() != null) {
@@ -134,6 +135,7 @@ public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.Us
                         failedPathFindingPenalty += 10;
                     }
                 }
+                
                 if (d0 > 1024.0D) {
                     this.ticksUntilNextPathRecalculation += 10;
                 } else if (d0 > 256.0D) {
@@ -169,7 +171,7 @@ public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.Us
     }
 
     protected double getAttackReachSqr(LivingEntity p_25556_) {
-        return (double) (this.ZOMBIE.getBbWidth() * 2.0F * this.ZOMBIE.getBbWidth() * 2.0F + p_25556_.getBbWidth());
+        return this.ZOMBIE.getBbWidth() * 2.0F * this.ZOMBIE.getBbWidth() * 2.0F + p_25556_.getBbWidth();
     }
 
     protected void moveToTargetOnTicking(double x, double y, double z) {
