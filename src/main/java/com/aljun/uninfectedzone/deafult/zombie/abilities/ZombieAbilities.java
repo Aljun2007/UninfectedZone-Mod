@@ -6,17 +6,20 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.function.Supplier;
 
 public class ZombieAbilities {
-    public static Supplier<ZombieAbility> BREAKING;
-    public static Supplier<ZombieAbility> PATH_CONSTRUCTING;
+    public static Supplier<Breaking> BREAKING;
+    public static Supplier<Placing> PLACING;
+    public static Supplier<PathConstructing> PATH_CONSTRUCTING;
 
 
     public static void register(IForgeRegistry<ZombieAbility> registry) {
         BREAKING = register(registry, Breaking::new, Breaking.KEY);
+        PLACING = register(registry, Placing::new, Placing.KEY);
         PATH_CONSTRUCTING = register(registry, PathConstructing::new, PathConstructing.KEY);
     }
 
-    private static Supplier<ZombieAbility> register(IForgeRegistry<ZombieAbility> registry, Supplier<ZombieAbility> instance, String key) {
-        ZombieAbility zombieAbility = instance.get().setRegistryName(key);
+    private static <T extends ZombieAbility> Supplier<T> register(IForgeRegistry<ZombieAbility> registry, Supplier<T> instance, String key) {
+        T zombieAbility = instance.get();
+        zombieAbility.setRegistryName(key);
         registry.register(zombieAbility);
         return () -> zombieAbility;
     }

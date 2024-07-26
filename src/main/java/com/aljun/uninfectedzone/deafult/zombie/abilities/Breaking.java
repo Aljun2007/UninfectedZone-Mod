@@ -34,7 +34,7 @@ public class Breaking extends ZombieAbility {
 
     @Override
     protected ZombieAbilityInstance<? extends ZombieAbility> create(ZombieMainGoal mainGoal) {
-        return null;
+        return new BreakingInstance(this, mainGoal);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class Breaking extends ZombieAbility {
 
             boolean canBreak = !BLACK_LIST.contains(block2);
 
-            if (block2 instanceof LiquidBlock || (!(block2 instanceof PowderSnowCauldronBlock)
+            if (!state.getFluidState().isEmpty() || (!(block2 instanceof PowderSnowCauldronBlock)
                     && block2 instanceof AbstractCauldronBlock)) {
                 canBreak = false;
             } else if (block2 instanceof GameMasterBlock) {

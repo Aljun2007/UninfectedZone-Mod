@@ -12,18 +12,18 @@ import java.util.HashMap;
 
 
 public class UninfectedZoneConfig {
-    private static final HashMap<ConfigType, HashMap<String, ConfigHolder<?>>> CONFIGS = new HashMap<>();
+    private static final HashMap<ConfigType, HashMap<String, ConfigHolder<?>>> CONFIGS_HOLDERS = new HashMap<>();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final boolean build = false;
+    private static boolean build = false;
 
     static {
         for (ConfigType type : ConfigType.values()) {
-            CONFIGS.put(type, new HashMap<>());
+            CONFIGS_HOLDERS.put(type, new HashMap<>());
         }
     }
 
     public static void loadAndFixJson(JsonObject jsonObject, ConfigType configType) {
-        HashMap<String, ConfigHolder<?>> config = CONFIGS.get(configType);
+        HashMap<String, ConfigHolder<?>> config = CONFIGS_HOLDERS.get(configType);
         JsonManager jsonManager = new JsonManager(jsonObject);
         config.forEach(((s, configHolder) -> {
             configHolder.loadFromJson(jsonManager);
@@ -32,17 +32,21 @@ public class UninfectedZoneConfig {
 
     @SuppressWarnings("unchecked")
     public static <T> T get(@NotNull ConfigSet<T> configSet) {
-        return (T) CONFIGS.get(configSet.CONFIG_TYPE).get(configSet.VAR_SET.ID).get();
+        return (T) CONFIGS_HOLDERS.get(configSet.CONFIG_TYPE).get(configSet.VAR_SET.ID).get();
     }
 
     public static <T> @Nullable ConfigSet<T> register(VarSet<T> varSet, ConfigType configType) {
         if (!build) {
             ConfigSet<T> configSet = new ConfigSet<>(varSet, configType);
-            CONFIGS.get(configType).put(varSet.ID, new ConfigHolder<>(configSet));
+            CONFIGS_HOLDERS.get(configType).put(varSet.ID, new ConfigHolder<>(configSet));
             return configSet;
         } else {
             LOGGER.error("has already stopped registering");
             return null;
         }
+    }
+
+    public static void stopRegister() {
+        build = true;
     }
 }

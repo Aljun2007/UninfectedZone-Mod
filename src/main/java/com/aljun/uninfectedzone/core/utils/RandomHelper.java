@@ -1,11 +1,25 @@
 package com.aljun.uninfectedzone.core.utils;
 
+import net.minecraft.core.Direction;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class RandomHelper {
     public static final Random RANDOM = new Random();
+
+    private static final RandomSource<Direction> HORIZONTAL_DIRECTIONS =
+            new RandomSource<Direction>()
+                    .add(Direction.NORTH, 1d)
+                    .add(Direction.SOUTH, 1d)
+                    .add(Direction.EAST, 1d)
+                    .add(Direction.WEST, 1d)
+                    .build();
+
+    public static Direction randomHorizontalDirection() {
+        return HORIZONTAL_DIRECTIONS.nextValue();
+    }
 
     public static class RandomSource<T> {
         private final List<T> VALUE = new ArrayList<>();
@@ -33,8 +47,9 @@ public class RandomHelper {
             return this;
         }
 
-        public void build() {
+        public RandomSource<T> build() {
             this.build = true;
+            return this;
         }
 
         public T nextValue() {

@@ -1,5 +1,8 @@
 package com.aljun.uninfectedzone;
 
+import com.aljun.uninfectedzone.core.config.GlobalConfigs;
+import com.aljun.uninfectedzone.core.config.UninfectedZoneConfig;
+import com.aljun.uninfectedzone.core.file.config.ConfigFileLoader;
 import com.aljun.uninfectedzone.core.forgeRegister.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.modlinkage.tazc.LinkageGunMod;
 import com.mojang.logging.LogUtils;
@@ -28,16 +31,8 @@ public class UninfectedZone {
         }
         File file = new File(gamePath);
         file.mkdirs();
-        LOGGER.info(gamePath);
+        LOGGER.info("UninfectedZoneDirectory:{}", gamePath);
         LinkageGunMod.init();
-        //CommonGunPackLoader
-    }
-
-    public static void main(String[] args) {
-        File file = new File(gamePath);
-        file.mkdirs();
-        System.out.println(getAbsPath());
-        file.listFiles();
     }
 
     public static String getAbsPath() {
@@ -45,14 +40,18 @@ public class UninfectedZone {
     }
 
     public static void afterRegister() {
-
         UninfectedZoneRegistry.ZOMBIE_LIKES.get().forEach((like) -> {
             try {
                 LOGGER.info(Objects.requireNonNull(like.getRegistryName()).toString());
             } catch (NullPointerException ignored) {
             }
         });
+        UninfectedZoneConfig.stopRegister();
+        UninfectedZone.loadAllConfigJsons();
+        LOGGER.info("TestBoolean :{}", UninfectedZoneConfig.get(GlobalConfigs.TEST_BOOLEAN.get()));
+    }
 
-
+    private static void loadAllConfigJsons() {
+        ConfigFileLoader.loadGlobalConfigJson();
     }
 }

@@ -1,11 +1,14 @@
 package com.aljun.uninfectedzone.deafult.zombie.abilities;
 
+import com.aljun.uninfectedzone.core.utils.RandomHelper;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Mob;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +17,7 @@ public class PathConstructing extends ZombieAbility {
 
     @Override
     protected ZombieAbilityInstance<? extends ZombieAbility> create(ZombieMainGoal mainGoal) {
-        return null;
+        return new PathConstructingInstance(this, mainGoal);
     }
 
     @Override
@@ -105,7 +108,9 @@ public class PathConstructing extends ZombieAbility {
     }
 
     public enum BlockType {
+        
         AIR(0), SOLID(1), OTHER(2);
+
         public final int ID;
 
         BlockType(int i) {
@@ -116,6 +121,17 @@ public class PathConstructing extends ZombieAbility {
             return this.ID == blockType.ID;
         }
 
+    }
+
+    public enum Style {
+
+        NORMAL(0), JUMP(1);
+
+        public final int ID;
+
+        Style(int id) {
+            this.ID = id;
+        }
     }
 
     private static class Pack {
@@ -138,5 +154,68 @@ public class PathConstructing extends ZombieAbility {
         }
     }
 
+    public class PathConstructingInstance extends ZombieAbilityInstance<PathConstructing> {
+        private final Mob mob;
 
+        public PathConstructingInstance(PathConstructing ability, ZombieMainGoal main) {
+            super(ability, main);
+            this.mob = this.getZombie();
+        }
+
+        @Override
+        public void tick() {
+
+        }
+
+        @Nullable
+        private Direction getVerticalDirectionToTarget(BlockPos target) {
+            int relativeY = target.getY() - this.getZombiePos().getY();
+            if (relativeY > 0) return Direction.UP;
+            else if (relativeY < 0) return Direction.DOWN;
+            else return null;
+        }
+
+        private BlockPos getZombiePos() {
+            return this.mob.getOnPos();
+        }
+
+        private Direction getHorizontalDirectionToTarget(BlockPos target) {
+
+            BlockPos self = this.getZombiePos();
+
+            int relativeX = target.getX() - self.getX();
+            int relativeY = target.getY() - this.getZombiePos().getY();
+            int relativeZ = target.getZ() - self.getZ();
+
+            Direction direction;
+
+            if (-1 <= relativeX && relativeX <= 1 && -1 <= relativeZ && relativeZ <= 1 && !(-1 <= relativeY && relativeY <= 1)) {
+                if ((relativeX == 0 && relativeZ == -1) || (relativeX == -1 && relativeZ == -1)) {
+                    direction = Direction.EAST;
+                } else if (relativeX == -1) {
+                    direction = Direction.NORTH;
+                } else if ((relativeX == 1 && relativeZ == 1) || (relativeX == 0 && relativeZ == 1)) {
+                    direction = Direction.WEST;
+                } else if (relativeX == 1) {
+                    direction = Direction.SOUTH;
+                } else {
+                    direction = RandomHelper.randomHorizontalDirection();
+                }
+            } else if (relativeX == 0 && -1 <= relativeY && relativeY <= 1 && relativeZ == 0) {
+                direction = null;
+            } else if (relativeZ <= relativeX && relativeZ < -relativeX) {
+                direction = Direction.SOUTH;
+            } else if (relativeZ > relativeX && relativeZ <= -relativeX) {
+                direction = Direction.EAST;
+            } else if (relativeZ >= relativeX && relativeZ > -relativeX) {
+                direction = Direction.NORTH;
+            } else if (relativeZ < relativeX && relativeZ >= -relativeX) {
+                direction = Direction.WEST;
+            } else {
+                direction = RandomHelper.randomHorizontalDirection();
+            }
+
+            return direction;
+        }
+    }
 }

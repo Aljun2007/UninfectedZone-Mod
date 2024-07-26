@@ -1,13 +1,18 @@
 package com.aljun.uninfectedzone.core.utils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.*;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class VarSet<V> {
+    private static final Logger LOGGER = LogUtils.getLogger();
     public final String ID;
     public final VarType<V> varType;
     final ArrayList<String> NAMESPACE;
@@ -97,6 +102,7 @@ public class VarSet<V> {
                 try {
                     return jsonObject.get(key).getAsBoolean();
                 } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
                     return null;
                 }
             }
@@ -126,6 +132,7 @@ public class VarSet<V> {
                 try {
                     return jsonObject.get(key).getAsInt();
                 } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
                     return null;
                 }
             }
@@ -154,6 +161,7 @@ public class VarSet<V> {
                 try {
                     return jsonObject.get(key).getAsShort();
                 } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
                     return null;
                 }
             }
@@ -182,6 +190,7 @@ public class VarSet<V> {
                 try {
                     return jsonObject.get(key).getAsLong();
                 } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
                     return null;
                 }
             }
@@ -209,6 +218,7 @@ public class VarSet<V> {
                 try {
                     return jsonObject.get(key).getAsDouble();
                 } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
                     return null;
                 }
             }
@@ -237,6 +247,7 @@ public class VarSet<V> {
                 try {
                     return jsonObject.get(key).getAsFloat();
                 } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
                     return null;
                 }
             }
@@ -265,6 +276,7 @@ public class VarSet<V> {
                 try {
                     return jsonObject.get(key).getAsString();
                 } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
                     return null;
                 }
             }
@@ -272,6 +284,50 @@ public class VarSet<V> {
             @Override
             public void addToJsonObject(JsonObject jsonObject, String key, String var) {
                 jsonObject.addProperty(key, var);
+            }
+        };
+
+        public static final VarType<List<String>> STRING_LIST = new VarType<>() {
+            @Override
+            public Tag writeToTag(List<String> strings) {
+                ListTag tag = new ListTag();
+                strings.forEach((string -> {
+                    tag.add(StringTag.valueOf(string));
+                }));
+                return tag;
+            }
+
+            @Override
+            public List<String> readFromTag(Tag tag) {
+                if (tag instanceof ListTag listTag) {
+                    List<String> list = new ArrayList<>();
+                    listTag.forEach(tag1 -> {
+                        list.add(tag1.getAsString());
+                    });
+                    return list;
+                } else throw new IllegalArgumentException();
+            }
+
+            @Override
+            public List<String> getFromJsonObject(JsonObject jsonObject, String key) {
+                try {
+                    JsonArray array = jsonObject.get(key).getAsJsonArray();
+                    ArrayList<String> stringArrayList = new ArrayList<>();
+                    array.forEach((jsonElement -> {
+                        stringArrayList.add(jsonElement.getAsString());
+                    }));
+                    return stringArrayList;
+                } catch (UnsupportedOperationException | NullPointerException e) {
+                    LOGGER.error(e.toString());
+                    return null;
+                }
+            }
+
+            @Override
+            public void addToJsonObject(JsonObject jsonObject, String key, List<String> var) {
+                JsonArray array = new JsonArray();
+                var.forEach(array::add);
+                jsonObject.add(key, array);
             }
         };
 
