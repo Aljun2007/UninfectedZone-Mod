@@ -16,6 +16,8 @@ public class TestZombie extends ZombieLike {
     @Override
     protected void registerAbilities(ZombieMainGoal zombieMainGoal) {
         zombieMainGoal.addAbility(ZombieAbilities.BREAKING.get());
+        zombieMainGoal.addAbility(ZombieAbilities.PLACING.get());
+        zombieMainGoal.addAbility(ZombieAbilities.PATH_CONSTRUCTING.get());
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.aljun.uninfectedzone.core.event.subscriber;
 import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.core.config.GlobalConfigs;
 import com.aljun.uninfectedzone.core.datapacks.conditions.UninfectedZoneLootItemConditions;
-import com.aljun.uninfectedzone.core.forgeRegister.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.network.ChunkBorderCommandNetworking;
+import com.aljun.uninfectedzone.core.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.zombie.like.DummyZombie;
 import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
 import com.mojang.logging.LogUtils;
@@ -37,7 +37,7 @@ public class UninfectedZoneRegisterEvent {
     @SubscribeEvent
     public static void registerOthers(FMLCommonSetupEvent event) {
         GlobalConfigs.register();
-        Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation("uninfectedzone:loaded_mod"), UninfectedZoneLootItemConditions.LOADED_MOD);
+        Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation("uninfectedzone:loaded_mod"), UninfectedZoneLootItemConditions.LOADED_GUN);
         event.enqueueWork(() -> {
             ChunkBorderCommandNetworking.registerMessage();
             UninfectedZone.afterRegister();

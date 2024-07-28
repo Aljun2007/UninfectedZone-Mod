@@ -1,6 +1,5 @@
 package com.aljun.uninfectedzone.deafult.zombie.abilities;
 
-import com.aljun.uninfectedzone.core.utils.MathUtils;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
@@ -52,7 +51,7 @@ public class Placing extends ZombieAbility {
         private boolean checkPos(BlockPos pos) {
             if (this.mob.getOnPos().equals(pos)) return false;
             if (!mob.getLevel().isOutsideBuildHeight(pos)) return false;
-            if (mob.getEyePosition().distanceTo(MathUtils.blockPosToVec3(pos)) <= 3d) return false;
+            if (mob.blockPosition().distSqr(pos) <= 16d) return false;
             return (mob.getLevel().getBlockState(pos).isAir() || !mob.getLevel().getBlockState(pos).getFluidState().isEmpty());
         }
 

@@ -33,48 +33,48 @@ public class PathConstructing extends ZombieAbility {
     public enum PathStructure {
         SITU(0, Pack.ofList(
                 Pack.of(0, -1, BlockType.SOLID),
-                Pack.of(0, 1, BlockType.AIR),
-                Pack.of(0, 0, BlockType.AIR)),
+                Pack.of(0, 1, BlockType.EMPTY),
+                Pack.of(0, 0, BlockType.EMPTY)),
                 0, 0),
         FORWARD(1, Pack.ofList(
                 Pack.of(0, -1, BlockType.SOLID),
-                Pack.of(0, 1, BlockType.AIR),
-                Pack.of(0, 0, BlockType.AIR),
-                Pack.of(1, 1, BlockType.AIR),
-                Pack.of(1, 0, BlockType.AIR),
+                Pack.of(0, 1, BlockType.EMPTY),
+                Pack.of(0, 0, BlockType.EMPTY),
+                Pack.of(1, 1, BlockType.EMPTY),
+                Pack.of(1, 0, BlockType.EMPTY),
                 Pack.of(1, -1, BlockType.SOLID)
         ), 1, 0),
         FORWARD_UP(2, Pack.ofList(
                 Pack.of(0, -1, BlockType.SOLID),
-                Pack.of(0, 1, BlockType.AIR),
-                Pack.of(0, 0, BlockType.AIR),
-                Pack.of(0, 2, BlockType.AIR),
-                Pack.of(1, 2, BlockType.AIR),
-                Pack.of(1, 1, BlockType.AIR),
+                Pack.of(0, 1, BlockType.EMPTY),
+                Pack.of(0, 0, BlockType.EMPTY),
+                Pack.of(0, 2, BlockType.EMPTY),
+                Pack.of(1, 2, BlockType.EMPTY),
+                Pack.of(1, 1, BlockType.EMPTY),
                 Pack.of(1, -1, BlockType.SOLID),
                 Pack.of(1, 0, BlockType.SOLID)
         ), 1, 1),
         FORWARD_DOWN(3, Pack.ofList(
                 Pack.of(0, -1, BlockType.SOLID),
-                Pack.of(0, 1, BlockType.AIR),
-                Pack.of(0, 0, BlockType.AIR),
+                Pack.of(0, 1, BlockType.EMPTY),
+                Pack.of(0, 0, BlockType.EMPTY),
                 Pack.of(0, -2, BlockType.SOLID),
-                Pack.of(1, 1, BlockType.AIR),
-                Pack.of(1, 0, BlockType.AIR),
-                Pack.of(1, -1, BlockType.AIR),
+                Pack.of(1, 1, BlockType.EMPTY),
+                Pack.of(1, 0, BlockType.EMPTY),
+                Pack.of(1, -1, BlockType.EMPTY),
                 Pack.of(1, -2, BlockType.SOLID)
         ), 1, -1),
         UP(4, Pack.ofList(
                 Pack.of(0, -1, BlockType.SOLID),
-                Pack.of(0, 1, BlockType.AIR),
-                Pack.of(0, 2, BlockType.AIR),
+                Pack.of(0, 1, BlockType.EMPTY),
+                Pack.of(0, 2, BlockType.EMPTY),
                 Pack.of(0, 0, BlockType.SOLID)
         ), 0, 1),
         DOWN(5, Pack.ofList(
-                Pack.of(0, 1, BlockType.AIR),
-                Pack.of(0, 0, BlockType.AIR),
+                Pack.of(0, 1, BlockType.EMPTY),
+                Pack.of(0, 0, BlockType.EMPTY),
                 Pack.of(0, -2, BlockType.SOLID),
-                Pack.of(0, -1, BlockType.AIR),
+                Pack.of(0, -1, BlockType.EMPTY),
                 Pack.of(0, -3, BlockType.SOLID)
         ), 0, -1);
 
@@ -90,26 +90,35 @@ public class PathConstructing extends ZombieAbility {
             this.END_Y = endY;
         }
 
-        public BlockPos getPos(int index, Direction direction, BlockPos startPos) {
+        public BlockPos getPos(int index, Direction direction, BlockPos selfPos) {
             if (direction.equals(Direction.UP) || direction.equals(Direction.DOWN))
                 throw new IllegalArgumentException("Illegal : " + direction.getName());
             Pack pack = this.blocks.get(index);
-            return (new BlockPos(startPos)).relative(direction, pack.X).above(pack.Y);
+            return (new BlockPos(selfPos)).relative(direction, pack.X).above(pack.Y);
         }
 
         public int maxIndex() {
             return this.blocks.size() - 1;
         }
 
-        public boolean is(BlockType blockType) {
-            return this.ID == blockType.ID;
+        public boolean is(PathStructure structure) {
+            return this.ID == structure.ID;
         }
 
+        public BlockPos getEndPos(Direction direction, BlockPos selfPos) {
+            if (direction.equals(Direction.UP) || direction.equals(Direction.DOWN))
+                throw new IllegalArgumentException("Illegal : " + direction.getName());
+            return (new BlockPos(selfPos)).relative(direction, END_X).above(END_Y);
+        }
+
+        public BlockType getType(int index) {
+            return this.blocks.get(index).BLOCK_TYPE;
+        }
     }
 
     public enum BlockType {
-        
-        AIR(0), SOLID(1), OTHER(2);
+
+        EMPTY(0), SOLID(1), OTHER(2);
 
         public final int ID;
 
@@ -132,6 +141,10 @@ public class PathConstructing extends ZombieAbility {
         Style(int id) {
             this.ID = id;
         }
+
+        public boolean is(Style style) {
+            return this.ID == style.ID;
+        }
     }
 
     private static class Pack {
@@ -150,11 +163,11 @@ public class PathConstructing extends ZombieAbility {
         }
 
         private static ArrayList<Pack> ofList(Pack... packs) {
-            return (ArrayList<Pack>) List.of(packs);
+            return new ArrayList<>(List.of(packs));
         }
     }
 
-    public class PathConstructingInstance extends ZombieAbilityInstance<PathConstructing> {
+    public static class PathConstructingInstance extends ZombieAbilityInstance<PathConstructing> {
         private final Mob mob;
 
         public PathConstructingInstance(PathConstructing ability, ZombieMainGoal main) {
@@ -167,29 +180,72 @@ public class PathConstructing extends ZombieAbility {
 
         }
 
-        @Nullable
-        private Direction getVerticalDirectionToTarget(BlockPos target) {
-            int relativeY = target.getY() - this.getZombiePos().getY();
-            if (relativeY > 0) return Direction.UP;
-            else if (relativeY < 0) return Direction.DOWN;
-            else return null;
+        public PathPack create(BlockPos selfPos, BlockPos buildTargetPos) {
+            return this.create(selfPos, buildTargetPos, Style.NORMAL);
         }
 
-        private BlockPos getZombiePos() {
-            return this.mob.getOnPos();
+        private PathPack create(BlockPos self, BlockPos target, Style style) {
+            Direction horizontalDirection = this.getHorizontalDirectionToTarget(self, target);
+            Direction verticalDirection = this.getVerticalDirectionToTarget(self, target);
+            PathStructure pathStructure = PathStructure.SITU;
+            if (style == Style.NORMAL) {
+                if (horizontalDirection != null) {
+                    if (verticalDirection == null) {
+                        pathStructure = PathStructure.FORWARD;
+                    } else if (verticalDirection.equals(Direction.UP)) {
+                        pathStructure = PathStructure.FORWARD_UP;
+                    } else if (verticalDirection.equals(Direction.DOWN)) {
+                        pathStructure = PathStructure.FORWARD_DOWN;
+                    }
+                } else {
+                    if (verticalDirection == null) {
+                        pathStructure = PathStructure.FORWARD;
+                    } else if (verticalDirection.equals(Direction.UP)) {
+                        pathStructure = PathStructure.UP;
+                    } else if (verticalDirection.equals(Direction.DOWN)) {
+                        pathStructure = PathStructure.DOWN;
+                    }
+                }
+            } else if (style.is(Style.JUMP)) {
+                int x = self.getX() - target.getX();
+                int z = self.getZ() - target.getZ();
+                if (verticalDirection == null) {
+                    pathStructure = PathStructure.FORWARD;
+                } else if ((x ^ 2 + z ^ 2) <= 100) {
+                    if (verticalDirection.equals(Direction.UP)) {
+                        pathStructure = PathStructure.UP;
+                    } else if (verticalDirection.equals(Direction.DOWN)) {
+                        pathStructure = PathStructure.DOWN;
+                    }
+                } else {
+                    if (horizontalDirection != null) {
+                        if (verticalDirection.equals(Direction.UP)) {
+                            pathStructure = PathStructure.FORWARD_UP;
+                        } else if (verticalDirection.equals(Direction.DOWN)) {
+                            pathStructure = PathStructure.FORWARD_DOWN;
+                        }
+                    } else {
+                        if (verticalDirection.equals(Direction.UP)) {
+                            pathStructure = PathStructure.UP;
+                        } else if (verticalDirection.equals(Direction.DOWN)) {
+                            pathStructure = PathStructure.DOWN;
+                        }
+                    }
+                }
+            }
+            return new PathPack(horizontalDirection, pathStructure);
         }
 
-        private Direction getHorizontalDirectionToTarget(BlockPos target) {
+        private Direction getHorizontalDirectionToTarget(BlockPos self, BlockPos target) {
 
-            BlockPos self = this.getZombiePos();
 
             int relativeX = target.getX() - self.getX();
-            int relativeY = target.getY() - this.getZombiePos().getY();
+            int relativeY = target.getY() - self.getY();
             int relativeZ = target.getZ() - self.getZ();
 
             Direction direction;
 
-            if (-1 <= relativeX && relativeX <= 1 && -1 <= relativeZ && relativeZ <= 1 && !(-1 <= relativeY && relativeY <= 1)) {
+            if (-1 <= relativeX && relativeX <= 1 && -1 <= relativeZ && relativeZ <= 1 && relativeY != 0) {
                 if ((relativeX == 0 && relativeZ == -1) || (relativeX == -1 && relativeZ == -1)) {
                     direction = Direction.EAST;
                 } else if (relativeX == -1) {
@@ -199,7 +255,7 @@ public class PathConstructing extends ZombieAbility {
                 } else if (relativeX == 1) {
                     direction = Direction.SOUTH;
                 } else {
-                    direction = RandomHelper.randomHorizontalDirection();
+                    direction = null;
                 }
             } else if (relativeX == 0 && -1 <= relativeY && relativeY <= 1 && relativeZ == 0) {
                 direction = null;
@@ -216,6 +272,24 @@ public class PathConstructing extends ZombieAbility {
             }
 
             return direction;
+        }
+
+        @Nullable
+        private Direction getVerticalDirectionToTarget(BlockPos self, BlockPos target) {
+            int relativeY = target.getY() - self.getY();
+            if (relativeY > 0) return Direction.UP;
+            else if (relativeY < 0) return Direction.DOWN;
+            else return null;
+        }
+
+        public static class PathPack {
+            public final PathStructure pathStructure;
+            public final Direction horizontalDirection;
+
+            public PathPack(Direction horizontalDirection, PathStructure pathStructure) {
+                this.pathStructure = pathStructure;
+                this.horizontalDirection = horizontalDirection;
+            }
         }
     }
 }
