@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.deafult.zombie.abilities;
+package com.aljun.uninfectedzone.common.zombie.abilities;
 
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
 import net.minecraftforge.registries.IForgeRegistry;

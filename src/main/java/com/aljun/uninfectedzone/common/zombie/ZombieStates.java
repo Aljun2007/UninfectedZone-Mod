@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.deafult.zombie;
+package com.aljun.uninfectedzone.common.zombie;
 
 import com.aljun.uninfectedzone.core.zombie.awareness.ZombieState;
 

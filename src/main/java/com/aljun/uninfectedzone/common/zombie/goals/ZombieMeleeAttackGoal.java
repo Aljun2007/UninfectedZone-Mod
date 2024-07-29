@@ -1,22 +1,19 @@
-package com.aljun.uninfectedzone.deafult.zombie.goals;
+package com.aljun.uninfectedzone.common.zombie.goals;
 
 
-import com.aljun.uninfectedzone.core.threads.ZombiePathCreating;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.User {
+public class ZombieMeleeAttackGoal extends Goal {
     protected static final int KEY_TICK = 0;
     protected static final long COOLDOWN_BETWEEN_CAN_USE_CHECKS = 20L;
     protected final ZombieMainGoal MAIN_GOAL;
@@ -135,7 +132,7 @@ public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.Us
                         failedPathFindingPenalty += 10;
                     }
                 }
-                
+
                 if (d0 > 1024.0D) {
                     this.ticksUntilNextPathRecalculation += 10;
                 } else if (d0 > 256.0D) {
@@ -174,10 +171,6 @@ public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.Us
         return this.ZOMBIE.getBbWidth() * 2.0F * this.ZOMBIE.getBbWidth() * 2.0F + p_25556_.getBbWidth();
     }
 
-    protected void moveToTargetOnTicking(double x, double y, double z) {
-        this.createPath(x, y, z, 0, KEY_TICK);
-    }
-
     protected boolean isTimeToAttack() {
         return this.ticksUntilNextAttack <= 0;
     }
@@ -190,20 +183,6 @@ public class ZombieMeleeAttackGoal extends Goal implements ZombiePathCreating.Us
         return this.adjustedTickDelay(20);
     }
 
-    @Override
-    public void receive(@Nullable Path path, int key) {
-        if (path != null) {
-            if (key == KEY_TICK) {
-                this.ZOMBIE.getNavigation().moveTo(path, this.speedModifier);
-                this.ticksUntilNextPathRecalculation += 15;
-            }
-        }
-    }
-
-    @Override
-    public PathNavigation navigation() {
-        return this.ZOMBIE.getNavigation();
-    }
 }
 
 

@@ -1,10 +1,10 @@
-package com.aljun.uninfectedzone.deafult.zombie.zombieLikes;
+package com.aljun.uninfectedzone.common.zombie.zombieLikes;
 
 import com.aljun.uninfectedzone.core.zombie.awareness.ZombieAwareness;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
 import com.aljun.uninfectedzone.core.zombie.utils.ZombieMoveControl;
-import com.aljun.uninfectedzone.deafult.zombie.goals.ZombieMeleeAttackGoal;
+import com.aljun.uninfectedzone.common.zombie.goals.ZombieMeleeAttackGoal;
 import net.minecraft.world.entity.Mob;
 
 public class VanillaZombie extends ZombieLike {

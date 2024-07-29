@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.deafult.zombie.abilities;
+package com.aljun.uninfectedzone.common.zombie.abilities;
 
 import com.aljun.uninfectedzone.core.utils.MathUtils;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
@@ -116,8 +116,7 @@ public class Breaking extends ZombieAbility {
         }
 
         private static boolean isPositionCorrect(Mob mob, BlockPos pos) {
-            return mob.getLevel().getBlockState(pos).canEntityDestroy(mob.getLevel(), pos, mob)
-                    && !mob.getLevel().isOutsideBuildHeight(pos)
+            return !mob.getLevel().isOutsideBuildHeight(pos)
                     && mob.getEyePosition().distanceToSqr(MathUtils.blockPosToVec3(pos)) <= 25d;
         }
 

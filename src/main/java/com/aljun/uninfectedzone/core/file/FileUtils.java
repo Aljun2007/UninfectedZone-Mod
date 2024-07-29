@@ -7,52 +7,43 @@ import com.google.gson.stream.JsonWriter;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.io.*;
+import java.util.function.Supplier;
 
 public class FileUtils {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
 
-    public static JsonObject loadJsonFileOrCreate(String path) {
+    public static JsonObject loadJsonFileOrCreate(String path, Supplier<JsonObject> newOne) throws IOException {
+
+        JsonObject object;
         try {
             JsonReader reader = new JsonReader(new FileReader(path));
-            JsonObject object = GSON.fromJson(reader, JsonObject.class);
-            return object == null ? new JsonObject() : object;
+            object = GSON.fromJson(reader, JsonObject.class);
         } catch (FileNotFoundException e) {
-            LOGGER.error(e.toString());
-            return new JsonObject();
+            throw new RuntimeException(e);
         }
+        if (object == null) {
+            object = newOne.get();
+            saveJsonFile(path, object);
+        }
+        return object;
     }
 
-    public static void saveJsonFile(String path, JsonObject jsonObject) {
+    public static void saveJsonFile(String path, JsonObject jsonObject) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                LOGGER.error(e.toString());
-            }
+            file.createNewFile();
         }
-        try {
-            JsonWriter writer = new JsonWriter(new FileWriter(path, false));
-            GSON.toJson(jsonObject, writer);
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            LOGGER.error(e.toString());
-        }
+        JsonWriter writer = new JsonWriter(new FileWriter(path, false));
+        GSON.toJson(jsonObject, writer);
+        writer.flush();
+        writer.close();
     }
 
-    @Nullable
-    public static JsonObject loadJsonFile(String path) {
-        try {
-            JsonReader reader = new JsonReader(new FileReader(path));
-            return GSON.fromJson(reader, JsonObject.class);
-        } catch (FileNotFoundException e) {
-            LOGGER.error(e.toString());
-            return null;
-        }
+    public static void deleteJsonFile(String path) {
+        File file = new File(path);
+        file.delete();
     }
 
 

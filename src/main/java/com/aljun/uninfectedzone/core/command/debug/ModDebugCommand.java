@@ -7,6 +7,7 @@ import com.aljun.uninfectedzone.core.utils.ComponentUtils;
 import com.aljun.uninfectedzone.core.utils.TagUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -26,20 +27,30 @@ public class ModDebugCommand implements Command<CommandSourceStack> {
     }
 
     private static void load(LiteralArgumentBuilder<CommandSourceStack> command) {
-        command.then(Commands.literal("debug_items").executes((context -> {
-                    ServerPlayer player = context.getSource().getPlayerOrException();
-                    debugItems(player);
-                    return 0;
-                }))
-        ).then(Commands.literal("isChunkBordenDisplay").then(
-                Commands.argument("boolean", BoolArgumentType.bool()).executes(
-                        (context -> {
+        command.then(Commands.literal("debug_items")
+                        .executes((context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();
-                            ChunkBorderCommandNetworking.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player),
-                                    ChunkBorderCommandNetworking.createPack(context.getArgument("boolean", Boolean.class)));
+                            debugItems(player);
                             return 0;
-                        })
-                )));
+                        })))
+                .then(Commands.literal("isChunkBordenDisplay")
+                        .then(Commands.argument("boolean", BoolArgumentType.bool())
+                                .executes(context -> {
+                                            ServerPlayer player = context.getSource().getPlayerOrException();
+                                            ChunkBorderCommandNetworking.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player),
+                                                    ChunkBorderCommandNetworking.createPack(context.getArgument("boolean", Boolean.class)));
+                                            return 0;
+                                        }
+                                )))
+                .then(Commands.literal("info")
+                        .then(
+                                Commands.argument("id", StringArgumentType.string())
+                                        .executes(context -> {
+                                            Debug.info(context);
+                                            return 0;
+                                        })
+                        )
+                );
     }
 
     private static void debugItems(ServerPlayer player) {

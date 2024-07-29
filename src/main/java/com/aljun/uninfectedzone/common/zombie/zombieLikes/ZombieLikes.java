@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.deafult.zombie.zombieLikes;
+package com.aljun.uninfectedzone.common.zombie.zombieLikes;
 
 import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
 import net.minecraftforge.registries.IForgeRegistry;

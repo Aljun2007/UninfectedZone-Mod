@@ -1,11 +1,11 @@
-package com.aljun.uninfectedzone.deafult.zombie.goals;
+package com.aljun.uninfectedzone.common.zombie.goals;
 
 import com.aljun.uninfectedzone.core.utils.MathUtils;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
-import com.aljun.uninfectedzone.deafult.zombie.abilities.Breaking;
-import com.aljun.uninfectedzone.deafult.zombie.abilities.PathConstructing;
-import com.aljun.uninfectedzone.deafult.zombie.abilities.Placing;
-import com.aljun.uninfectedzone.deafult.zombie.abilities.ZombieAbilities;
+import com.aljun.uninfectedzone.common.zombie.abilities.Breaking;
+import com.aljun.uninfectedzone.common.zombie.abilities.PathConstructing;
+import com.aljun.uninfectedzone.common.zombie.abilities.Placing;
+import com.aljun.uninfectedzone.common.zombie.abilities.ZombieAbilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
@@ -46,6 +46,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
     protected BlockPos buildTargetPos = null;
     protected PathConstructing.PathConstructingInstance.PathPack pathPack;
     protected BlockPos selfPos;
+
     public BreakAndBuildZombieMeleeAttackGoal(ZombieMainGoal mainGoal, Mob zombie) {
         this.mob = zombie;
         this.MAIN_GOAL = mainGoal;
@@ -62,15 +63,13 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
             if (this.mob.getLastDamageSource() != null) {
                 if (this.mob.getLastDamageSource().getEntity() != null) {
                     if (this.mob.getLastDamageSource().getEntity() instanceof LivingEntity) {
-                        this.failBreak();
+                        if (this.state.is(State.BUILD)) {
+                            this.setMelee();
+                        }
                     }
                 }
             }
         }
-    }
-
-    protected void failBreak() {
-        this.setMelee();
     }
 
     protected void setMelee() {
@@ -189,19 +188,23 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
                     boolean b1 = false;
                     if (path != null) {
                         b1 = this.mob.getNavigation().moveTo(path, this.speedModifier);
-                        Node finalPathPoint = path.getEndNode();
-                        if (finalPathPoint != null) {
-                            if (this.mob.distanceToSqr(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) <= 20 &&
-                                    livingentity.distanceToSqr(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) > 9) {
-                                this.setBuild(livingentity.blockPosition());
-                            } else if (livingentity.distanceToSqr(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) <= 2) {
+                        if (this.canPathConstruct()) {
+                            Node finalPathPoint = path.getEndNode();
+                            if (finalPathPoint != null) {
+                                if (this.mob.distanceToSqr(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) <= 20 &&
+                                        livingentity.distanceToSqr(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) > 9) {
+                                    this.setBuild(livingentity.blockPosition());
+                                } else if (livingentity.distanceToSqr(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) <= 2) {
+                                    this.setBuild(livingentity.blockPosition());
+                                }
+                            } else {
                                 this.setBuild(livingentity.blockPosition());
                             }
-                        } else {
-                            this.setBuild(livingentity.blockPosition());
                         }
                     } else {
-                        this.setBuild(livingentity.blockPosition());
+                        if (this.canPathConstruct()) {
+                            this.setBuild(livingentity.blockPosition());
+                        }
                     }
                     if (!b1) {
                         this.ticksUntilNextPathRecalculation += 15;
@@ -215,7 +218,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
                 this.checkAndPerformAttack(livingentity, d0);
             }
             if (this.state.is(State.BUILD)) {
-                if (this.buildTargetPos == null) {
+                if (this.buildTargetPos == null || !this.canPathConstruct()) {
                     this.setMelee();
                     return;
                 }
@@ -278,6 +281,10 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
                 }
             }
         }
+    }
+
+    protected boolean canPathConstruct() {
+        return this.pathConstructing != null && (this.canBreak() || this.canPlace());
     }
 
     protected void setBuild(BlockPos target) {
@@ -353,6 +360,14 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
         return false;
     }
 
+    protected boolean canBreak() {
+        return this.breaking != null;
+    }
+
+    protected boolean canPlace() {
+        return this.placing != null;
+    }
+
     protected void resetAttackCooldown() {
         this.ticksUntilNextAttack = this.adjustedTickDelay(20);
     }
@@ -368,14 +383,22 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
     }
 
     protected boolean destroyBlock(BlockPos blockPos) {
-        if (this.breaking.isDone()) {
-            return this.breaking.checkToStartBreak(blockPos, this::failBreak);
-        }
-        return true;
+        if (this.canBreak()) {
+            if (this.breaking.isDone()) {
+                return this.breaking.checkToStartBreak(blockPos, this::failBreak);
+            }
+            return true;
+        } else return false;
     }
 
     protected boolean placeBlock(BlockPos blockPos) {
-        return this.placing.place(blockPos, getPlaceBlock());
+        if (this.canPlace()) {
+            return this.placing.place(blockPos, getPlaceBlock());
+        } else return false;
+    }
+
+    protected void failBreak() {
+        this.setMelee();
     }
 
     private static BlockState getPlaceBlock() {
@@ -396,18 +419,6 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
 
     protected int getAttackInterval() {
         return this.adjustedTickDelay(20);
-    }
-
-    protected boolean canPathConstruct() {
-        return this.pathConstructing != null && (this.canBreak() || this.canPlace());
-    }
-
-    protected boolean canBreak() {
-        return this.breaking != null;
-    }
-
-    protected boolean canPlace() {
-        return this.placing != null;
     }
 
     protected enum State {

@@ -1,11 +1,13 @@
-package com.aljun.uninfectedzone.deafult.zombie.abilities;
+package com.aljun.uninfectedzone.common.zombie.abilities;
 
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class Placing extends ZombieAbility {
@@ -29,6 +31,7 @@ public class Placing extends ZombieAbility {
     public static class PlacingInstance extends ZombieAbilityInstance<Placing> {
 
         private final Mob mob;
+        private long lastPlaceTime = 0L;
 
         public PlacingInstance(Placing ability, ZombieMainGoal main) {
             super(ability, main);
@@ -36,6 +39,9 @@ public class Placing extends ZombieAbility {
         }
 
         public boolean place(BlockPos blockPos, BlockState blockState) {
+            if (this.lastPlaceTime + 20L >= this.mob.getLevel().getGameTime()) {
+                return true;
+            }
             if (this.checkState(blockState) && this.checkPos(blockPos)) {
                 this.succeedPlace(blockPos, blockState);
                 return true;
@@ -58,6 +64,11 @@ public class Placing extends ZombieAbility {
         private void succeedPlace(BlockPos blockPos, BlockState blockState) {
             ServerLevel level = (ServerLevel) this.getZombie().level;
             level.setBlock(blockPos, blockState, 3);
+            SoundType soundType = blockState.getSoundType();
+            this.mob.getLevel().playSound(null, blockPos, soundType.getPlaceSound(), SoundSource.BLOCKS,
+                    (soundType.getVolume() + 1.0F) / 8.0F, soundType.getPitch() * 0.5F);
+
+            this.lastPlaceTime = this.mob.getLevel().getGameTime();
         }
 
 

@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.deafult.zombie.abilities;
+package com.aljun.uninfectedzone.common.zombie.abilities;
 
 import com.aljun.uninfectedzone.core.utils.RandomHelper;
 import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
@@ -7,6 +7,8 @@ import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Mob;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -90,7 +92,8 @@ public class PathConstructing extends ZombieAbility {
             this.END_Y = endY;
         }
 
-        public BlockPos getPos(int index, Direction direction, BlockPos selfPos) {
+        public @NotNull BlockPos getPos(int index, Direction direction, BlockPos selfPos) {
+            if (direction == null) direction = Direction.NORTH;
             if (direction.equals(Direction.UP) || direction.equals(Direction.DOWN))
                 throw new IllegalArgumentException("Illegal : " + direction.getName());
             Pack pack = this.blocks.get(index);
@@ -101,11 +104,13 @@ public class PathConstructing extends ZombieAbility {
             return this.blocks.size() - 1;
         }
 
-        public boolean is(PathStructure structure) {
+        @Contract(pure = true)
+        public boolean is(@NotNull PathStructure structure) {
             return this.ID == structure.ID;
         }
 
-        public BlockPos getEndPos(Direction direction, BlockPos selfPos) {
+        public @NotNull BlockPos getEndPos(Direction direction, BlockPos selfPos) {
+            if (direction == null) direction = Direction.NORTH;
             if (direction.equals(Direction.UP) || direction.equals(Direction.DOWN))
                 throw new IllegalArgumentException("Illegal : " + direction.getName());
             return (new BlockPos(selfPos)).relative(direction, END_X).above(END_Y);
@@ -126,7 +131,8 @@ public class PathConstructing extends ZombieAbility {
             this.ID = i;
         }
 
-        public boolean is(BlockType blockType) {
+        @Contract(pure = true)
+        public boolean is(@NotNull BlockType blockType) {
             return this.ID == blockType.ID;
         }
 
@@ -142,7 +148,8 @@ public class PathConstructing extends ZombieAbility {
             this.ID = id;
         }
 
-        public boolean is(Style style) {
+        @Contract(pure = true)
+        public boolean is(@NotNull Style style) {
             return this.ID == style.ID;
         }
     }
@@ -158,11 +165,13 @@ public class PathConstructing extends ZombieAbility {
             this.BLOCK_TYPE = type;
         }
 
-        public static Pack of(int x, int y, BlockType type) {
+        @Contract(value = "_, _, _ -> new", pure = true)
+        public static @NotNull Pack of(int x, int y, BlockType type) {
             return new Pack(x, y, type);
         }
 
-        private static ArrayList<Pack> ofList(Pack... packs) {
+        @Contract("_ -> new")
+        private static @NotNull ArrayList<Pack> ofList(Pack... packs) {
             return new ArrayList<>(List.of(packs));
         }
     }
@@ -198,12 +207,13 @@ public class PathConstructing extends ZombieAbility {
                         pathStructure = PathStructure.FORWARD_DOWN;
                     }
                 } else {
-                    if (verticalDirection == null) {
-                        pathStructure = PathStructure.FORWARD;
-                    } else if (verticalDirection.equals(Direction.UP)) {
-                        pathStructure = PathStructure.UP;
-                    } else if (verticalDirection.equals(Direction.DOWN)) {
-                        pathStructure = PathStructure.DOWN;
+                    if (verticalDirection != null) {
+                        if (verticalDirection.equals(Direction.UP)) {
+                            pathStructure = PathStructure.UP;
+                        }
+                        if (verticalDirection.equals(Direction.DOWN)) {
+                            pathStructure = PathStructure.DOWN;
+                        }
                     }
                 }
             } else if (style.is(Style.JUMP)) {
@@ -247,26 +257,26 @@ public class PathConstructing extends ZombieAbility {
 
             if (-1 <= relativeX && relativeX <= 1 && -1 <= relativeZ && relativeZ <= 1 && relativeY != 0) {
                 if ((relativeX == 0 && relativeZ == -1) || (relativeX == -1 && relativeZ == -1)) {
-                    direction = Direction.EAST;
-                } else if (relativeX == -1) {
-                    direction = Direction.NORTH;
-                } else if ((relativeX == 1 && relativeZ == 1) || (relativeX == 0 && relativeZ == 1)) {
                     direction = Direction.WEST;
-                } else if (relativeX == 1) {
+                } else if (relativeX == -1) {
                     direction = Direction.SOUTH;
+                } else if ((relativeX == 1 && relativeZ == 1) || (relativeX == 0 && relativeZ == 1)) {
+                    direction = Direction.EAST;
+                } else if (relativeX == 1) {
+                    direction = Direction.NORTH;
                 } else {
                     direction = null;
                 }
             } else if (relativeX == 0 && -1 <= relativeY && relativeY <= 1 && relativeZ == 0) {
                 direction = null;
             } else if (relativeZ <= relativeX && relativeZ < -relativeX) {
-                direction = Direction.SOUTH;
-            } else if (relativeZ > relativeX && relativeZ <= -relativeX) {
-                direction = Direction.EAST;
-            } else if (relativeZ >= relativeX && relativeZ > -relativeX) {
                 direction = Direction.NORTH;
-            } else if (relativeZ < relativeX && relativeZ >= -relativeX) {
+            } else if (relativeZ > relativeX && relativeZ <= -relativeX) {
                 direction = Direction.WEST;
+            } else if (relativeZ >= relativeX && relativeZ > -relativeX) {
+                direction = Direction.SOUTH;
+            } else if (relativeZ < relativeX && relativeZ >= -relativeX) {
+                direction = Direction.EAST;
             } else {
                 direction = RandomHelper.randomHorizontalDirection();
             }
