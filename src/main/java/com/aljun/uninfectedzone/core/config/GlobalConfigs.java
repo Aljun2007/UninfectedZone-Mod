@@ -14,7 +14,7 @@ public class GlobalConfigs {
     }
 
     private static <T> Supplier<ConfigSet<T>> register(VarSet<T> varSet) {
-        ConfigSet<T> configSet = UninfectedZoneConfig.register(varSet, ConfigType.GLOBAL);
+        ConfigSet<T> configSet = UninfectedZoneConfig.register(varSet, ConfigType.COMMON);
         return () -> configSet;
     }
 }

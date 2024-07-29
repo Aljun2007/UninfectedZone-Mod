@@ -1,6 +1,6 @@
 {
   "commands.uninfectedzone.zombie.newZombie.invalidPosition": "Invalid position for a new zombie",
   "uninfectedzone.zombieLike.notFound": "Unknown zombieLike: %s",
-  "exception.uninfectedzone.newZombie.unsupported": "Unsupported Zombie : %s",
-  "exception.uninfectedzone.newZombie.unsummonable": "Unsummonable Zombie : %s"
+  "exception.uninfectedzone.newZombie.unsupported": "Unsupported Zombie : {}",
+  "exception.uninfectedzone.newZombie.unsummonable": "Unsummonable Zombie : {}"
 }

@@ -20,11 +20,22 @@ public class ConfigHolder<T> {
         this.setOrDefault(jsonManager.read(this.CONFIG_SET.VAR_SET));
     }
 
-    void setOrDefault(T t) {
+    boolean setOrDefault(T t) {
         if (this.CONFIG_SET.VAR_SET.verify(t)) {
             this.var = t;
+            return true;
         } else {
             this.var = this.CONFIG_SET.VAR_SET.defaultVar();
+            return false;
+        }
+    }
+
+    public boolean setOrOrigin(T t) {
+        if (this.CONFIG_SET.VAR_SET.verify(t)) {
+            this.var = t;
+            return true;
+        } else {
+            return false;
         }
     }
 }

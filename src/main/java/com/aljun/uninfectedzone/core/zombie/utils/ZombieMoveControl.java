@@ -1,16 +1,15 @@
 package com.aljun.uninfectedzone.core.zombie.utils;
 
-import com.aljun.uninfectedzone.core.threads.ZombiePathCreating;
+
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public abstract class ZombieMoveControl implements ZombiePathCreating.User {
+public abstract class ZombieMoveControl {
     protected final Mob ZOMBIE;
     protected final ZombieMainGoal MAIN_GOAL;
     protected final double MOVEMENT_SPEED;
@@ -26,20 +25,6 @@ public abstract class ZombieMoveControl implements ZombiePathCreating.User {
         this.ZOMBIE = mainGoal.getZombie();
         this.MAIN_GOAL = mainGoal;
         this.MOVEMENT_SPEED = this.MAIN_GOAL.getZombie().getAttributes().getBaseValue(Attributes.MOVEMENT_SPEED);
-    }
-
-    @Override
-    public void receive(@Nullable Path path, int key) {
-        this.receivePathOrAbsent(path);
-    }
-
-    @Override
-    public PathNavigation navigation() {
-        return this.getZombie().getNavigation();
-    }
-
-    public Mob getZombie() {
-        return ZOMBIE;
     }
 
     protected void receivePathOrAbsent(@Nullable Path path) {
@@ -72,6 +57,10 @@ public abstract class ZombieMoveControl implements ZombiePathCreating.User {
     protected void startMove() {
         this.getZombie().getNavigation().stop();
         this.getZombie().getNavigation().moveTo(this.path, this.MOVEMENT_SPEED);
+    }
+
+    public Mob getZombie() {
+        return ZOMBIE;
     }
 
     public double getMovementSpeed() {

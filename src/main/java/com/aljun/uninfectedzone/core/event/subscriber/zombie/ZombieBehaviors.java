@@ -1,6 +1,6 @@
 package com.aljun.uninfectedzone.core.event.subscriber.zombie;
 
-import com.aljun.uninfectedzone.core.game.GameController;
+import com.aljun.uninfectedzone.core.game.GameUtils;
 import com.aljun.uninfectedzone.core.utils.ZombieUtils;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.world.entity.EntityType;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ZombieBehaviors {
     @SubscribeEvent
     public static void onVillagerInfectedVanilla(LivingConversionEvent.Pre event) {
-        if (GameController.isVanillaInfectionDisabled()) {
+        if (GameUtils.isVanillaInfectionDisabled()) {
             if (event.getOutcome().equals(EntityType.ZOMBIE_VILLAGER) && event.getEntityLiving() instanceof Villager) {
                 event.setCanceled(true);
             }
