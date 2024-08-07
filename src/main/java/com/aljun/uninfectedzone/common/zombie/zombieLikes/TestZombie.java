@@ -1,16 +1,16 @@
 package com.aljun.uninfectedzone.common.zombie.zombieLikes;
 
 
-import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
-import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
+import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import com.aljun.uninfectedzone.common.zombie.abilities.ZombieAbilities;
 import com.aljun.uninfectedzone.common.zombie.goals.BreakAndBuildZombieMeleeAttackGoal;
+import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.world.entity.Mob;
 
 public class TestZombie extends ZombieLike {
     @Override
     protected ZombieMainGoal createMainGoal(Mob mob) {
-        return new ZombieMainGoal(mob, VanillaZombie.VanillaZombieAwareness::new, VanillaZombie.LandZombieMoveControl::new);
+        return new ZombieMainGoal(mob, VanillaZombie.VanillaZombieAwareness::new, this);
     }
 
     @Override

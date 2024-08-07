@@ -77,7 +77,10 @@ public class VarSet<V> {
             return this;
         }
 
-
+        /*
+         * 请给予默认值后再调用 create()
+         * 否则极易报错 Null
+         * */
         public VarSet<V> create(String key) {
             return new VarSet<>(this, key);
         }
@@ -291,15 +294,15 @@ public class VarSet<V> {
             @Override
             public Tag writeToTag(List<String> strings) {
                 ListTag tag = new ListTag();
-                strings.forEach((string -> {
-                    tag.add(StringTag.valueOf(string));
-                }));
+                strings.forEach((string) -> {
+                    tag.addTag(tag.size(), StringTag.valueOf(string));
+                });
                 return tag;
             }
 
             @Override
             public List<String> readFromTag(Tag tag) {
-                if (tag instanceof ListTag listTag) {
+                if (tag instanceof ListTag listTag && listTag.getElementType() == Tag.TAG_STRING) {
                     List<String> list = new ArrayList<>();
                     listTag.forEach(tag1 -> {
                         list.add(tag1.getAsString());

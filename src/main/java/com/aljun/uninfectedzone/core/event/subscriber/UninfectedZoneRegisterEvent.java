@@ -1,17 +1,16 @@
 package com.aljun.uninfectedzone.core.event.subscriber;
 
 import com.aljun.uninfectedzone.UninfectedZone;
-import com.aljun.uninfectedzone.core.config.GlobalConfigs;
-import com.aljun.uninfectedzone.core.datapacks.conditions.UninfectedZoneLootItemConditions;
+import com.aljun.uninfectedzone.api.registry.UninfectedZoneRegistry;
+import com.aljun.uninfectedzone.api.zombie.zombielike.DummyZombie;
+import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
+import com.aljun.uninfectedzone.common.config.ConfigSets;
+import com.aljun.uninfectedzone.core.data.loot_table.conditions.UninfectedZoneLootItemConditions;
+import com.aljun.uninfectedzone.core.network.ByteNetWorking;
 import com.aljun.uninfectedzone.core.network.ChunkBorderCommandNetworking;
 import com.aljun.uninfectedzone.core.network.ConfigServerToClientNetworking;
-import com.aljun.uninfectedzone.core.registry.UninfectedZoneRegistry;
-import com.aljun.uninfectedzone.core.zombie.like.DummyZombie;
-import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
+import com.aljun.uninfectedzone.core.network.UninfectedChuckNetworking;
 import com.mojang.logging.LogUtils;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -37,18 +36,15 @@ public class UninfectedZoneRegisterEvent {
 
     @SubscribeEvent
     public static void registerOthers(FMLCommonSetupEvent event) {
-        GlobalConfigs.register();
-        Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation("uninfectedzone:loaded_mod"), UninfectedZoneLootItemConditions.LOADED_GUN);
+        ConfigSets.register();
+        UninfectedZoneLootItemConditions.register();
         event.enqueueWork(() -> {
             ChunkBorderCommandNetworking.registerMessage();
             ConfigServerToClientNetworking.registerMessage();
+            UninfectedChuckNetworking.registerMessage();
+            ByteNetWorking.registerMessage();
             UninfectedZone.afterRegister();
         });
     }
-
-    @SubscribeEvent
-    public void registerLootItemConditionType(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
-    }
-
 
 }

@@ -1,6 +1,5 @@
 package com.aljun.uninfectedzone;
 
-import com.aljun.uninfectedzone.core.config.GlobalConfigs;
 import com.aljun.uninfectedzone.core.config.UninfectedZoneConfig;
 import com.aljun.uninfectedzone.core.modlinkage.tazc.LinkageGunMod;
 import com.mojang.logging.LogUtils;
@@ -17,6 +16,8 @@ public class UninfectedZone {
     public static final String MOD_DISPLAY_NAME = "Uninfected Zone Mod";
     public static final String MOD_CAMEL_NAME = "UninfectedZoneMod";
     public static boolean debugMode = true;
+    public static boolean useZombieResourcePack = true;
+    public static boolean useZombiePackSounds = false;
     private static String gamePath = "C:\\Minecraft\\" + MOD_ID;
 
     public UninfectedZone() {
@@ -38,8 +39,7 @@ public class UninfectedZone {
 
     public static void afterRegister() {
         UninfectedZoneConfig.stopRegister();
-        UninfectedZoneConfig.reloadGlobal();
-        LOGGER.info("TestBoolean :{}", UninfectedZoneConfig.get(GlobalConfigs.TEST_BOOLEAN.get()));
+        UninfectedZoneConfig.init();
     }
 
 

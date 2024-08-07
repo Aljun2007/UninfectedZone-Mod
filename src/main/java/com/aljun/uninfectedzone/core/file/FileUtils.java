@@ -16,14 +16,11 @@ public class FileUtils {
 
     public static JsonObject loadJsonFileOrCreate(String path, Supplier<JsonObject> newOne) throws IOException {
 
-        JsonObject object;
+        JsonObject object = null;
         try {
             JsonReader reader = new JsonReader(new FileReader(path));
             object = GSON.fromJson(reader, JsonObject.class);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        if (object == null) {
             object = newOne.get();
             saveJsonFile(path, object);
         }
@@ -33,9 +30,10 @@ public class FileUtils {
     public static void saveJsonFile(String path, JsonObject jsonObject) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
+            file.getParentFile().mkdirs();
             file.createNewFile();
         }
-        JsonWriter writer = new JsonWriter(new FileWriter(path, false));
+        JsonWriter writer = new JsonWriter(new FileWriter(file, false));
         GSON.toJson(jsonObject, writer);
         writer.flush();
         writer.close();

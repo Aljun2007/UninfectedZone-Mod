@@ -1,8 +1,8 @@
 package com.aljun.uninfectedzone.core.mixin;
 
 
+import com.aljun.uninfectedzone.api.event.world.MobMaxCountEvent;
 import com.aljun.uninfectedzone.core.event.provider.UninfectedZoneEventFactory;
-import com.aljun.uninfectedzone.core.event.provider.world.MobMaxCountEvent;
 import net.minecraft.world.entity.MobCategory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

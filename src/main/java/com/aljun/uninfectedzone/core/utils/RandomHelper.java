@@ -9,8 +9,8 @@ import java.util.Random;
 public class RandomHelper {
     public static final Random RANDOM = new Random();
 
-    private static final RandomSource<Direction> HORIZONTAL_DIRECTIONS =
-            new RandomSource<Direction>()
+    private static final RandomPool<Direction> HORIZONTAL_DIRECTIONS =
+            RandomPool.builder(Direction.class)
                     .add(Direction.NORTH, 1d)
                     .add(Direction.SOUTH, 1d)
                     .add(Direction.EAST, 1d)
@@ -21,51 +21,57 @@ public class RandomHelper {
         return HORIZONTAL_DIRECTIONS.nextValue();
     }
 
-    public static class RandomSource<T> {
-        private final List<T> VALUE = new ArrayList<>();
-        private final List<Double> RIGHT = new ArrayList<>();
-        private double weightTotal = 0d;
-        private boolean build = false;
+    public static class RandomPool<T> {
+        private final List<T> VAR;
+        private final List<Double> WEIGHT;
+        private double weightTotal;
 
-        public static <E> RandomSource<E> create() {
-            return new RandomSource<>();
+        public RandomPool(List<T> var, List<Double> weight, double weightTotal) {
+            this.VAR = var;
+            this.WEIGHT = weight;
         }
 
-        public RandomSource<T> add(T value, double weight) {
-            if (this.build) return this;
-            else if (weight > 0) {
-                if (VALUE.contains(value)) {
-                    RIGHT.set(VALUE.indexOf(value), RIGHT.get(VALUE.indexOf(value)) + weight);
-                } else {
-                    VALUE.add(value);
-                    RIGHT.add(weight);
-                }
-                weightTotal += weight;
-            } else if (weight < 0) {
-                throw new IndexOutOfBoundsException("\"weight\" > 0d, but :" + weight);
-            }
-            return this;
-        }
-
-        public RandomSource<T> build() {
-            this.build = true;
-            return this;
+        public static <T> Builder<T> builder(Class<T> directionClass) {
+            return new Builder<>();
         }
 
         public T nextValue() {
-            if (this.build) {
-                double random = RANDOM.nextDouble(0d, weightTotal);
-                double before = 0d;
-                double after = 0d;
-                int i = -1;
-                for (double j : RIGHT) {
-                    i++;
-                    after += j;
-                    if (before <= random && random <= after) return VALUE.get(i);
-                    before += j;
+            double random = RANDOM.nextDouble(0d, weightTotal);
+            double before = 0d;
+            double after = 0d;
+            int i = -1;
+            for (double j : WEIGHT) {
+                i++;
+                after += j;
+                if (before <= random && random <= after) return VAR.get(i);
+                before += j;
+            }
+            return VAR.get(0);
+        }
+
+        public static class Builder<T> {
+            private final List<T> VALUE = new ArrayList<>();
+            private final List<Double> WEIGHT = new ArrayList<>();
+            private double weightTotal = 0d;
+
+            public RandomPool<T> build() {
+                return new RandomPool<>(VALUE, WEIGHT, weightTotal);
+            }
+
+            public Builder<T> add(T value, double weight) {
+                if (weight > 0) {
+                    if (VALUE.contains(value)) {
+                        WEIGHT.set(VALUE.indexOf(value), WEIGHT.get(VALUE.indexOf(value)) + weight);
+                    } else {
+                        VALUE.add(value);
+                        WEIGHT.add(weight);
+                    }
+                    weightTotal += weight;
+                } else if (weight < 0) {
+                    throw new IndexOutOfBoundsException("\"weight\" > 0d, but :" + weight);
                 }
-                return VALUE.get(0);
-            } else return null;
+                return this;
+            }
         }
     }
 }

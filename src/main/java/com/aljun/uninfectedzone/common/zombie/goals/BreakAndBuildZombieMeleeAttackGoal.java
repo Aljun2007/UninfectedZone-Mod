@@ -1,11 +1,11 @@
 package com.aljun.uninfectedzone.common.zombie.goals;
 
-import com.aljun.uninfectedzone.core.utils.MathUtils;
-import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import com.aljun.uninfectedzone.common.zombie.abilities.Breaking;
 import com.aljun.uninfectedzone.common.zombie.abilities.PathConstructing;
 import com.aljun.uninfectedzone.common.zombie.abilities.Placing;
 import com.aljun.uninfectedzone.common.zombie.abilities.ZombieAbilities;
+import com.aljun.uninfectedzone.core.utils.MathUtils;
+import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
@@ -58,8 +58,8 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
     }
 
     @Override
-    public void receiveBroadcast(int id) {
-        if (id == ZombieMainGoal.BroadcastIDs.HURT) {
+    public void receiveBroadcast(ZombieMainGoal.BroadcastType broadcastType) {
+        if (broadcastType.is(ZombieMainGoal.BroadcastType.HURT)) {
             if (this.mob.getLastDamageSource() != null) {
                 if (this.mob.getLastDamageSource().getEntity() != null) {
                     if (this.mob.getLastDamageSource().getEntity() instanceof LivingEntity) {
@@ -225,7 +225,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
                 if (this.pathPack == null) {
                     if (this.mob.blockPosition().distSqr(this.selfPos) <= 4) {
                         this.pathPack = this.pathConstructing.create(this.selfPos, this.buildTargetPos);
-                        if (pathPack.pathStructure.is(PathConstructing.PathStructure.SITU)) {
+                        if (pathPack.pathStructure().is(PathConstructing.PathStructure.SITU)) {
                             this.setMelee();
                             return;
                         }
@@ -255,20 +255,20 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
 
                     while (true) {
 
-                        if (pathIndex > this.pathPack.pathStructure.maxIndex()) {
-                            this.selfPos = this.pathPack.pathStructure.getEndPos(pathPack.horizontalDirection, this.selfPos);
+                        if (pathIndex > this.pathPack.pathStructure().maxIndex()) {
+                            this.selfPos = this.pathPack.pathStructure().getEndPos(pathPack.horizontalDirection(), this.selfPos);
                             this.pathPack = null;
                             break;
                         }
 
-                        BlockPos pos = this.pathPack.pathStructure.getPos(pathIndex, pathPack.horizontalDirection, this.selfPos);
+                        BlockPos pos = this.pathPack.pathStructure().getPos(pathIndex, pathPack.horizontalDirection(), this.selfPos);
 
                         if (isPosLegal(pos)) {
                             this.setMelee();
                             return;
                         }
                         BlockState blockState = this.mob.level.getBlockState(pos);
-                        PathConstructing.BlockType type = this.pathPack.pathStructure.getType(pathIndex);
+                        PathConstructing.BlockType type = this.pathPack.pathStructure().getType(pathIndex);
                         if (!this.verify(pos, blockState, type)) {
                             if (!this.execute(pos, blockState, type)) {
                                 this.setMelee();

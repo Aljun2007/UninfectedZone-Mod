@@ -1,8 +1,8 @@
 package com.aljun.uninfectedzone.core.mixin;
 
+import com.aljun.uninfectedzone.api.event.zombie.SetZombieConvertsInWaterEvent;
+import com.aljun.uninfectedzone.api.event.zombie.SetZombieSunSensitiveEvent;
 import com.aljun.uninfectedzone.core.event.provider.UninfectedZoneEventFactory;
-import com.aljun.uninfectedzone.core.event.provider.zombie.SetZombieConvertsInWaterEvent;
-import com.aljun.uninfectedzone.core.event.provider.zombie.SetZombieSunSensitiveEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Zombie;

@@ -2,6 +2,7 @@ package com.aljun.uninfectedzone.core.utils;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import org.slf4j.Logger;
 
 public class TagWriter<V> extends TagReader<V> {
@@ -31,7 +32,7 @@ public class TagWriter<V> extends TagReader<V> {
         }
         final CompoundTag[] tag = {this.root};
         varSet.NAMESPACE.forEach((var) -> {
-            if (!tag[0].contains(var))
+            if (!(tag[0].contains(var) && tag[0].getTagType("abilities") == Tag.TAG_COMPOUND))
                 tag[0].put(var, new CompoundTag());
             tag[0] = tag[0].getCompound(var);
         });

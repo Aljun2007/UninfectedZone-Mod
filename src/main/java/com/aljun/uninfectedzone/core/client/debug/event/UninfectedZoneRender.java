@@ -13,12 +13,14 @@ import net.minecraftforge.fml.common.Mod;
 public class UninfectedZoneRender {
     @SubscribeEvent
     public static void renderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER) {
             if (ClientDebug.isChunkBordenDisplay) {
                 Vec3 vec3 = event.getCamera().getPosition();
                 ClientDebug.chunkBorderRender.render(vec3.x, vec3.y, vec3.z);
             }
         }
+
     }
 
 }

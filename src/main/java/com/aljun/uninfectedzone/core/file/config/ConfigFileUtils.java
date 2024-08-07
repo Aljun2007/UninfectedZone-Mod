@@ -34,17 +34,16 @@ public class ConfigFileUtils {
                     LOGGER.error("Read Failed - illegal json: NO TYPE,\n creating and replacing new one...");
                     jsonObject = attachInfo(new JsonObject(), configType);
                     FileUtils.saveJsonFile(path, jsonObject);
-                    return jsonObject;
                 }
                 if (!jsonObject.get("type").getAsString().equals(configType.getName())) {
                     LOGGER.error("Read Failed - illegal json: WRONG TYPE,\n creating and replacing new one...");
                     jsonObject = attachInfo(new JsonObject(), configType);
                     FileUtils.saveJsonFile(path, jsonObject);
-                    return jsonObject;
                 }
+                return jsonObject;
             }
         } catch (IOException e) {
-            LOGGER.info("Read Failed :{}", e.toString());
+            LOGGER.error("Read Failed :{}", e.toString());
         }
         return null;
     }

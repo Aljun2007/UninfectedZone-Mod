@@ -1,6 +1,6 @@
 package com.aljun.uninfectedzone.common.zombie.zombieLikes;
 
-import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
+import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.function.Supplier;

@@ -1,9 +1,9 @@
 package com.aljun.uninfectedzone.core.command.zombie;
 
+import com.aljun.uninfectedzone.api.registry.UninfectedZoneRegistry;
+import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import com.aljun.uninfectedzone.core.command.ZombieLikeArgument;
-import com.aljun.uninfectedzone.core.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.utils.ComponentUtils;
-import com.aljun.uninfectedzone.core.zombie.like.ZombieLike;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

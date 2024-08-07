@@ -14,10 +14,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 
 public class UninfectedZoneConfig {
-    public static final VarSet<String> TYPE = VarSet.builder("description", VarSet.VarType.STRING).defaultVar("unknown").create("type");
     private static final HashMap<ConfigType, HashMap<String, ConfigHolder<?>>> CONFIGS_HOLDERS = new HashMap<>();
     private static final Logger LOGGER = LogUtils.getLogger();
     private static boolean build = false;
@@ -31,6 +31,12 @@ public class UninfectedZoneConfig {
     @SuppressWarnings("unchecked")
     public static <T> T get(@NotNull ConfigSet<T> configSet) {
         return (T) CONFIGS_HOLDERS.get(configSet.CONFIG_TYPE).get(configSet.VAR_SET.ID).get();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Supplier<T> getSupplier(@NotNull ConfigSet<T> configSet) {
+        ConfigHolder<T> configHolder = (ConfigHolder<T>) CONFIGS_HOLDERS.get(configSet.CONFIG_TYPE).get(configSet.VAR_SET.ID);
+        return configHolder::get;
     }
 
     @SuppressWarnings("unchecked")
@@ -60,7 +66,7 @@ public class UninfectedZoneConfig {
 
     public static void reloadAll(MinecraftServer server) {
         reloadWorld(server);
-        reloadGlobalServer(server);
+        reloadGlobal();
     }
 
     public static void reloadWorld(MinecraftServer server) {
@@ -106,7 +112,7 @@ public class UninfectedZoneConfig {
         }
     }
 
-    public static void reloadGlobalServer(MinecraftServer server) {
+    public static void reloadGlobal() {
         if (LogicalUtils.isServer()) {
             JsonObject common = ConfigFileUtils.readConfigOrCreateBlank(ConfigType.COMMON);
             if (common != null) {
@@ -126,21 +132,20 @@ public class UninfectedZoneConfig {
         }));
     }
 
-    public static void reloadGlobal() {
-        if (LogicalUtils.isServer()) {
-            JsonObject common = ConfigFileUtils.readConfigOrCreateBlank(ConfigType.COMMON);
-            if (common != null) {
-                UninfectedZoneConfig.loadAndFixJson(common, ConfigType.COMMON);
-                ConfigFileUtils.saveConfig(ConfigType.COMMON, common);
-            }
+    public static void init() {
+
+        JsonObject common = ConfigFileUtils.readConfigOrCreateBlank(ConfigType.COMMON);
+        if (common != null) {
+            UninfectedZoneConfig.loadAndFixJson(common, ConfigType.COMMON);
+            ConfigFileUtils.saveConfig(ConfigType.COMMON, common);
         }
-        if (LogicalUtils.isClient()) {
-            JsonObject client = ConfigFileUtils.readConfigOrCreateBlank(ConfigType.CLIENT);
-            if (client != null) {
-                UninfectedZoneConfig.loadAndFixJson(client, ConfigType.CLIENT);
-                ConfigFileUtils.saveConfig(ConfigType.CLIENT, client);
-            }
+
+        JsonObject client = ConfigFileUtils.readConfigOrCreateBlank(ConfigType.CLIENT);
+        if (client != null) {
+            UninfectedZoneConfig.loadAndFixJson(client, ConfigType.CLIENT);
+            ConfigFileUtils.saveConfig(ConfigType.CLIENT, client);
         }
+
     }
 
 }

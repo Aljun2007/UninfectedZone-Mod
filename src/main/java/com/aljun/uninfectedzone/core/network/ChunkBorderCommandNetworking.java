@@ -4,6 +4,7 @@ import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.core.client.debug.ClientDebug;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -43,21 +44,30 @@ public class ChunkBorderCommandNetworking {
             this.isChunkBordenDisplay = buffer.readBoolean();
         }
 
-        private static void handler(PackBoolean pack, @NotNull Supplier<NetworkEvent.Context> ctx) {
-            ctx.get().enqueueWork(pack::receive);
-            ctx.get().setPacketHandled(true);
+        private static void handler(PackBoolean pack, @NotNull Supplier<NetworkEvent.Context> context) {
+            context.get().enqueueWork(() -> {
+                if (context.get().getDirection().equals(NetworkDirection.PLAY_TO_SERVER)) {
+                    pack.serverReceive();
+                } else if (context.get().getDirection().equals(NetworkDirection.PLAY_TO_CLIENT)) {
+                    pack.clientReceive();
+                }
+            });
+            context.get().setPacketHandled(true);
         }
 
-        // When receive Pack
+        private void serverReceive() {
 
-        private void receive() {
+        }
+
+        private void clientReceive() {
             try {
                 this.modify();
-            } catch (ClassNotFoundException ignore) {
+            } catch (NoClassDefFoundError ignore) {
             }
         }
 
-        private void modify() throws ClassNotFoundException {
+
+        private void modify() throws NoClassDefFoundError {
             ClientDebug.isChunkBordenDisplay = this.isChunkBordenDisplay;
         }
 

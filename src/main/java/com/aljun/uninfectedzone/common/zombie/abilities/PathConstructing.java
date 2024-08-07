@@ -1,12 +1,11 @@
 package com.aljun.uninfectedzone.common.zombie.abilities;
 
+import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
+import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.utils.RandomHelper;
-import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
-import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -177,11 +176,9 @@ public class PathConstructing extends ZombieAbility {
     }
 
     public static class PathConstructingInstance extends ZombieAbilityInstance<PathConstructing> {
-        private final Mob mob;
 
         public PathConstructingInstance(PathConstructing ability, ZombieMainGoal main) {
             super(ability, main);
-            this.mob = this.getZombie();
         }
 
         @Override
@@ -292,14 +289,7 @@ public class PathConstructing extends ZombieAbility {
             else return null;
         }
 
-        public static class PathPack {
-            public final PathStructure pathStructure;
-            public final Direction horizontalDirection;
-
-            public PathPack(Direction horizontalDirection, PathStructure pathStructure) {
-                this.pathStructure = pathStructure;
-                this.horizontalDirection = horizontalDirection;
-            }
+        public record PathPack(Direction horizontalDirection, PathStructure pathStructure) {
         }
     }
 }

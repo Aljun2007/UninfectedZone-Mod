@@ -2,6 +2,7 @@ package com.aljun.uninfectedzone.core.utils;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
@@ -10,17 +11,16 @@ public class TagUtils {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static <V> TagReader<V> read(CompoundTag root, VarSet<V> varSet) {
+        if (root == null || varSet == null) return null;
         return new TagReader<>(root, varSet);
     }
 
     public static <V> V fastRead(CompoundTag root, VarSet<V> varSet) {
-        if (root == null) {
-            return varSet.defaultVar();
-        }
+        if (root == null) return varSet.defaultVar();
         final CompoundTag[] tag = {root};
         try {
             varSet.NAMESPACE.forEach((var) -> {
-                if (tag[0].contains(var)) {
+                if (tag[0].contains(var) && tag[0].getTagType(var) == Tag.TAG_COMPOUND) {
                     tag[0] = tag[0].getCompound(var);
                 } else throw new IllegalArgumentException();
             });
@@ -40,20 +40,19 @@ public class TagUtils {
     }
 
     public static <V> TagWriter<V> write(CompoundTag root, VarSet<V> varSet) {
+        if (root == null || varSet == null) return null;
         return new TagWriter<>(root, varSet);
     }
 
     public static <V> void fastWrite(CompoundTag root, VarSet<V> varSet, V var) {
-        if (root == null) {
-            return;
-        }
+        if (root == null) return;
         if (!varSet.verify(var)) {
             LOGGER.error("", new IllegalArgumentException("Value : " + var.toString() + " is illegal, replaced : " + varSet.defaultVar()));
             var = varSet.defaultVar();
         }
         final CompoundTag[] tag = {root};
         varSet.NAMESPACE.forEach((var1) -> {
-            if (!tag[0].contains(var1))
+            if (!(tag[0].contains(var1) && tag[0].getTagType(var1) == Tag.TAG_COMPOUND))
                 tag[0].put(var1, new CompoundTag());
             tag[0] = tag[0].getCompound(var1);
         });
@@ -64,7 +63,7 @@ public class TagUtils {
         return livingEntity.getPersistentData();
     }
 
-    public static CompoundTag getRoot(ItemStack itemStack) {
+    public static CompoundTag getRootOrNull(ItemStack itemStack) {
         return itemStack.getTag();
     }
 

@@ -50,5 +50,23 @@ public class JsonManager {
         return t == null ? varSet.defaultVar() : t;
     }
 
+    public <T> T readOrCreate(VarSet<T> varSet) {
+        final JsonObject[] jsonObjects = {jsonObject};
+        varSet.NAMESPACE.forEach((var1) -> {
+            if (!jsonObjects[0].has(var1))
+                jsonObjects[0].add(var1, new JsonObject());
+            jsonObjects[0] = (JsonObject) jsonObjects[0].get(var1);
+        });
+        if (!jsonObjects[0].has(varSet.KEY)) {
+            varSet.varType.addToJsonObject(jsonObjects[0], varSet.KEY, varSet.defaultVar());
+        }
+        T t = varSet.varType.getFromJsonObject(jsonObjects[0], varSet.KEY);
+        if (t == null) {
+            t = varSet.defaultVar();
+            varSet.varType.addToJsonObject(jsonObjects[0], varSet.KEY, varSet.defaultVar());
+        }
+        return t;
+    }
+
 
 }

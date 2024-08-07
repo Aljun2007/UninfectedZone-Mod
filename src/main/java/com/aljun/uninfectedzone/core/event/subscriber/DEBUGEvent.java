@@ -30,7 +30,7 @@ public class DEBUGEvent {
             ServerPlayer player = (ServerPlayer) event.getPlayer();
 
             ItemStack stack = player.getMainHandItem();
-            if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.SNATCHER_ITEM)) {
+            if (TagUtils.fastRead(TagUtils.getRootOrNull(stack), Debug.SNATCHER_ITEM)) {
                 if (event.getTarget() instanceof LivingEntity livingEntity) {
                     player.addItem(livingEntity.getItemBySlot(EquipmentSlot.MAINHAND).copy());
                     player.addItem(livingEntity.getItemBySlot(EquipmentSlot.OFFHAND).copy());
@@ -40,7 +40,7 @@ public class DEBUGEvent {
                     player.addItem(livingEntity.getItemBySlot(EquipmentSlot.FEET).copy());
                 }
             }
-            if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.KILLER_ITEM)) {
+            if (TagUtils.fastRead(TagUtils.getRootOrNull(stack), Debug.KILLER_ITEM)) {
                 event.getTarget().kill();
             }
         }
@@ -51,13 +51,13 @@ public class DEBUGEvent {
         if (!event.getEntity().getLevel().isClientSide()) {
             if (event.getEntity() instanceof ServerPlayer player) {
                 ItemStack stack = event.getItem().getItem();
-                if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.HEAL_ITEM)) {
+                if (TagUtils.fastRead(TagUtils.getRootOrNull(stack), Debug.HEAL_ITEM)) {
                     player.removeAllEffects();
                     player.clearFire();
                     player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 10, 8));
                     player.addEffect(new MobEffectInstance(MobEffects.HEAL, 10, 8));
                 }
-                if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.DAY_ITEM)) {
+                if (TagUtils.fastRead(TagUtils.getRootOrNull(stack), Debug.DAY_ITEM)) {
                     try {
                         for (ServerLevel serverlevel : Objects.requireNonNull(event.getEntity().getServer()).getAllLevels()) {
                             serverlevel.setDayTime(1000L);
@@ -65,13 +65,16 @@ public class DEBUGEvent {
                     } catch (NullPointerException ignore) {
                     }
                 }
-                if (TagUtils.fastRead(TagUtils.getRoot(stack), Debug.NIGHT_ITEM)) {
+                if (TagUtils.fastRead(TagUtils.getRootOrNull(stack), Debug.NIGHT_ITEM)) {
                     try {
                         for (ServerLevel serverlevel : Objects.requireNonNull(event.getEntity().getServer()).getAllLevels()) {
                             serverlevel.setDayTime(13000L);
                         }
                     } catch (NullPointerException ignore) {
                     }
+                }
+                if (TagUtils.fastRead(TagUtils.getRootOrNull(stack), Debug.TEST)) {
+                    Debug.test(event.getEntityLiving().getLevel());
                 }
             }
         }

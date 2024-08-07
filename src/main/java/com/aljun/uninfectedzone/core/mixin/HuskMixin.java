@@ -1,7 +1,7 @@
 package com.aljun.uninfectedzone.core.mixin;
 
+import com.aljun.uninfectedzone.api.event.zombie.SetZombieConvertsInWaterEvent;
 import com.aljun.uninfectedzone.core.event.provider.UninfectedZoneEventFactory;
-import com.aljun.uninfectedzone.core.event.provider.zombie.SetZombieConvertsInWaterEvent;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.monster.Zombie;
 import org.spongepowered.asm.mixin.Mixin;

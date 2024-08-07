@@ -24,7 +24,7 @@ public class TagReader<V> {
         final CompoundTag[] tag = {this.root};
         try {
             varSet.NAMESPACE.forEach((var) -> {
-                if (tag[0].contains(var)) {
+                if (tag[0].contains(var) && tag[0].getTagType(var) == Tag.TAG_COMPOUND) {
                     tag[0] = tag[0].getCompound(var);
                 } else throw new IllegalArgumentException();
             });

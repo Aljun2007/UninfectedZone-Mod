@@ -1,6 +1,6 @@
 package com.aljun.uninfectedzone.common.zombie.abilities;
 
-import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
+import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.function.Supplier;

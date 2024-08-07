@@ -1,7 +1,7 @@
 package com.aljun.uninfectedzone.common.zombie.abilities;
 
-import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
-import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbilityInstance;
+import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
+import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

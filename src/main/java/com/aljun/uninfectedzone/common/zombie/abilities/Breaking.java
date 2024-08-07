@@ -1,11 +1,10 @@
 package com.aljun.uninfectedzone.common.zombie.abilities;
 
+import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
+import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.utils.MathUtils;
-import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbility;
-import com.aljun.uninfectedzone.core.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -124,12 +122,6 @@ public class Breaking extends ZombieAbility {
 
             Block block2 = state.getBlock();
 
-            ResourceLocation key = ForgeRegistries.BLOCKS.getKey(block2);
-            String id = "";
-            if (key != null) {
-                id = key.toString();
-            }
-
             boolean canBreak = !BLACK_LIST.contains(block2);
 
             if (!state.getFluidState().isEmpty() || (!(block2 instanceof PowderSnowCauldronBlock)
@@ -202,7 +194,7 @@ public class Breaking extends ZombieAbility {
             } else {
                 boolean a = !state.requiresCorrectToolForDrops() || stack.isCorrectToolForDrops(state);
                 int i = a ? 30 : 100;
-                return (getDigSpeed(state, pos, stack, mob) / f / (float) i);
+                return (getDigSpeed(state, stack, mob) / f / (float) i);
             }
         }
 
@@ -227,7 +219,7 @@ public class Breaking extends ZombieAbility {
         }
 
         //从原版抄来的
-        public static float getDigSpeed(BlockState state, @Nullable BlockPos pos, ItemStack stack, Mob mob) {
+        public static float getDigSpeed(BlockState state, ItemStack stack, Mob mob) {
             float f = stack.getDestroySpeed(state);
             if (f > 1.0F) {
                 int i = EnchantmentHelper.getBlockEfficiency(mob);
@@ -287,10 +279,10 @@ public class Breaking extends ZombieAbility {
 
 
         @Override
-        public void receiveBroadcast(int id) {
-            if (id == ZombieMainGoal.BroadcastIDs.DEATH) {
+        public void receiveBroadcast(ZombieMainGoal.BroadcastType broadcastType) {
+            if (broadcastType.is(ZombieMainGoal.BroadcastType.DEATH)) {
                 this.failBreak();
-            } else if (id == ZombieMainGoal.BroadcastIDs.HURT) {
+            } else if (broadcastType.is(ZombieMainGoal.BroadcastType.HURT)) {
                 if (this.mob.getLastDamageSource() != null) {
                     if (this.mob.getLastDamageSource().getEntity() != null) {
                         if (this.mob.getLastDamageSource().getEntity() instanceof LivingEntity) {
