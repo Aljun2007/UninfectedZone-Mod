@@ -2,216 +2,600 @@
   "entity.custom_zombie.ambient": {
     "replace": "true",
     "sounds": [
-      "minecraft:mob/zombie/say1",
-      "minecraft:mob/zombie/say2",
-      "minecraft:mob/zombie/say3",
-      "minecraft:moreZsounds/say4",
-      "minecraft:moreZsounds/say5",
-      "minecraft:moreZsounds/say6",
-      "minecraft:moreZsounds/say7",
-      "minecraft:moreZsounds/say8",
-      "minecraft:moreZsounds/say9",
-      "minecraft:moreZsounds/say10",
-      "minecraft:moreZsounds/say11",
-      "minecraft:moreZsounds/say12",
-      "minecraft:moreZsounds/say13",
-      "minecraft:moreZsounds/say14",
-      "minecraft:moreZsounds/say15",
-      "minecraft:moreZsounds/say16",
-      "minecraft:moreZsounds/say17",
-      "minecraft:moreZsounds/say18",
-      "minecraft:moreZsounds/say19",
-      "minecraft:moreZsounds/say20",
-      "minecraft:moreZsounds/say21",
-      "minecraft:moreZsounds/say22",
-      "minecraft:moreZsounds/say23",
-      "minecraft:moreZsounds/say24",
-      "minecraft:moreZsounds/say25",
-      "minecraft:moreZsounds/say26",
-      "minecraft:moreZsounds/say27",
-      "minecraft:moreZsounds/say28",
-      "minecraft:moreZsounds/say29",
-      "minecraft:moreZsounds/say30",
-      "minecraft:moreZsounds/say31",
-      "minecraft:moreZsounds/say32",
-      "minecraft:moreZsounds/say33",
-      "minecraft:moreZsounds/say34",
-      "minecraft:moreZsounds/say35",
-      "minecraft:moreZsounds/say36",
-      "minecraft:moreZsounds/say37",
-      "minecraft:moreZsounds/say38",
-      "minecraft:moreZsounds/say39",
-      "minecraft:moreZsounds/say40",
-      "minecraft:moreZsounds/say41",
-      "minecraft:moreZsounds/say42",
-      "minecraft:moreZsounds/say43",
-      "minecraft:moreZsounds/say44",
-      "minecraft:moreZsounds/say45",
-      "minecraft:moreZsounds/say46",
-      "minecraft:moreZsounds/say47",
-      "minecraft:moreZsounds/say48",
-      "minecraft:moreZsounds/say49",
-      "minecraft:moreZsounds/say50",
-      "minecraft:moreZsounds/say51",
-      "minecraft:moreZsounds/say52",
-      "minecraft:moreZsounds/say53",
-      "minecraft:moreZsounds/say54",
-      "minecraft:moreZsounds/say55",
-      "minecraft:moreZsounds/say56",
-      "minecraft:moreZsounds/say57",
-      "minecraft:moreZsounds/say58",
-      "minecraft:moreZsounds/say59",
-      "minecraft:moreZsounds/say60",
-      "minecraft:moreZsounds/say61",
-      "minecraft:moreZsounds/say62",
-      "minecraft:moreZsounds/say63",
-      "minecraft:moreZsounds/say64",
-      "minecraft:moreZsounds/say65",
-      "minecraft:moreZsounds/say66",
-      "minecraft:moreZsounds/say67",
-      "minecraft:moreZsounds/say68",
-      "minecraft:moreZsounds/say69",
-      "minecraft:moreZsounds/say70",
-      "minecraft:moreZsounds/say71",
-      "minecraft:moreZsounds/say72",
-      "minecraft:moreZsounds/say73",
-      "minecraft:moreZsounds/say74",
-      "minecraft:moreZsounds/say75",
-      "minecraft:moreZsounds/say76",
-      "minecraft:moreZsounds/say77",
-      "minecraft:moreZsounds/say78",
-      "minecraft:moreZsounds/say79",
-      "minecraft:moreZsounds/say80",
-      "minecraft:moreZsounds/say81",
-      "minecraft:moreZsounds/say82",
-      "minecraft:moreZsounds/say83",
-      "minecraft:moreZsounds/say84",
-      "minecraft:moreZsounds/say85",
-      "minecraft:moreZsounds/say86",
-      "minecraft:moreZsounds/say87",
-      "minecraft:moreZsounds/say88",
-      "minecraft:moreZsounds/say89",
-      "minecraft:moreZsounds/say90",
-      "minecraft:moreZsounds/say91",
-      "minecraft:moreZsounds/say92",
-      "minecraft:moreZsounds/say93",
-      "minecraft:moreZsounds/say94",
-      "minecraft:moreZsounds/say95",
-      "minecraft:moreZsounds/say96",
-      "minecraft:moreZsounds/say97",
-      "minecraft:moreZsounds/say98",
-      "minecraft:moreZsounds/say99",
-      "minecraft:moreZsounds/say100",
-      "minecraft:moreZsounds/say101",
-      "minecraft:moreZsounds/say102",
-      "minecraft:moreZsounds/say103",
-      "minecraft:moreZsounds/say104",
-      "minecraft:moreZsounds/say105",
-      "minecraft:moreZsounds/say106",
-      "minecraft:moreZsounds/say107",
-      "minecraft:moreZsounds/say108",
-      "minecraft:moreZsounds/say109",
-      "minecraft:moreZsounds/say110",
-      "minecraft:moreZsounds/say111",
-      "minecraft:moreZsounds/say112",
-      "minecraft:moreZsounds/say113",
-      "minecraft:moreZsounds/say114",
-      "minecraft:moreZsounds/say115",
-      "minecraft:moreZsounds/say116",
-      "minecraft:moreZsounds/say117",
-      "minecraft:moreZsounds/say118",
-      "minecraft:moreZsounds/say119",
-      "minecraft:moreZsounds/say120",
-      "minecraft:moreZsounds/say121",
-      "minecraft:moreZsounds/say122",
-      "minecraft:moreZsounds/say123",
-      "minecraft:moreZsounds/say124",
-      "minecraft:moreZsounds/say125"
+      {
+        "name": "minecraft:mob/zombie/say1"
+      },
+      {
+        "name": "minecraft:mob/zombie/say2"
+      },
+      {
+        "name": "minecraft:mob/zombie/say3"
+      },
+      {
+        "name": "minecraft:moreZsounds/say4"
+      },
+      {
+        "name": "minecraft:moreZsounds/say5"
+      },
+      {
+        "name": "minecraft:moreZsounds/say6"
+      },
+      {
+        "name": "minecraft:moreZsounds/say7"
+      },
+      {
+        "name": "minecraft:moreZsounds/say8"
+      },
+      {
+        "name": "minecraft:moreZsounds/say9"
+      },
+      {
+        "name": "minecraft:moreZsounds/say10"
+      },
+      {
+        "name": "minecraft:moreZsounds/say11"
+      },
+      {
+        "name": "minecraft:moreZsounds/say12"
+      },
+      {
+        "name": "minecraft:moreZsounds/say13"
+      },
+      {
+        "name": "minecraft:moreZsounds/say14"
+      },
+      {
+        "name": "minecraft:moreZsounds/say15"
+      },
+      {
+        "name": "minecraft:moreZsounds/say16"
+      },
+      {
+        "name": "minecraft:moreZsounds/say17"
+      },
+      {
+        "name": "minecraft:moreZsounds/say18"
+      },
+      {
+        "name": "minecraft:moreZsounds/say19"
+      },
+      {
+        "name": "minecraft:moreZsounds/say20"
+      },
+      {
+        "name": "minecraft:moreZsounds/say21"
+      },
+      {
+        "name": "minecraft:moreZsounds/say22"
+      },
+      {
+        "name": "minecraft:moreZsounds/say23"
+      },
+      {
+        "name": "minecraft:moreZsounds/say24"
+      },
+      {
+        "name": "minecraft:moreZsounds/say25"
+      },
+      {
+        "name": "minecraft:moreZsounds/say26"
+      },
+      {
+        "name": "minecraft:moreZsounds/say27"
+      },
+      {
+        "name": "minecraft:moreZsounds/say28"
+      },
+      {
+        "name": "minecraft:moreZsounds/say29"
+      },
+      {
+        "name": "minecraft:moreZsounds/say30"
+      },
+      {
+        "name": "minecraft:moreZsounds/say31"
+      },
+      {
+        "name": "minecraft:moreZsounds/say32"
+      },
+      {
+        "name": "minecraft:moreZsounds/say33"
+      },
+      {
+        "name": "minecraft:moreZsounds/say34"
+      },
+      {
+        "name": "minecraft:moreZsounds/say35"
+      },
+      {
+        "name": "minecraft:moreZsounds/say36"
+      },
+      {
+        "name": "minecraft:moreZsounds/say37"
+      },
+      {
+        "name": "minecraft:moreZsounds/say38"
+      },
+      {
+        "name": "minecraft:moreZsounds/say39"
+      },
+      {
+        "name": "minecraft:moreZsounds/say40"
+      },
+      {
+        "name": "minecraft:moreZsounds/say41"
+      },
+      {
+        "name": "minecraft:moreZsounds/say42"
+      },
+      {
+        "name": "minecraft:moreZsounds/say43"
+      },
+      {
+        "name": "minecraft:moreZsounds/say44"
+      },
+      {
+        "name": "minecraft:moreZsounds/say45"
+      },
+      {
+        "name": "minecraft:moreZsounds/say46"
+      },
+      {
+        "name": "minecraft:moreZsounds/say47"
+      },
+      {
+        "name": "minecraft:moreZsounds/say48"
+      },
+      {
+        "name": "minecraft:moreZsounds/say49"
+      },
+      {
+        "name": "minecraft:moreZsounds/say50"
+      },
+      {
+        "name": "minecraft:moreZsounds/say51"
+      },
+      {
+        "name": "minecraft:moreZsounds/say52"
+      },
+      {
+        "name": "minecraft:moreZsounds/say53"
+      },
+      {
+        "name": "minecraft:moreZsounds/say54"
+      },
+      {
+        "name": "minecraft:moreZsounds/say55"
+      },
+      {
+        "name": "minecraft:moreZsounds/say56"
+      },
+      {
+        "name": "minecraft:moreZsounds/say57"
+      },
+      {
+        "name": "minecraft:moreZsounds/say58"
+      },
+      {
+        "name": "minecraft:moreZsounds/say59"
+      },
+      {
+        "name": "minecraft:moreZsounds/say60"
+      },
+      {
+        "name": "minecraft:moreZsounds/say61"
+      },
+      {
+        "name": "minecraft:moreZsounds/say62"
+      },
+      {
+        "name": "minecraft:moreZsounds/say63"
+      },
+      {
+        "name": "minecraft:moreZsounds/say64"
+      },
+      {
+        "name": "minecraft:moreZsounds/say65"
+      },
+      {
+        "name": "minecraft:moreZsounds/say66"
+      },
+      {
+        "name": "minecraft:moreZsounds/say67"
+      },
+      {
+        "name": "minecraft:moreZsounds/say68"
+      },
+      {
+        "name": "minecraft:moreZsounds/say69"
+      },
+      {
+        "name": "minecraft:moreZsounds/say70"
+      },
+      {
+        "name": "minecraft:moreZsounds/say71"
+      },
+      {
+        "name": "minecraft:moreZsounds/say72"
+      },
+      {
+        "name": "minecraft:moreZsounds/say73"
+      },
+      {
+        "name": "minecraft:moreZsounds/say74"
+      },
+      {
+        "name": "minecraft:moreZsounds/say75"
+      },
+      {
+        "name": "minecraft:moreZsounds/say76"
+      },
+      {
+        "name": "minecraft:moreZsounds/say77"
+      },
+      {
+        "name": "minecraft:moreZsounds/say78"
+      },
+      {
+        "name": "minecraft:moreZsounds/say79"
+      },
+      {
+        "name": "minecraft:moreZsounds/say80"
+      },
+      {
+        "name": "minecraft:moreZsounds/say81"
+      },
+      {
+        "name": "minecraft:moreZsounds/say82"
+      },
+      {
+        "name": "minecraft:moreZsounds/say83"
+      },
+      {
+        "name": "minecraft:moreZsounds/say84"
+      },
+      {
+        "name": "minecraft:moreZsounds/say85"
+      },
+      {
+        "name": "minecraft:moreZsounds/say86"
+      },
+      {
+        "name": "minecraft:moreZsounds/say87"
+      },
+      {
+        "name": "minecraft:moreZsounds/say88"
+      },
+      {
+        "name": "minecraft:moreZsounds/say89"
+      },
+      {
+        "name": "minecraft:moreZsounds/say90"
+      },
+      {
+        "name": "minecraft:moreZsounds/say91"
+      },
+      {
+        "name": "minecraft:moreZsounds/say92"
+      },
+      {
+        "name": "minecraft:moreZsounds/say93"
+      },
+      {
+        "name": "minecraft:moreZsounds/say94"
+      },
+      {
+        "name": "minecraft:moreZsounds/say95"
+      },
+      {
+        "name": "minecraft:moreZsounds/say96"
+      },
+      {
+        "name": "minecraft:moreZsounds/say97"
+      },
+      {
+        "name": "minecraft:moreZsounds/say98"
+      },
+      {
+        "name": "minecraft:moreZsounds/say99"
+      },
+      {
+        "name": "minecraft:moreZsounds/say100"
+      },
+      {
+        "name": "minecraft:moreZsounds/say101"
+      },
+      {
+        "name": "minecraft:moreZsounds/say102"
+      },
+      {
+        "name": "minecraft:moreZsounds/say103"
+      },
+      {
+        "name": "minecraft:moreZsounds/say104"
+      },
+      {
+        "name": "minecraft:moreZsounds/say105"
+      },
+      {
+        "name": "minecraft:moreZsounds/say106"
+      },
+      {
+        "name": "minecraft:moreZsounds/say107"
+      },
+      {
+        "name": "minecraft:moreZsounds/say108"
+      },
+      {
+        "name": "minecraft:moreZsounds/say109"
+      },
+      {
+        "name": "minecraft:moreZsounds/say110"
+      },
+      {
+        "name": "minecraft:moreZsounds/say111"
+      },
+      {
+        "name": "minecraft:moreZsounds/say112"
+      },
+      {
+        "name": "minecraft:moreZsounds/say113"
+      },
+      {
+        "name": "minecraft:moreZsounds/say114"
+      },
+      {
+        "name": "minecraft:moreZsounds/say115"
+      },
+      {
+        "name": "minecraft:moreZsounds/say116"
+      },
+      {
+        "name": "minecraft:moreZsounds/say117"
+      },
+      {
+        "name": "minecraft:moreZsounds/say118"
+      },
+      {
+        "name": "minecraft:moreZsounds/say119"
+      },
+      {
+        "name": "minecraft:moreZsounds/say120"
+      },
+      {
+        "name": "minecraft:moreZsounds/say121"
+      },
+      {
+        "name": "minecraft:moreZsounds/say122"
+      },
+      {
+        "name": "minecraft:moreZsounds/say123"
+      },
+      {
+        "name": "minecraft:moreZsounds/say124"
+      },
+      {
+        "name": "minecraft:moreZsounds/say125"
+      }
     ],
     "subtitle": "subtitles.entity.zombie.ambient"
   },
   "entity.custom_zombie.hurt": {
     "replace": "true",
     "sounds": [
-      "minecraft:mob/zombie/hurt1",
-      "minecraft:mob/zombie/hurt2",
-      "minecraft:moreZsounds/hurt3",
-      "minecraft:moreZsounds/hurt4",
-      "minecraft:moreZsounds/hurt5",
-      "minecraft:moreZsounds/hurt6",
-      "minecraft:moreZsounds/hurt7",
-      "minecraft:moreZsounds/hurt8",
-      "minecraft:moreZsounds/hurt9",
-      "minecraft:moreZsounds/hurt10",
-      "minecraft:moreZsounds/hurt11",
-      "minecraft:moreZsounds/hurt12",
-      "minecraft:moreZsounds/hurt13",
-      "minecraft:moreZsounds/hurt14",
-      "minecraft:moreZsounds/hurt15",
-      "minecraft:moreZsounds/hurt16",
-      "minecraft:moreZsounds/hurt17",
-      "minecraft:moreZsounds/hurt18",
-      "minecraft:moreZsounds/hurt19",
-      "minecraft:moreZsounds/hurt20",
-      "minecraft:moreZsounds/hurt21",
-      "minecraft:moreZsounds/hurt22",
-      "minecraft:moreZsounds/hurt23",
-      "minecraft:moreZsounds/hurt24",
-      "minecraft:moreZsounds/hurt25",
-      "minecraft:moreZsounds/hurt26",
-      "minecraft:moreZsounds/hurt27",
-      "minecraft:moreZsounds/hurt28",
-      "minecraft:moreZsounds/hurt29",
-      "minecraft:moreZsounds/hurt30",
-      "minecraft:moreZsounds/hurt31",
-      "minecraft:moreZsounds/hurt32",
-      "minecraft:moreZsounds/hurt33",
-      "minecraft:moreZsounds/hurt34",
-      "minecraft:moreZsounds/hurt35",
-      "minecraft:moreZsounds/hurt36",
-      "minecraft:moreZsounds/hurt37",
-      "minecraft:moreZsounds/hurt38",
-      "minecraft:moreZsounds/hurt39",
-      "minecraft:moreZsounds/hurt40",
-      "minecraft:moreZsounds/hurt41",
-      "minecraft:moreZsounds/hurt42",
-      "minecraft:moreZsounds/hurt43",
-      "minecraft:moreZsounds/hurt44",
-      "minecraft:moreZsounds/hurt45",
-      "minecraft:moreZsounds/hurt46",
-      "minecraft:moreZsounds/hurt47",
-      "minecraft:moreZsounds/hurt48",
-      "minecraft:moreZsounds/hurt49",
-      "minecraft:moreZsounds/hurt50",
-      "minecraft:moreZsounds/hurt51",
-      "minecraft:moreZsounds/hurt52",
-      "minecraft:moreZsounds/hurt53"
+      {
+        "name": "minecraft:mob/zombie/hurt1"
+      },
+      {
+        "name": "minecraft:mob/zombie/hurt2"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt3"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt4"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt5"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt6"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt7"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt8"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt9"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt10"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt11"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt12"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt13"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt14"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt15"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt16"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt17"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt18"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt19"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt20"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt21"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt22"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt23"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt24"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt25"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt26"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt27"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt28"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt29"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt30"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt31"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt32"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt33"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt34"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt35"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt36"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt37"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt38"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt39"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt40"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt41"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt42"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt43"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt44"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt45"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt46"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt47"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt48"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt49"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt50"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt51"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt52"
+      },
+      {
+        "name": "minecraft:moreZsounds/hurt53"
+      }
     ],
     "subtitles": "subtitles.entity.zombie.hurt"
   },
   "entity.custom_zombie.death": {
     "replace": "true",
     "sounds": [
-      "minecraft:mob/zombie/death",
-      "minecraft:moreZsounds/death2",
-      "minecraft:moreZsounds/death3",
-      "minecraft:moreZsounds/death4",
-      "minecraft:moreZsounds/death5",
-      "minecraft:moreZsounds/death6",
-      "minecraft:moreZsounds/death7",
-      "minecraft:moreZsounds/death8",
-      "minecraft:moreZsounds/death9"
+      {
+        "name": "minecraft:mob/zombie/death"
+      },
+      {
+        "name": "minecraft:moreZsounds/death2"
+      },
+      {
+        "name": "minecraft:moreZsounds/death3"
+      },
+      {
+        "name": "minecraft:moreZsounds/death4"
+      },
+      {
+        "name": "minecraft:moreZsounds/death5"
+      },
+      {
+        "name": "minecraft:moreZsounds/death6"
+      },
+      {
+        "name": "minecraft:moreZsounds/death7"
+      },
+      {
+        "name": "minecraft:moreZsounds/death8"
+      },
+      {
+        "name": "minecraft:moreZsounds/death9"
+      }
     ],
     "subtitles": "subtitles.entity.zombie.death"
   },
   "entity.custom_zombie.step": {
     "replace": "true",
     "sounds": [
-      "minecraft:mob/zombie/step1",
-      "minecraft:mob/zombie/step2",
-      "minecraft:mob/zombie/step3",
-      "minecraft:mob/zombie/step4",
-      "minecraft:mob/zombie/step5"
+      {
+        "name": "minecraft:mob/zombie/step1"
+      },
+      {
+        "name": "minecraft:mob/zombie/step2"
+      },
+      {
+        "name": "minecraft:mob/zombie/step3"
+      },
+      {
+        "name": "minecraft:mob/zombie/step4"
+      },
+      {
+        "name": "minecraft:mob/zombie/step5"
+      }
     ],
     "subtitles": "subtitles.entity.zombie.step"
   }
