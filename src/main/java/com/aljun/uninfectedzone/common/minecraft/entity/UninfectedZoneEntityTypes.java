@@ -1,5 +1,6 @@
 package com.aljun.uninfectedzone.common.minecraft.entity;
 
+import com.aljun.uninfectedzone.UninfectedZone;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -18,7 +19,7 @@ public class UninfectedZoneEntityTypes {
 
     @SuppressWarnings("unchecked")
     private static <T extends Entity> Supplier<EntityType<T>> register(IForgeRegistry<EntityType<?>> registry, Supplier<EntityType<T>> instance, String key) {
-        EntityType<T> entityType = (EntityType<T>) instance.get().setRegistryName(key);
+        EntityType<T> entityType = (EntityType<T>) instance.get().setRegistryName(UninfectedZone.MOD_ID, key);
         registry.register(entityType);
         return () -> entityType;
     }

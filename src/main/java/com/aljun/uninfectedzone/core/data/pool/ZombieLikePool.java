@@ -6,6 +6,7 @@ import com.aljun.uninfectedzone.core.utils.RandomHelper;
 import com.aljun.uninfectedzone.core.utils.VarSet;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.advancements.critereon.DeserializationContext;
@@ -34,11 +35,11 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final ZombieLikePool EMPTY = new ZombieLikePool();
     private static final DeserializationContext DESERIALIZATION_CONTEXT = new DeserializationContext(new ResourceLocation("uninfectedzone:condition_deserialization_context"), new PredicateManager());
-    /*
+
+    /**
      * 请不要拿去用在 Tag 上面
-     * */
-    private static final Gson GSON = new Gson();
-    public static VarSet.VarType<ZombieLikePool> ZOMBIE_LIKE_POOL = new VarSet.VarType<>() {
+     */
+    public static VarSet.VarType<ZombieLikePool> ZOMBIE_LIKE_POOL = new VarSet.VarType<>("zombie_pool") {
 
         private static final Gson GSON = new Gson();
 
@@ -77,6 +78,7 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
     private final HashMap<Integer, List<LootItemCondition>> POOL_CONDITIONS;
     private final HashMap<Integer, ResourceLocation> POOL_VALUE;
     private final RandomHelper.RandomPool<String> randomPool = RandomHelper.RandomPool.builder(String.class).build();
+    private JsonObject conditionsJson = new JsonObject();
 
     private ZombieLikePool(JsonObject jsonObject) {
         this();
@@ -86,8 +88,7 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
                 candidates.forEach((jsonElement -> {
                     if (jsonElement.isJsonObject()) {
                         int i = POOL_VALUE.size();
-                        JsonObject candidate = jsonObject.getAsJsonObject();
-
+                        JsonObject candidate = jsonElement.getAsJsonObject();
                         String zombieLike;
                         if (candidate.has("type")) {
                             if (candidate.get("type").isJsonPrimitive()) {
@@ -152,12 +153,44 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
         return new ZombieLikePool(jsonObject);
     }
 
-    public ZombieLikePool add(ZombieLike zombieLike, double weight, LootItemCondition... conditionList) {
+    public ZombieLikePool add(ZombieLike zombieLike, double weight, String conditions) {
+        if (weight > 0) {
+            JsonObject object = predicateGson.fromJson(conditions, JsonObject.class);
+            add(zombieLike, weight, object);
+        }
+        return this;
+    }
+
+    public ZombieLikePool add(ZombieLike zombieLike, double weight, JsonObject conditions) {
+        if (weight > 0) {
+
+            JsonArray conditionsArray = conditions.getAsJsonArray("conditions");
+            List<LootItemCondition> conditionList = new ArrayList<>();
+            conditionsArray.forEach(jsonElement -> {
+                try {
+                    conditionList.add(predicateGson.fromJson(jsonElement, LootItemCondition.class));
+                } catch (Throwable throwable) {
+                    LOGGER.error("Adding Conditions(\n{}\n) failed : {}", jsonElement, throwable.toString());
+                }
+            });
+            this.add(zombieLike, weight, conditionList);
+        }
+        return this;
+    }
+
+    public ZombieLikePool add(ZombieLike zombieLike, double weight, List<LootItemCondition> conditionList) {
         if (weight > 0) {
             int id = this.POOL_VALUE.size();
             this.POOL_VALUE.put(id, zombieLike.getRegistryName());
             this.POOL_WEIGHT.put(id, weight);
-            this.POOL_CONDITIONS.put(id, List.of(conditionList));
+            this.POOL_CONDITIONS.put(id, conditionList);
+        }
+        return this;
+    }
+
+    public ZombieLikePool add(ZombieLike zombieLike, double weight, LootItemCondition... conditions) {
+        if (weight > 0) {
+            this.add(zombieLike, weight, List.of(conditions));
         }
         return this;
     }
@@ -170,24 +203,26 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
             candidate.addProperty("type", value.toString());
             candidate.addProperty("weight", this.POOL_WEIGHT.get(key));
             List<LootItemCondition> conditionList = this.POOL_CONDITIONS.get(key);
+            JsonArray conditions = new JsonArray();
             if (!conditionList.isEmpty()) {
-                JsonArray conditions = new JsonArray();
                 conditionList.forEach(condition -> {
                     try {
-                        JsonObject conditionJson = conditionToJson(condition);
+                        JsonElement conditionJson = conditionToJson(condition);
                         conditions.add(conditionJson);
-                    } catch (Throwable ignore) {
+                    } catch (Throwable throwable) {
+                        LOGGER.error("Saving Conditions(\n{}\n) failed : {}", conditionList, throwable.toString());
                     }
                 });
             }
-
+            candidate.add("conditions", conditions);
+            candidates.add(candidate);
         });
         jsonObject.add("candidates", candidates);
         return jsonObject;
     }
 
-    private JsonObject conditionToJson(LootItemCondition condition) {
-        return null;
+    private JsonElement conditionToJson(LootItemCondition condition) {
+        return predicateGson.toJsonTree(conditionsJson);
     }
 
     public ZombieLike nextValue(ServerLevel serverLevel, @NotNull Mob mob) {
@@ -240,15 +275,5 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
         }
 
         return ZombieLike.DUMMY.get();
-    }
-
-    public ZombieLikePool add(ZombieLike zombieLike, double weight, List<LootItemCondition> conditionList) {
-        if (weight > 0) {
-            int id = this.POOL_VALUE.size();
-            this.POOL_VALUE.put(id, zombieLike.getRegistryName());
-            this.POOL_WEIGHT.put(id, weight);
-            this.POOL_CONDITIONS.put(id, conditionList);
-        }
-        return this;
     }
 }

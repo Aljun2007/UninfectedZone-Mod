@@ -22,7 +22,7 @@ public class UninfectedZoneSounds {
     }
 
     private static Supplier<SoundEvent> register(IForgeRegistry<SoundEvent> registry, Supplier<SoundEvent> instance, String key) {
-        SoundEvent soundEvent = instance.get().setRegistryName(key);
+        SoundEvent soundEvent = instance.get().setRegistryName(UninfectedZone.MOD_ID, key);
         registry.register(soundEvent);
         return () -> soundEvent;
     }

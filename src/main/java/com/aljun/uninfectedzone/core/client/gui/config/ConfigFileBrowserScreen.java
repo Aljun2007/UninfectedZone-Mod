@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
-public class ConfigFileBrowserScreen extends Screen {
+public class ConfigFileBrowserScreen extends ConfigBaseScreen {
     private static final String ID = "unknown_screen";
 
     protected ConfigFileBrowserScreen() {
@@ -17,7 +17,7 @@ public class ConfigFileBrowserScreen extends Screen {
 
     @Override
     public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(poseStack);
+        super.render(poseStack,mouseX,mouseY,partialTick);
     }
 
     @Override

@@ -16,20 +16,27 @@ public class ConfigSets {
     public static void register() {
         Common.register();
         Client.register();
+        GameData.register();
+        GameRule.register();
+        GameProperty.register();
     }
 
     private static <T> Supplier<ConfigSet<T>> register(ConfigType configType, VarSet<T> varSet) {
-        ConfigSet<T> configSet = UninfectedZoneConfig.register(varSet, configType);
+        UninfectedZoneConfig.Builder<T> builder = UninfectedZoneConfig.builder(varSet, configType);
+        ConfigSet<T> configSet;
+        if (builder != null) {
+            configSet = builder.build();
+        } else {
+            configSet = null;
+        }
         return () -> configSet;
     }
 
     public static class Common {
-        public static Supplier<ConfigSet<ZombieLikePool>> DEFAULT_ZOMBIE_POOL;
+
         public static Supplier<ConfigSet<Double>> TEST_DOUBLE;
 
         private static void register() {
-            DEFAULT_ZOMBIE_POOL = ConfigSets.register(ConfigType.COMMON, VarSet.builder(UninfectedZone.MOD_ID, ZombieLikePool.ZOMBIE_LIKE_POOL)
-                    .defaultVar(ZombieLikePools.testPool).create("default_zombie_like_pool"));
             TEST_DOUBLE = ConfigSets.register(ConfigType.COMMON, VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.DOUBLE).defaultVar(1314d).create("test_double"));
         }
     }
@@ -41,6 +48,27 @@ public class ConfigSets {
         private static void register() {
             CUSTOM_ZOMBIE_TEXTURE_PATH = ConfigSets.register(ConfigType.CLIENT, VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.STRING_LIST).defaultVar(List.of("minecraft:textures/entity/steve.png")).create("custom_zombie_texture_path"));
             CUSTOM_ZOMBIE_SLIM_TEXTURE_PATH = ConfigSets.register(ConfigType.CLIENT, VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.STRING_LIST).defaultVar(List.of("minecraft:textures/entity/alex.png")).create("custom_zombie_slim_texture_path"));
+        }
+
+
+    }
+
+    public static class GameData {
+        public static Supplier<ConfigSet<ZombieLikePool>> DEFAULT_ZOMBIE_POOL;
+
+        private static void register() {
+            DEFAULT_ZOMBIE_POOL = ConfigSets.register(ConfigType.GAME_DATA, VarSet.builder(UninfectedZone.MOD_ID, ZombieLikePool.ZOMBIE_LIKE_POOL)
+                    .defaultVar(ZombieLikePools.testPool).create("default_zombie_like_pool"));
+        }
+    }
+
+    public static class GameProperty {
+        private static void register() {
+        }
+    }
+
+    public static class GameRule {
+        private static void register() {
         }
     }
 

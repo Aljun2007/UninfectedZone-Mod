@@ -2,5 +2,18 @@
   "commands.uninfectedzone.zombie.newZombie.invalidPosition": "Invalid position for a new zombie",
   "uninfectedzone.zombieLike.notFound": "Unknown zombieLike: %s",
   "exception.uninfectedzone.newZombie.unsupported": "Unsupported Zombie : {}",
-  "exception.uninfectedzone.newZombie.unsummonable": "Unsummonable Zombie : {}"
+  "exception.uninfectedzone.newZombie.unsummonable": "Unsummonable Zombie : {}",
+  "screen.uninfectedzone.base.sign1": ":",
+  "screen.uninfectedzone.base.back": "Back",
+  "screen.uninfectedzone.base.cancel": "Cancel",
+  "screen.uninfectedzone.base.close": "Close",
+  "screen.uninfectedzone.config.modify_button.name": "Modify",
+  "screen.uninfectedzone.config.save_button.name": "Save",
+  "screen.uninfectedzone.config.config_type.common.name": "Common",
+  "screen.uninfectedzone.config.config_type.client.name": "Client",
+  "screen.uninfectedzone.config.config_type.game_data.name": "Game Data",
+  "screen.uninfectedzone.config.config_type.game_property.name": "Game Property",
+  "screen.uninfectedzone.config.config_type.game_rule.name": "Game Rule",
+  "screen.uninfectedzone.config.config_location.client.name": "Client",
+  "screen.uninfectedzone.config.config_location.server.name": "Server"
 }

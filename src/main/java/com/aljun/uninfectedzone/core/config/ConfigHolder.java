@@ -20,7 +20,7 @@ public class ConfigHolder<T> {
         this.setOrDefault(jsonManager.read(this.CONFIG_SET.VAR_SET));
     }
 
-    boolean setOrDefault(T t) {
+    public boolean setOrDefault(T t) {
         if (this.CONFIG_SET.VAR_SET.verify(t)) {
             this.var = t;
             return true;
@@ -37,5 +37,13 @@ public class ConfigHolder<T> {
         } else {
             return false;
         }
+    }
+
+    public void setDefault() {
+        this.var = this.CONFIG_SET.VAR_SET.defaultVar();
+    }
+
+    public void saveToJson(JsonManager jsonManager) {
+        jsonManager.write(this.CONFIG_SET.VAR_SET, this.var);
     }
 }

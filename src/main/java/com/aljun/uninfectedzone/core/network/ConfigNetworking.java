@@ -2,10 +2,12 @@ package com.aljun.uninfectedzone.core.network;
 
 import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.core.client.ClientConfigUtils;
+import com.aljun.uninfectedzone.core.config.UninfectedZoneConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -14,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class ConfigServerToClientNetworking {
+public class ConfigNetworking {
     public static final String NAME = "config_server_to_client_networking";
     public static final String VERSION = "1.0";
     public static SimpleChannel INSTANCE;
@@ -51,7 +53,7 @@ public class ConfigServerToClientNetworking {
         private static void handler(PackJson pack, @NotNull Supplier<NetworkEvent.Context> context) {
             context.get().enqueueWork(() -> {
                 if (context.get().getDirection().equals(NetworkDirection.PLAY_TO_SERVER)) {
-                    pack.serverReceive();
+                    pack.serverReceive(context.get().getSender());
                 } else if (context.get().getDirection().equals(NetworkDirection.PLAY_TO_CLIENT)) {
                     pack.clientReceive();
                 }
@@ -59,8 +61,10 @@ public class ConfigServerToClientNetworking {
             context.get().setPacketHandled(true);
         }
 
-        private void serverReceive() {
-
+        private void serverReceive(ServerPlayer player) {
+            if (this.configJson == null) return;
+            if (this.configJson.isJsonNull()) return;
+            UninfectedZoneConfig.sendToClient(player);
         }
 
         private void clientReceive() {

@@ -1,5 +1,6 @@
 package com.aljun.uninfectedzone.common.zombie.abilities;
 
+import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -19,7 +20,7 @@ public class ZombieAbilities {
 
     private static <T extends ZombieAbility> Supplier<T> register(IForgeRegistry<ZombieAbility> registry, Supplier<T> instance, String key) {
         T zombieAbility = instance.get();
-        zombieAbility.setRegistryName(key);
+        zombieAbility.setRegistryName(UninfectedZone.MOD_ID, key);
         registry.register(zombieAbility);
         return () -> zombieAbility;
     }

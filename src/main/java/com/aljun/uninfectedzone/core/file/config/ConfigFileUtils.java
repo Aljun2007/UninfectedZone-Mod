@@ -94,6 +94,7 @@ public class ConfigFileUtils {
                     FileUtils.saveJsonFile(path, jsonObject);
                     return jsonObject;
                 }
+                return jsonObject;
             }
         } catch (IOException e) {
             LOGGER.info("Read From Saves Failed :{}", e.toString());
@@ -102,16 +103,16 @@ public class ConfigFileUtils {
     }
 
     public static String getGameRulePath(MinecraftServer server) {
-        return worldPath(server) + "\\" + ConfigType.GAME_RULE.getName();
+        return worldPath(server) + "\\" + ConfigType.GAME_RULE.getName() + ".json";
     }
 
     public static String getGameDataPath(MinecraftServer server) {
-        return worldPath(server) + "\\" + ConfigType.GAME_DATA.getName();
+        return worldPath(server) + "\\" + ConfigType.GAME_DATA.getName() + ".json";
 
     }
 
     public static String getGamePropertyPath(MinecraftServer server) {
-        return worldPath(server) + "\\" + ConfigType.GAME_PROPERTY.getName();
+        return worldPath(server) + "\\" + ConfigType.GAME_PROPERTY.getName() + ".json";
     }
 
     public static String worldPath(MinecraftServer server) {
@@ -127,6 +128,20 @@ public class ConfigFileUtils {
             }
         } catch (IOException e) {
             LOGGER.info("Save Failed :{}", e.toString());
+        }
+    }
+
+    public static void saveConfig(ConfigType configType, JsonObject jsonObject, MinecraftServer server) {
+        try {
+            if (configType.is(ConfigType.GAME_RULE)) {
+                FileUtils.saveJsonFile(getGameRulePath(server), jsonObject);
+            } else if (configType.is(ConfigType.GAME_PROPERTY)) {
+                FileUtils.saveJsonFile(getGamePropertyPath(server), jsonObject);
+            } else if (configType.is(ConfigType.GAME_DATA)) {
+                FileUtils.saveJsonFile(getGameDataPath(server), jsonObject);
+            }
+        } catch (IOException e) {
+            LOGGER.info("Save World Failed :{}", e.toString());
         }
     }
 

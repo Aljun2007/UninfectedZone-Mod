@@ -8,12 +8,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class FileList extends ObjectSelectionList<FileList.ConfigEntry> {
-    public FileList(Minecraft p_94442_, int p_94443_, int p_94444_, int p_94445_, int p_94446_, int p_94447_) {
+public class ConfigFileList extends ObjectSelectionList<ConfigFileList.ConfigFileEntry> {
+    public ConfigFileList(Minecraft p_94442_, int p_94443_, int p_94444_, int p_94445_, int p_94446_, int p_94447_) {
         super(p_94442_, p_94443_, p_94444_, p_94445_, p_94446_, p_94447_);
     }
 
-    public static final class ConfigEntry extends ObjectSelectionList.Entry<ConfigEntry> {
+    public static final class ConfigFileEntry extends ObjectSelectionList.Entry<ConfigFileEntry> {
 
         @Override
         public Component getNarration() {

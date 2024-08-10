@@ -27,7 +27,7 @@ public class ZombieAttributes {
 
     private static <T extends Attribute> Supplier<T> register(IForgeRegistry<Attribute> registry, Supplier<T> instance, String key) {
         T attribute = instance.get();
-        attribute.setRegistryName(key);
+        attribute.setRegistryName(UninfectedZone.MOD_ID, key);
         registry.register(attribute);
         return () -> attribute;
     }

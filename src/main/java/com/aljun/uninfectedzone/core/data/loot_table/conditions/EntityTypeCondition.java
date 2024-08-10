@@ -74,15 +74,15 @@ public class EntityTypeCondition implements LootItemCondition {
             for (ResourceLocation entityType : entityTypeCondition.entityTypes) {
                 entityTypes.add(entityType.toString());
             }
-            jsonObject.add("types", entityTypes);
+            jsonObject.add("entity_types", entityTypes);
 
         }
 
         public @NotNull EntityTypeCondition deserialize(@NotNull JsonObject jsonObject, @NotNull JsonDeserializationContext context) {
             List<ResourceLocation> entityTypeList = new ArrayList<>();
-            if (jsonObject.has("types")) {
-                if (jsonObject.get("types").isJsonArray()) {
-                    JsonArray entityTypes = jsonObject.getAsJsonArray("types");
+            if (jsonObject.has("entity_types")) {
+                if (jsonObject.get("entity_types").isJsonArray()) {
+                    JsonArray entityTypes = jsonObject.getAsJsonArray("entity_types");
                     entityTypes.forEach((jsonElement -> {
                         if (jsonElement.isJsonPrimitive()) {
                             entityTypeList.add(new ResourceLocation(jsonElement.getAsString()));

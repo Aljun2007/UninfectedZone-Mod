@@ -13,25 +13,27 @@ import java.util.function.Supplier;
 
 public class VarSet<V> {
     private static final Logger LOGGER = LogUtils.getLogger();
+    public final String MOD_ID;
     public final String ID;
     public final VarType<V> varType;
     final ArrayList<String> NAMESPACE;
     final String KEY;
     final Function<V, Boolean> verifyFunc;
     final Supplier<V> defaultVarSup;
+    private final String nameSpaceString;
 
     private VarSet(Builder<V> builder, String key) {
         this.NAMESPACE = new ArrayList<>(builder.NAMESPACE);
+        this.MOD_ID = this.NAMESPACE.get(0);
         this.KEY = key;
         this.verifyFunc = builder.verifyFunc;
         this.defaultVarSup = builder.defaultVarSup;
         this.varType = builder.varType;
         final String[] id = {""};
-        NAMESPACE.forEach((a) -> {
-            id[0] = id[0] + a + "\\";
-        });
+        NAMESPACE.forEach((a) -> id[0] = id[0] + a + ".");
         id[0] = id[0] + key;
         this.ID = id[0];
+        this.nameSpaceString = "var_set." + this.ID;
     }
 
     public static <T> VarSet.Builder<T> builder(String root, VarType<T> varType) {
@@ -46,6 +48,14 @@ public class VarSet<V> {
         return this.defaultVarSup.get();
     }
 
+    public String getNameSpace() {
+        return this.nameSpaceString;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.nameSpaceString.hashCode();
+    }
 
     public static class Builder<V> {
         private final ArrayList<String> NAMESPACE = new ArrayList<>();
@@ -87,7 +97,8 @@ public class VarSet<V> {
     }
 
     public abstract static class VarType<T> {
-        public static final VarType<Boolean> BOOLEAN = new VarType<>() {
+
+        public static final VarType<Boolean> BOOLEAN = new VarType<>("boolean") {
             @Override
             public Tag writeToTag(Boolean aBoolean) {
                 return ByteTag.valueOf(aBoolean);
@@ -116,8 +127,7 @@ public class VarSet<V> {
             }
 
         };
-
-        public static final VarType<Integer> INTEGER = new VarType<>() {
+        public static final VarType<Integer> INTEGER = new VarType<>("int") {
             @Override
             public Tag writeToTag(Integer integer) {
                 return IntTag.valueOf(integer);
@@ -145,8 +155,7 @@ public class VarSet<V> {
                 jsonObject.addProperty(key, var);
             }
         };
-
-        public static final VarType<Short> SHORT = new VarType<>() {
+        public static final VarType<Short> SHORT = new VarType<>("short") {
             @Override
             public Tag writeToTag(Short aShort) {
                 return IntTag.valueOf(aShort);
@@ -174,8 +183,7 @@ public class VarSet<V> {
                 jsonObject.addProperty(key, var);
             }
         };
-
-        public static final VarType<Long> LONG = new VarType<>() {
+        public static final VarType<Long> LONG = new VarType<>("long") {
             @Override
             public Tag writeToTag(Long aLong) {
                 return LongTag.valueOf(aLong);
@@ -203,7 +211,7 @@ public class VarSet<V> {
                 jsonObject.addProperty(key, var);
             }
         };
-        public static final VarType<Double> DOUBLE = new VarType<>() {
+        public static final VarType<Double> DOUBLE = new VarType<>("double") {
             @Override
             public Tag writeToTag(Double aDouble) {
                 return DoubleTag.valueOf(aDouble);
@@ -231,8 +239,7 @@ public class VarSet<V> {
                 jsonObject.addProperty(key, var);
             }
         };
-
-        public static final VarType<Float> FLOAT = new VarType<>() {
+        public static final VarType<Float> FLOAT = new VarType<>("float") {
             @Override
             public Tag writeToTag(Float aFloat) {
                 return FloatTag.valueOf(aFloat);
@@ -260,8 +267,7 @@ public class VarSet<V> {
                 jsonObject.addProperty(key, var);
             }
         };
-
-        public static final VarType<String> STRING = new VarType<>() {
+        public static final VarType<String> STRING = new VarType<>("string") {
             @Override
             public Tag writeToTag(String aString) {
                 return StringTag.valueOf(aString);
@@ -289,14 +295,11 @@ public class VarSet<V> {
                 jsonObject.addProperty(key, var);
             }
         };
-
-        public static final VarType<List<String>> STRING_LIST = new VarType<>() {
+        public static final VarType<List<String>> STRING_LIST = new VarType<>("string_list") {
             @Override
             public Tag writeToTag(List<String> strings) {
                 ListTag tag = new ListTag();
-                strings.forEach((string) -> {
-                    tag.addTag(tag.size(), StringTag.valueOf(string));
-                });
+                strings.forEach((string) -> tag.addTag(tag.size(), StringTag.valueOf(string)));
                 return tag;
             }
 
@@ -304,9 +307,7 @@ public class VarSet<V> {
             public List<String> readFromTag(Tag tag) {
                 if (tag instanceof ListTag listTag && listTag.getElementType() == Tag.TAG_STRING) {
                     List<String> list = new ArrayList<>();
-                    listTag.forEach(tag1 -> {
-                        list.add(tag1.getAsString());
-                    });
+                    listTag.forEach(tag1 -> list.add(tag1.getAsString()));
                     return list;
                 } else throw new IllegalArgumentException();
             }
@@ -316,9 +317,7 @@ public class VarSet<V> {
                 try {
                     JsonArray array = jsonObject.get(key).getAsJsonArray();
                     ArrayList<String> stringArrayList = new ArrayList<>();
-                    array.forEach((jsonElement -> {
-                        stringArrayList.add(jsonElement.getAsString());
-                    }));
+                    array.forEach((jsonElement -> stringArrayList.add(jsonElement.getAsString())));
                     return stringArrayList;
                 } catch (UnsupportedOperationException | NullPointerException e) {
                     LOGGER.error(e.toString());
@@ -333,6 +332,16 @@ public class VarSet<V> {
                 jsonObject.add(key, array);
             }
         };
+        public final String NAME;
+
+        public VarType(String name) {
+            this.NAME = name;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.NAME.hashCode();
+        }
 
         public abstract Tag writeToTag(T t);
 
@@ -342,5 +351,4 @@ public class VarSet<V> {
 
         public abstract void addToJsonObject(JsonObject jsonObject, String key, T t);
     }
-
 }

@@ -6,6 +6,7 @@ import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,7 +40,7 @@ public class Placing extends ZombieAbility {
         }
 
         public boolean place(BlockPos blockPos, BlockState blockState) {
-            if (this.lastPlaceTime + 20L >= this.mob.getLevel().getGameTime()) {
+            if (this.lastPlaceTime + 10L >= this.mob.getLevel().getGameTime()) {
                 return true;
             }
             if (this.checkState(blockState) && this.checkPos(blockPos)) {
@@ -55,10 +56,8 @@ public class Placing extends ZombieAbility {
         }
 
         private boolean checkPos(BlockPos pos) {
-            if (this.mob.getOnPos().equals(pos)) return false;
-            if (!mob.getLevel().isOutsideBuildHeight(pos)) return false;
-            if (mob.blockPosition().distSqr(pos) <= 16d) return false;
-            return (mob.getLevel().getBlockState(pos).isAir() || !mob.getLevel().getBlockState(pos).getFluidState().isEmpty());
+            if (mob.getLevel().isOutsideBuildHeight(pos)) return false;
+            return !(mob.blockPosition().distSqr(pos) > 16d);
         }
 
         private void succeedPlace(BlockPos blockPos, BlockState blockState) {
@@ -67,7 +66,9 @@ public class Placing extends ZombieAbility {
             SoundType soundType = blockState.getSoundType();
             this.mob.getLevel().playSound(null, blockPos, soundType.getPlaceSound(), SoundSource.BLOCKS,
                     (soundType.getVolume() + 1.0F) / 8.0F, soundType.getPitch() * 0.5F);
-
+            if (!this.mob.swinging) {
+                this.mob.swing(InteractionHand.MAIN_HAND);
+            }
             this.lastPlaceTime = this.mob.getLevel().getGameTime();
         }
 

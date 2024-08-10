@@ -45,11 +45,11 @@ public class ModDebugCommand implements Command<CommandSourceStack> {
             ByteNetWorking.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), ByteNetWorking.createPack(ByteNetWorking.RELOAD_ALL_CONFIG));
             return 0;
         }))).then(Commands.literal("server").executes(context -> {
-            UninfectedZoneConfig.reloadWorld(context.getSource().getServer());
+            UninfectedZoneConfig.reloadAll(context.getSource().getServer());
             return 0;
         })).then(Commands.literal("all").executes((context -> {
             ServerPlayer player = context.getSource().getPlayerOrException();
-            UninfectedZoneConfig.reloadWorld(context.getSource().getServer());
+            UninfectedZoneConfig.reloadAll(context.getSource().getServer());
             ByteNetWorking.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), ByteNetWorking.createPack(ByteNetWorking.RELOAD_ALL_CONFIG));
             return 0;
         })))).then(Commands.literal("test_client").then(Commands.argument("byte", IntegerArgumentType.integer(-128, 127)).executes(context -> {

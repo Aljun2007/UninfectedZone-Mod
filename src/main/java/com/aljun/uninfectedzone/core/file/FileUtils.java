@@ -39,9 +39,11 @@ public class FileUtils {
         writer.close();
     }
 
-    public static void deleteJsonFile(String path) {
+    public static void deleteFile(String path) {
         File file = new File(path);
-        file.delete();
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
 

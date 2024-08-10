@@ -18,7 +18,7 @@ public class CustomZombieRender extends HumanoidMobRenderer<CustomZombie, Custom
     private boolean slim = false;
 
     public CustomZombieRender(EntityRendererProvider.Context context, boolean slim) {
-        this(context, slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER, slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR, slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR, slim);
+        this(context, slim ? ModelLayers.PLAYER_SLIM : ModelLayers.ZOMBIE, slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.ZOMBIE_INNER_ARMOR, slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.ZOMBIE_OUTER_ARMOR, slim);
         this.slim = slim;
     }
 

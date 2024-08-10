@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 public class EntityEventsHandler {
     @SubscribeEvent
     public static void onVillagerInfectedVanilla(LivingConversionEvent.Pre event) {
-        if (GameUtils.isVanillaInfectionDisabled()) {
+        if (GameUtils.isDisabled()) {
             if (event.getOutcome().equals(EntityType.ZOMBIE_VILLAGER) && event.getEntityLiving() instanceof Villager) {
                 event.setCanceled(true);
             }

@@ -2,7 +2,7 @@ package com.aljun.uninfectedzone.core.network;
 
 import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.core.client.ClientConfigUtils;
-import com.aljun.uninfectedzone.core.client.gui.config.ConfigBaseScreen;
+import com.aljun.uninfectedzone.core.client.gui.config.ConfigSetScreen;
 import com.aljun.uninfectedzone.core.config.UninfectedZoneConfig;
 import com.aljun.uninfectedzone.core.debug.Debug;
 import net.minecraft.client.Minecraft;
@@ -65,15 +65,15 @@ public class ByteNetWorking {
 
         private void serverReceive() {
             if (this.testByte == RELOAD_ALL_CONFIG) {
-                UninfectedZoneConfig.reloadGlobal();
+                UninfectedZoneConfig.loadGlobal();
             }
         }
 
         private void clientReceive() {
             if (this.testByte == RELOAD_ALL_CONFIG) {
-                ClientConfigUtils.reloadGlobal();
+                ClientConfigUtils.loadGlobalClient();
             } else if (this.testByte == TEST_SCREEN_1) {
-                Minecraft.getInstance().setScreen(new ConfigBaseScreen());
+                Minecraft.getInstance().setScreen(new ConfigSetScreen());
             } else if (this.testByte == 2) {
                 Debug.LOGGER.info(ResourcePackLoader.getPackNames().toString());
             }

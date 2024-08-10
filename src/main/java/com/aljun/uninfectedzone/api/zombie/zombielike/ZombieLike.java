@@ -1,6 +1,7 @@
 package com.aljun.uninfectedzone.api.zombie.zombielike;
 
 import com.aljun.uninfectedzone.UninfectedZone;
+import com.aljun.uninfectedzone.common.minecraft.entity.UninfectedZoneEntityTypes;
 import com.aljun.uninfectedzone.core.utils.ComponentUtils;
 import com.aljun.uninfectedzone.core.utils.TagUtils;
 import com.aljun.uninfectedzone.core.utils.ZombieUtils;
@@ -53,7 +54,8 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
         DEFAULT_MOBS.put(EntityType.ZOMBIE.getRegistryName(), EntityType.ZOMBIE);
         DEFAULT_MOBS.put(EntityType.ZOMBIE_VILLAGER.getRegistryName(), EntityType.ZOMBIE_VILLAGER);
         DEFAULT_MOBS.put(EntityType.HUSK.getRegistryName(), EntityType.HUSK);
-        DEFAULT_MOBS.put(EntityType.PIG.getRegistryName(), EntityType.PIG);
+        DEFAULT_MOBS.put(UninfectedZoneEntityTypes.CUSTOM_ZOMBIE.get().getRegistryName(), UninfectedZoneEntityTypes.CUSTOM_ZOMBIE.get());
+        DEFAULT_MOBS.put(UninfectedZoneEntityTypes.CUSTOM_ZOMBIE_SLIM.get().getRegistryName(), UninfectedZoneEntityTypes.CUSTOM_ZOMBIE_SLIM.get());
     }
 
     public void loadOrCover(Mob mob) {

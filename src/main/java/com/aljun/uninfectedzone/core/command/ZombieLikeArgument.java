@@ -1,5 +1,6 @@
 package com.aljun.uninfectedzone.core.command;
 
+import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.api.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.core.utils.ComponentUtils;
 import com.mojang.brigadier.StringReader;
@@ -17,7 +18,7 @@ public class ZombieLikeArgument implements ArgumentType<ResourceLocation> {
     public static final DynamicCommandExceptionType ERROR_UNKNOWN_ZOMBIE_LIKES = new DynamicCommandExceptionType((living) ->
             ComponentUtils.translate("uninfectedzone.zombieLike.notFound", String.valueOf(living))
     );
-    public static final SuggestionProvider<CommandSourceStack> ZOMBIE_LIKES_ALL = SuggestionProviders.register(new ResourceLocation("zombie_like_all"),
+    public static final SuggestionProvider<CommandSourceStack> ZOMBIE_LIKES_ALL = SuggestionProviders.register(new ResourceLocation(UninfectedZone.MOD_ID, "zombie_like_all"),
             (p_212438_, p_212439_) -> SharedSuggestionProvider.suggestResource(UninfectedZoneRegistry.ZOMBIE_LIKES.get().getEntries().stream(), p_212439_, (a) -> a.getKey().location(), (v) -> ComponentUtils.translate(v.getValue().toString())));
 
     public static ZombieLikeArgument id() {

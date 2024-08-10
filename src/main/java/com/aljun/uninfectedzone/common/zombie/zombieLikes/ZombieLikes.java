@@ -1,5 +1,6 @@
 package com.aljun.uninfectedzone.common.zombie.zombieLikes;
 
+import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -16,7 +17,7 @@ public class ZombieLikes {
     }
 
     private static Supplier<ZombieLike> register(IForgeRegistry<ZombieLike> registry, Supplier<ZombieLike> instance, String key) {
-        ZombieLike zombieLike = instance.get().setRegistryName(key);
+        ZombieLike zombieLike = instance.get().setRegistryName(UninfectedZone.MOD_ID, key);
         registry.register(zombieLike);
         return () -> zombieLike;
     }

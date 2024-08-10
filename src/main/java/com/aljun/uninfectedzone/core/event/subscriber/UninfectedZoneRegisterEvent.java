@@ -6,12 +6,14 @@ import com.aljun.uninfectedzone.api.zombie.zombielike.DummyZombie;
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import com.aljun.uninfectedzone.common.config.ConfigSets;
 import com.aljun.uninfectedzone.core.data.loot_table.conditions.UninfectedZoneLootItemConditions;
+import com.aljun.uninfectedzone.core.game.mode.GameMode;
 import com.aljun.uninfectedzone.core.network.ByteNetWorking;
 import com.aljun.uninfectedzone.core.network.ChunkBorderCommandNetworking;
-import com.aljun.uninfectedzone.core.network.ConfigServerToClientNetworking;
+import com.aljun.uninfectedzone.core.network.ConfigNetworking;
 import com.aljun.uninfectedzone.core.network.UninfectedChuckNetworking;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -29,22 +31,31 @@ public class UninfectedZoneRegisterEvent {
 
     @SubscribeEvent
     public static void registerZombieLike(RegistryEvent.Register<ZombieLike> event) {
-        ZombieLike dummy = new DummyZombie().setRegistryName("dummy");
+        ZombieLike dummy = new DummyZombie().setRegistryName(UninfectedZone.MOD_ID, "dummy");
         event.getRegistry().register(dummy);
         ZombieLike.DUMMY = () -> dummy;
     }
 
     @SubscribeEvent
+    public static void registerGameMode(RegistryEvent.Register<GameMode.Builder> event) {
+        event.getRegistry().register(GameMode.DISABLED.get().setRegistryName(UninfectedZone.MOD_ID, "disabled"));
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerOthers(FMLCommonSetupEvent event) {
-        ConfigSets.register();
         UninfectedZoneLootItemConditions.register();
         event.enqueueWork(() -> {
             ChunkBorderCommandNetworking.registerMessage();
-            ConfigServerToClientNetworking.registerMessage();
+            ConfigNetworking.registerMessage();
             UninfectedChuckNetworking.registerMessage();
             ByteNetWorking.registerMessage();
             UninfectedZone.afterRegister();
         });
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void registerOthersLater(FMLCommonSetupEvent event) {
+        ConfigSets.register();
     }
 
 }

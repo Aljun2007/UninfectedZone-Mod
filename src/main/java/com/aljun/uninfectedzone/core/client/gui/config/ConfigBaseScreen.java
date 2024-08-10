@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 public class ConfigBaseScreen extends Screen {
     protected Screen lastScreen = null;
     protected Button backOrCloseButton = null;
-    protected Button openButton = null;
 
 
     public ConfigBaseScreen(ConfigBaseScreen configBaseScreen) {
@@ -24,48 +24,33 @@ public class ConfigBaseScreen extends Screen {
 
 
     public ConfigBaseScreen() {
-        this(ComponentUtils.translate(getNameSpace() + ".base.title"));
+        this(ComponentUtils.translate("screen.uninfectedzone.base.title"));
     }
 
     protected ConfigBaseScreen(Component component) {
         super(component);
     }
 
-    protected static String getNameSpace() {
-        return "screen.uninfectedzone";
-    }
-
     @Override
     public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(poseStack);
-
+        super.render(poseStack, mouseX, mouseY, partialTick);
+        Style style = Minecraft.getInstance().gui.getChat().getClickedComponentStyleAt((double) mouseX, (double) mouseY);
+        if (style != null && style.getHoverEvent() != null) {
+            this.renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
+        }
     }
 
     @Override
     protected void init() {
-        this.backOrCloseButton = new Button(this.width / 2, this.height / 2, 100, 20, ComponentUtils.translate(getNameSpace() + ".base.back"), (button) -> {
-            if (this.lastScreen != null) {
-                Minecraft.getInstance().setScreen(lastScreen);
-            }
-            this.onClose();
-        });
-        this.openButton = new Button(this.width / 2, this.height / 2, 100, 20, ComponentUtils.translate(getNameSpace() + ".base.back"), (button) -> {
-            if (this.lastScreen != null) {
-                Minecraft.getInstance().setScreen(new ConfigBaseScreen(this));
-            }
-        });
+        this.backOrCloseButton = new Button(5, this.height - 25, 60, 20, ComponentUtils.translate("screen.uninfectedzone.base." + (this.lastScreen != null ? "back" : "close")), b -> backOrClose());
         this.addRenderableWidget(backOrCloseButton);
-        this.addRenderableWidget(openButton);
     }
 
-    @Override
-    public void tick() {
-
+    protected void backOrClose() {
+        if (this.lastScreen != null) {
+            Minecraft.getInstance().setScreen(lastScreen);
+        } else {
+            this.onClose();
+        }
     }
-
-    @Override
-    public void removed() {
-
-    }
-
 }

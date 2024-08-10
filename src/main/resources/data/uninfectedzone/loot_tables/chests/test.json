@@ -23,9 +23,10 @@
       ],
       "conditions": [
         {
-          "condition": "uninfectedzone:loaded_mod",
-          "mod_ids": [
-            "tacz"
+          "condition": "uninfectedzone:entity_type",
+          "entity_types": [
+            "minecraft:zombie",
+            "minecraft:husk"
           ]
         }
       ],

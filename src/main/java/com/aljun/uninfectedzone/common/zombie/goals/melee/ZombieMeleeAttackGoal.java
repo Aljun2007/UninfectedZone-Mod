@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.common.zombie.goals;
+package com.aljun.uninfectedzone.common.zombie.goals.melee;
 
 
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;

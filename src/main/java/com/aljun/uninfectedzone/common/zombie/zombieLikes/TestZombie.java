@@ -3,7 +3,7 @@ package com.aljun.uninfectedzone.common.zombie.zombieLikes;
 
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import com.aljun.uninfectedzone.common.zombie.abilities.ZombieAbilities;
-import com.aljun.uninfectedzone.common.zombie.goals.BreakAndBuildZombieMeleeAttackGoal;
+import com.aljun.uninfectedzone.common.zombie.goals.melee.BreakAndBuildZombieMeleeAttackGoal;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.world.entity.Mob;
 

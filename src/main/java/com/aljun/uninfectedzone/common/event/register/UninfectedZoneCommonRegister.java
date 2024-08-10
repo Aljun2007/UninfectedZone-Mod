@@ -2,14 +2,18 @@ package com.aljun.uninfectedzone.common.event.register;
 
 import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
+import com.aljun.uninfectedzone.common.game.UninfectedZoneGameModes;
 import com.aljun.uninfectedzone.common.minecraft.entity.UninfectedZoneEntityTypes;
+import com.aljun.uninfectedzone.common.minecraft.items.UninfectedZoneItems;
 import com.aljun.uninfectedzone.common.sound.UninfectedZoneSounds;
 import com.aljun.uninfectedzone.common.zombie.abilities.ZombieAbilities;
 import com.aljun.uninfectedzone.common.zombie.attribute.ZombieAttributes;
 import com.aljun.uninfectedzone.common.zombie.zombieLikes.ZombieLikes;
+import com.aljun.uninfectedzone.core.game.mode.GameMode;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,6 +25,11 @@ public class UninfectedZoneCommonRegister {
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
         UninfectedZoneEntityTypes.register(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerGameModes(RegistryEvent.Register<GameMode.Builder> event) {
+        UninfectedZoneGameModes.register(event.getRegistry());
     }
 
     @SubscribeEvent
@@ -41,6 +50,11 @@ public class UninfectedZoneCommonRegister {
     @SubscribeEvent
     public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
         UninfectedZoneSounds.register(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        UninfectedZoneItems.register(event.getRegistry());
     }
 
     @SubscribeEvent

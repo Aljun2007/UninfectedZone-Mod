@@ -30,7 +30,7 @@ public abstract class EntityMixin {
 
     @Inject(method = "killed", at = @At("HEAD"))
     public void killedMixin(ServerLevel level, LivingEntity victim, CallbackInfo ci) {
-        if (!GameUtils.isUninfectedZoneInfectionDisabled()) {
+        if (!GameUtils.isDisabled()) {
 
         }
     }

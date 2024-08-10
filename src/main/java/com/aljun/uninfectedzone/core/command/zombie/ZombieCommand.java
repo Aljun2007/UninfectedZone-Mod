@@ -8,6 +8,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,23 +16,22 @@ import net.minecraft.commands.arguments.EntitySummonArgument;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
 public class ZombieCommand implements Command<CommandSourceStack> {
-    private static final SimpleCommandExceptionType NEW_ZOMBIE_ERROR_FAILED = new SimpleCommandExceptionType(ComponentUtils.translate("commands.summon.failed"));
-    private static final SimpleCommandExceptionType NEW_ZOMBIE_ERROR_DUPLICATE_UUID = new SimpleCommandExceptionType(ComponentUtils.translate("commands.summon.failed.uuid"));
+    private static final SimpleCommandExceptionType NEW_ZOMBIE_EGG_ERROR_TYPE_ERROR = new SimpleCommandExceptionType(ComponentUtils.translate("commands.uninfectedzone.zombie.newZombieEgg.invalidType"));
     private static final SimpleCommandExceptionType NEW_ZOMBIE_INVALID_POSITION = new SimpleCommandExceptionType(ComponentUtils.translate("commands.uninfectedzone.zombie.newZombie.invalidPosition"));
 
     public static void register(LiteralArgumentBuilder<CommandSourceStack> root) {
@@ -141,14 +141,18 @@ public class ZombieCommand implements Command<CommandSourceStack> {
                 );
     }
 
-    private static ItemStack newSpawnEggItem(Mob mob, ZombieLike zombieLike) {
+    private static ItemStack newSpawnEggItem(Mob mob, ZombieLike zombieLike) throws CommandSyntaxException {
         try {
-            ItemStack stack = new ItemStack(Items.ZOMBIE_SPAWN_EGG);
-            stack.getOrCreateTag().put("EntityTag", new CompoundTag());
-            stack.getOrCreateTag().getCompound("EntityTag").put("ForgeData", mob.getPersistentData().copy());
-            stack.getOrCreateTag().getCompound("EntityTag").put("id", StringTag.valueOf(Objects.requireNonNull(mob.getType().getRegistryName()).toString()));
-            stack.setHoverName(ComponentUtils.literature(Objects.requireNonNull(zombieLike.getRegistryName()).getPath()));
-            return stack;
+            SpawnEggItem egg = ForgeSpawnEggItem.fromEntityType(mob.getType());
+            if (egg != null) {
+                ItemStack stack = new ItemStack(egg);
+                stack.getOrCreateTag().put("EntityTag", new CompoundTag());
+                stack.getOrCreateTag().getCompound("EntityTag").put("ForgeData", mob.getPersistentData().copy());
+                stack.setHoverName(ComponentUtils.literature(Objects.requireNonNull(zombieLike.getRegistryName()).getPath()));
+                return stack;
+            } else {
+                throw NEW_ZOMBIE_EGG_ERROR_TYPE_ERROR.create();
+            }
         } catch (NullPointerException e) {
             return ItemStack.EMPTY;
         }

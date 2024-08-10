@@ -1,4 +1,4 @@
-package com.aljun.uninfectedzone.common.zombie.goals;
+package com.aljun.uninfectedzone.common.zombie.goals.melee;
 
 import com.aljun.uninfectedzone.common.zombie.abilities.Breaking;
 import com.aljun.uninfectedzone.common.zombie.abilities.PathConstructing;
@@ -46,6 +46,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
     protected BlockPos buildTargetPos = null;
     protected PathConstructing.PathConstructingInstance.PathPack pathPack;
     protected BlockPos selfPos;
+    private long lastSetMeleeTime = 0L;
 
     public BreakAndBuildZombieMeleeAttackGoal(ZombieMainGoal mainGoal, Mob zombie) {
         this.mob = zombie;
@@ -77,6 +78,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
         this.buildTargetPos = null;
         this.mob.getNavigation().stop();
         this.breaking.stop();
+        this.lastSetMeleeTime = this.mob.getLevel().getGameTime();
     }
 
     public boolean canUse() {
@@ -224,11 +226,30 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
                 }
                 if (this.pathPack == null) {
                     if (this.mob.blockPosition().distSqr(this.selfPos) <= 4) {
+
                         this.pathPack = this.pathConstructing.create(this.selfPos, this.buildTargetPos);
+
+                        Path path = this.mob.getNavigation().createPath(livingentity, 0);
+
+                        if (path != null) {
+                            Node finalNode = path.getEndNode();
+                            if (finalNode != null) {
+                                BlockPos pathEnd = finalNode.asBlockPos();
+                                BlockPos buildEnd = pathPack.pathStructure().getEndPos(pathPack.horizontalDirection(), this.selfPos);
+
+                                if ((Math.sqrt(pathEnd.distSqr(livingentity.blockPosition()) + 10) < Math.sqrt(buildEnd.distSqr(livingentity.blockPosition())))) {
+                                    this.setMelee();
+                                    this.mob.getNavigation().moveTo(path, this.speedModifier);
+                                }
+                            }
+                        }
+
                         if (pathPack.pathStructure().is(PathConstructing.PathStructure.SITU)) {
                             this.setMelee();
                             return;
                         }
+
+
                         Path path1 = this.mob.getNavigation().createPath(this.selfPos, 0);
                         if (path1 != null) {
                             this.mob.getNavigation().moveTo(path1, this.speedModifier);
@@ -288,10 +309,12 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
     }
 
     protected void setBuild(BlockPos target) {
-        this.state = State.BUILD;
-        this.buildTargetPos = target;
-        this.selfPos = this.mob.blockPosition();
-        this.mob.getNavigation().stop();
+        if (-this.lastSetMeleeTime + this.mob.getLevel().getGameTime() >= 100L) {
+            this.state = State.BUILD;
+            this.buildTargetPos = target;
+            this.selfPos = this.mob.blockPosition();
+            this.mob.getNavigation().stop();
+        }
     }
 
     protected void checkAndPerformAttack(LivingEntity livingEntity, double distance) {
@@ -311,11 +334,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
         if (type.is(PathConstructing.BlockType.EMPTY)) {
             return isEmpty(blockState);
         } else if (type.is(PathConstructing.BlockType.SOLID)) {
-            boolean b = isSolid(blockPos, blockState);
-            if (b) {
-                this.mob.getLevel().setBlock(blockPos, Blocks.RED_CONCRETE.defaultBlockState(), 3);
-            }
-            return b;
+            return isSolid(blockPos, blockState);
         } else return false;
     }
 
@@ -402,7 +421,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
     }
 
     private static BlockState getPlaceBlock() {
-        return Blocks.RED_CONCRETE.defaultBlockState();
+        return Blocks.DIRT.defaultBlockState();
     }
 
     protected double getAttackReachSqr(LivingEntity p_25556_) {
