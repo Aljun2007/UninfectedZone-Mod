@@ -4,32 +4,34 @@ import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
-import com.aljun.uninfectedzone.core.zombie.awareness.ZombieAwareness;
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 public class ZombieMainGoal extends Goal {
     public static final Logger LOGGER = LogUtils.getLogger();
+
     private final Mob mob;
     private final HashMap<String, ZombieAbilityInstance<?>> abilities = new HashMap<>();
-    private final ZombieAwareness AWARENESS;
     private final ZombieLike ZOMBIE_LIKE;
+    public InterestPos interestPosition = null;
     private boolean isInInitialization = true;
 
-    public ZombieMainGoal(Mob zombie, Function<ZombieMainGoal, ZombieAwareness> awarenessFunction, ZombieLike zombieLike) {
+    public ZombieMainGoal(Mob zombie, ZombieLike zombieLike) {
         this.mob = zombie;
-        this.AWARENESS = awarenessFunction.apply(this);
         this.ZOMBIE_LIKE = zombieLike;
     }
 
@@ -50,8 +52,12 @@ public class ZombieMainGoal extends Goal {
 
     @Override
     public void tick() {
-        this.AWARENESS.tick();
         this.abilities.forEach((key, ability) -> ability.tick());
+        if (this.interestPosition != null) {
+            if (this.mob.getLevel().getGameTime() - this.interestPosition.gameTime >= 1200L) {
+
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -90,7 +96,7 @@ public class ZombieMainGoal extends Goal {
             tag = tag.getCompound(UninfectedZone.MOD_ID);
             if (tag.contains("abilities") && tag.getTagType("abilities") == Tag.TAG_LIST) {
                 ListTag abilityListTag = tag.getList("abilities", Tag.TAG_COMPOUND);
-                abilityListTag.forEach((tag1 -> {
+                abilityListTag.forEach(tag1 -> {
                     if (tag1 instanceof CompoundTag compoundTag) {
                         String id = compoundTag.getString("id");
                         if (this.abilities.containsKey(id)) {
@@ -98,7 +104,7 @@ public class ZombieMainGoal extends Goal {
                             abilityInstance.loadFromTag(compoundTag);
                         }
                     }
-                }));
+                });
             }
         }
     }
@@ -111,10 +117,6 @@ public class ZombieMainGoal extends Goal {
                 LOGGER.error("Ability adding failed : {}", e.toString());
             }
         }
-    }
-
-    public ZombieAwareness getAwareness() {
-        return this.AWARENESS;
     }
 
     public boolean isAlive() {
@@ -148,12 +150,12 @@ public class ZombieMainGoal extends Goal {
 
     public void broadcast(BroadcastType broadcastType) {
         this.abilities.forEach((key, ability) -> ability.receiveBroadcast(broadcastType));
-        this.mob.goalSelector.getAvailableGoals().forEach((g) -> {
+        this.mob.goalSelector.getAvailableGoals().forEach(g -> {
             if (g.getGoal() instanceof BroadcastReceiver receiver) {
                 receiver.receiveBroadcast(broadcastType);
             }
         });
-        this.mob.targetSelector.getAvailableGoals().forEach((g) -> {
+        this.mob.targetSelector.getAvailableGoals().forEach(g -> {
             if (g.getGoal() instanceof BroadcastReceiver receiver) {
                 receiver.receiveBroadcast(broadcastType);
             }
@@ -164,9 +166,23 @@ public class ZombieMainGoal extends Goal {
         return this.ZOMBIE_LIKE;
     }
 
+    public List<EntityType<?>> getActiveAttackingList() {
+        return new ArrayList<>();
+    }
+
+    public void addInterestPos(BlockPos blockPos, int priority) {
+        if (this.interestPosition == null || this.interestPosition.priority <= priority) {
+            this.interestPosition = new InterestPos(this.mob.getLevel().getGameTime(), blockPos, priority);
+        }
+    }
+
     public interface BroadcastReceiver {
         default void receiveBroadcast(BroadcastType broadcastType) {
         }
+    }
+
+    public record InterestPos(long gameTime, BlockPos blockPos, int priority) {
+
     }
 
     public static class BroadcastType {

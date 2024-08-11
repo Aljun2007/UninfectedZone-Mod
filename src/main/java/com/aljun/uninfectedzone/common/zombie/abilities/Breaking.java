@@ -3,6 +3,7 @@ package com.aljun.uninfectedzone.common.zombie.abilities;
 import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbility;
 import com.aljun.uninfectedzone.api.zombie.abilities.ZombieAbilityInstance;
 import com.aljun.uninfectedzone.core.utils.MathUtils;
+import com.aljun.uninfectedzone.core.utils.ZombieUtils;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -13,7 +14,6 @@ import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -59,6 +59,7 @@ public class Breaking extends ZombieAbility {
             BLACK_LIST.add(Blocks.NETHER_PORTAL);
         }
 
+        private final float SPEED;
         private final Mob mob;
         private float progress = 0;
         private BlockState state = Blocks.AIR.defaultBlockState();
@@ -71,6 +72,7 @@ public class Breaking extends ZombieAbility {
         public BreakingInstance(Breaking ability, ZombieMainGoal main) {
             super(ability, main);
             this.mob = main.getZombie();
+            this.SPEED = (float) ZombieUtils.getZombieDigSpeed(this.mob);
         }
 
         public boolean checkToStartBreak(BlockPos pos) {
@@ -153,7 +155,7 @@ public class Breaking extends ZombieAbility {
 
                 if (mob.getEyePosition().distanceToSqr(MathUtils.blockPosToVec3(pos)) <= 16d) {
                     this.state = this.level.getBlockState(this.pos);
-                    this.progress += getBreakProgress(this.state, this.mob, this.pos);
+                    this.progress += this.SPEED * getBreakProgress(this.state, this.mob, this.pos);
                     if (this.progress >= 1f) {
                         this.succeedBreak();
                     } else {
@@ -285,7 +287,7 @@ public class Breaking extends ZombieAbility {
             } else if (broadcastType.is(ZombieMainGoal.BroadcastType.HURT)) {
                 if (this.mob.getLastDamageSource() != null) {
                     if (this.mob.getLastDamageSource().getEntity() != null) {
-                        if (this.mob.getLastDamageSource().getEntity() instanceof LivingEntity) {
+                        if (ZombieUtils.isTargetLegal(this.mob.getLastDamageSource().getEntity())) {
                             this.failBreak();
                         }
                     }

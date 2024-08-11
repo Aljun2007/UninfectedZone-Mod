@@ -97,9 +97,9 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
                             )))
                             .append(" " + I18n.get("screen.uninfectedzone.base.sign1") + " ")
                             .append(this.configSet.getValueDisplay(this.getValue())).append("   ")
-                            .append(this.configSet.CONFIG_TYPE.getTranslatedName().withStyle(ChatFormatting.GRAY))
+                            .append(this.configSet.CONFIG_TYPE.getTranslatedName().withStyle(ChatFormatting.YELLOW))
                             .append(" ")
-                            .append(this.configSet.CONFIG_TYPE.getTranslatedLocation().withStyle(ChatFormatting.GRAY));
+                            .append(this.configSet.CONFIG_TYPE.getTranslatedLocation().withStyle(ChatFormatting.AQUA));
         }
 
         public T getValue() {
@@ -122,7 +122,7 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
         public void render(@NotNull PoseStack poseStack, int index, int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY, boolean hover, float partialTick) {
             Component component = this.getDisplayComponent();
             //drawCenteredString(poseStack, ConfigSetList.this.screen.font(), this.getDisplayComponent(), (rowLeft + 90 - this.getDisplayWidth()), (rowTop + itemHeight / 2 - 9 / 2), ConfigSetScreen.WHITE);
-            drawCenteredString(poseStack, ConfigSetList.this.screen.font(), this.getDisplayComponent(), rowLeft, rowTop + ConfigSetList.this.screen.font().lineHeight / 2, ConfigSetScreen.WHITE);
+            drawCenteredString(poseStack, ConfigSetList.this.screen.font(), this.getDisplayComponent(), rowLeft + this.getDisplayWidth() / 2, rowTop + ConfigSetList.this.screen.font().lineHeight / 2, ConfigSetScreen.WHITE);
         }
 
         private Component getDisplayComponent() {

@@ -19,8 +19,8 @@ public class ZombieAttributes {
 
     public static void register(IForgeRegistry<Attribute> registry) {
         DIG_SPEED = register(registry, () -> new RangedAttribute(UninfectedZone.MOD_ID + ".digSpeed", 1d, 0d, 64d).setSyncable(true), "dig_speed");
-        SMELLING_DISTANCE = register(registry, () -> new RangedAttribute(UninfectedZone.MOD_ID + ".smellingDistance", 25d, 0d, 256d).setSyncable(true), "smelling_distance");
-        HEARING_DISTANCE = register(registry, () -> new RangedAttribute(UninfectedZone.MOD_ID + ".hearingDistance", 200d, 0d, 2048d).setSyncable(true), "hearing_distance");
+        SMELLING_DISTANCE = register(registry, () -> new RangedAttribute(UninfectedZone.MOD_ID + ".smellingDistance", 20d, 0d, 256d).setSyncable(true), "smelling_distance");
+        HEARING_DISTANCE = register(registry, () -> new RangedAttribute(UninfectedZone.MOD_ID + ".hearingDistance", 200d, 0d, 512d).setSyncable(true), "hearing_distance");
         SUN_SENSITIVE = register(registry, () -> new RangedAttribute(UninfectedZone.MOD_ID + ".sunSensitive", 1d, 0d, 1d).setSyncable(true), "sun_sensitive");
         CONVERT_IN_WATER = register(registry, () -> new RangedAttribute(UninfectedZone.MOD_ID + ".convertInWater", 1d, 0d, 1d).setSyncable(true), "convert_in_water");
     }

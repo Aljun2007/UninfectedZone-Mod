@@ -30,12 +30,12 @@ public class EntityTypeCondition implements LootItemCondition {
 
     private static List<ResourceLocation> toList(List<EntityType<?>> entityTypes) {
         List<ResourceLocation> resourceLocations = new ArrayList<>();
-        entityTypes.forEach((entityType -> {
+        entityTypes.forEach(entityType -> {
             ResourceLocation resourceLocation = entityType.getRegistryName();
             if (resourceLocation != null) {
                 resourceLocations.add(resourceLocation);
             }
-        }));
+        });
         return resourceLocations;
     }
 
@@ -46,9 +46,9 @@ public class EntityTypeCondition implements LootItemCondition {
 
     public static LootItemCondition.Builder entityType(String... entityTypes) {
         List<ResourceLocation> resourceLocations = new ArrayList<>();
-        Arrays.stream(entityTypes).forEach((string -> {
+        Arrays.stream(entityTypes).forEach(string -> {
             resourceLocations.add(new ResourceLocation(string));
-        }));
+        });
         return () -> new EntityTypeCondition(resourceLocations);
     }
 
@@ -83,11 +83,11 @@ public class EntityTypeCondition implements LootItemCondition {
             if (jsonObject.has("entity_types")) {
                 if (jsonObject.get("entity_types").isJsonArray()) {
                     JsonArray entityTypes = jsonObject.getAsJsonArray("entity_types");
-                    entityTypes.forEach((jsonElement -> {
+                    entityTypes.forEach(jsonElement -> {
                         if (jsonElement.isJsonPrimitive()) {
                             entityTypeList.add(new ResourceLocation(jsonElement.getAsString()));
                         }
-                    }));
+                    });
                 }
             }
             return new EntityTypeCondition(entityTypeList);

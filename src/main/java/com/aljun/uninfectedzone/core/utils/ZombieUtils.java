@@ -3,10 +3,14 @@ package com.aljun.uninfectedzone.core.utils;
 import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.api.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
+import com.aljun.uninfectedzone.common.zombie.attribute.ZombieAttributes;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -60,7 +64,7 @@ public class ZombieUtils {
         return TagUtils.fastRead(TagUtils.getRoot(mob), ZOMBIE_LIKE);
     }
 
-    public static boolean canBeAttack(LivingEntity target) {
+    public static boolean canAttack(LivingEntity target) {
         return true;
     }
 
@@ -74,5 +78,38 @@ public class ZombieUtils {
                 }
         );
         return result[0];
+    }
+
+    public static boolean isTargetLegal(@Nullable Entity entity) {
+        if (entity == null) return false;
+        boolean b = true;
+        if (entity instanceof Player player) {
+            b = !player.isCreative() && !player.isSpectator();
+        }
+        return b && entity.isAlive();
+    }
+
+    public static double getZombieHearingDistance(Mob mob) {
+        return getAttributeOrDefault(mob, ZombieAttributes.SMELLING_DISTANCE.get());
+    }
+
+    public static double getAttributeOrDefault(Mob mob, Attribute attribute) {
+        try {
+            return mob.getAttributeValue(attribute);
+        } catch (Throwable throwable) {
+            return attribute.getDefaultValue();
+        }
+    }
+
+    public static double getZombieDigSpeed(Mob mob) {
+        return getAttributeOrDefault(mob, ZombieAttributes.DIG_SPEED.get());
+    }
+
+    public static boolean canZombieFollow(Mob mob, LivingEntity target) {
+        return mob.distanceToSqr(target) <= getZombieSmellingDistance(mob) * 4;
+    }
+
+    public static double getZombieSmellingDistance(Mob mob) {
+        return getAttributeOrDefault(mob, ZombieAttributes.SMELLING_DISTANCE.get());
     }
 }

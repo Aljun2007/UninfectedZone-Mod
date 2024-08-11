@@ -47,6 +47,7 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
     protected PathConstructing.PathConstructingInstance.PathPack pathPack;
     protected BlockPos selfPos;
     private long lastSetMeleeTime = 0L;
+    private long lastGiveUpBuildTime = 0L;
 
     public BreakAndBuildZombieMeleeAttackGoal(ZombieMainGoal mainGoal, Mob zombie) {
         this.mob = zombie;
@@ -229,17 +230,20 @@ public class BreakAndBuildZombieMeleeAttackGoal extends Goal implements ZombieMa
 
                         this.pathPack = this.pathConstructing.create(this.selfPos, this.buildTargetPos);
 
-                        Path path = this.mob.getNavigation().createPath(livingentity, 0);
+                        if (this.mob.getLevel().getGameTime() - this.lastGiveUpBuildTime > 200L) {
+                            Path path = this.mob.getNavigation().createPath(livingentity, 0);
 
-                        if (path != null) {
-                            Node finalNode = path.getEndNode();
-                            if (finalNode != null) {
-                                BlockPos pathEnd = finalNode.asBlockPos();
-                                BlockPos buildEnd = pathPack.pathStructure().getEndPos(pathPack.horizontalDirection(), this.selfPos);
+                            if (path != null) {
+                                Node finalNode = path.getEndNode();
+                                if (finalNode != null) {
+                                    BlockPos pathEnd = finalNode.asBlockPos();
+                                    BlockPos buildEnd = pathPack.pathStructure().getEndPos(pathPack.horizontalDirection(), this.selfPos);
 
-                                if ((Math.sqrt(pathEnd.distSqr(livingentity.blockPosition()) + 10) < Math.sqrt(buildEnd.distSqr(livingentity.blockPosition())))) {
-                                    this.setMelee();
-                                    this.mob.getNavigation().moveTo(path, this.speedModifier);
+                                    if ((Math.sqrt(pathEnd.distSqr(livingentity.blockPosition()) + 10) < Math.sqrt(buildEnd.distSqr(livingentity.blockPosition())))) {
+                                        this.setMelee();
+                                        this.mob.getNavigation().moveTo(path, this.speedModifier);
+                                        this.lastGiveUpBuildTime = this.mob.getLevel().getGameTime();
+                                    }
                                 }
                             }
                         }

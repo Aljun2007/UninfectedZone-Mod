@@ -7,6 +7,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.function.Supplier;
 
 public class ZombieAbilities {
+    public static Supplier<Hearing> HEARING;
     public static Supplier<Breaking> BREAKING;
     public static Supplier<Placing> PLACING;
     public static Supplier<PathConstructing> PATH_CONSTRUCTING;
@@ -16,6 +17,7 @@ public class ZombieAbilities {
         BREAKING = register(registry, Breaking::new, Breaking.KEY);
         PLACING = register(registry, Placing::new, Placing.KEY);
         PATH_CONSTRUCTING = register(registry, PathConstructing::new, PathConstructing.KEY);
+        HEARING = register(registry, Hearing::new, Hearing.KEY);
     }
 
     private static <T extends ZombieAbility> Supplier<T> register(IForgeRegistry<ZombieAbility> registry, Supplier<T> instance, String key) {

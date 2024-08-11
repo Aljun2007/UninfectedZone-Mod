@@ -63,13 +63,47 @@ public class ConfigSets {
     }
 
     public static class GameProperty {
+        public static Supplier<ConfigSet<List<String>>> ZOMBIE_TARGETS;
+        public static Supplier<ConfigSet<List<String>>> ZOMBIE_MEMBERS;
+
         private static void register() {
+            ZOMBIE_MEMBERS = ConfigSets.register(ConfigType.GAME_PROPERTY, VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.STRING_LIST)
+                    .defaultVar(List.of(
+                            "minecraft:zombie",
+                            "minecraft:zombie_villager",
+                            "minecraft:husk",
+                            "witherstormmod:sickened_zombie",
+                            "uninfectedzone:custom_zombie",
+                            "uninfectedzone:custom_zombie_slim",
+                            "specialmobs:specialzombie",
+                            "specialmobs:fishingzombie",
+                            "specialmobs:firezombie",
+                            "specialmobs:plaguezombie",
+                            "specialmobs:brutezombie",
+                            "specialmobs:huskzombie",
+                            "specialmobs:madscientistzombie",
+                            "specialmobs:frozenzombie"
+                    )).create("zombie_members"));
+            ZOMBIE_TARGETS = ConfigSets.register(ConfigType.GAME_PROPERTY, VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.STRING_LIST)
+                    .defaultVar(List.of(
+                            "minecraft:villager",
+                            "minecraft:player",
+                            "guardvillagers:guard",
+                            "minecraft:iron_golem",
+                            "minecraft:snow_golem",
+                            "minecraft:wandering_trader"
+                    )).create("zombie_targets"));
         }
     }
 
     public static class GameRule {
+        public static Supplier<ConfigSet<Boolean>> CAN_ZOMBIE_BREAK_AND_BUILD;
+
         private static void register() {
+            CAN_ZOMBIE_BREAK_AND_BUILD = ConfigSets.register(ConfigType.GAME_RULE, VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.BOOLEAN)
+                    .defaultVar(true).create("can_zombie_break_and_build"));
         }
+
     }
 
 }

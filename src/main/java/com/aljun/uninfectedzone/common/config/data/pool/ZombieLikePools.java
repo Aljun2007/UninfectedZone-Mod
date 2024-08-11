@@ -12,7 +12,7 @@ public class ZombieLikePools {
 
     public static Supplier<ZombieLikePool> testPool =
             () -> new ZombieLikePool()
-                    .add(ZombieLikes.TEST_ZOMBIE.get(), 1d, EntityTypeCondition.entityType(
+                    .add(ZombieLikes.BREAK_AND_BUILD_ZOMBIE.get(), 1d, EntityTypeCondition.entityType(
                             "minecraft:zombie"
                     ).build())
                     .add(ZombieLike.DUMMY.get(), 1d, EntityTypeCondition.entityType(

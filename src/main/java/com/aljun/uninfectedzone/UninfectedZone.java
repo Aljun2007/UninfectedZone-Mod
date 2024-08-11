@@ -1,7 +1,8 @@
 package com.aljun.uninfectedzone;
 
 import com.aljun.uninfectedzone.core.config.UninfectedZoneConfig;
-import com.aljun.uninfectedzone.core.modlinkage.tazc.LinkageGunMod;
+import com.aljun.uninfectedzone.core.modlinkage.cgm.LinkageCGM;
+import com.aljun.uninfectedzone.core.modlinkage.tazc.LinkageTACZ;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
@@ -29,8 +30,8 @@ public class UninfectedZone {
         }
         File file = new File(gamePath);
         file.mkdirs();
-        LOGGER.info("UninfectedZoneDirectory:{}", gamePath);
-        LinkageGunMod.init();
+        LinkageTACZ.init();
+        LinkageCGM.init();
     }
 
     public static String getAbsPath() {

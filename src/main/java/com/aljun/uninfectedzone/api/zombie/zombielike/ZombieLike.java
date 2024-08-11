@@ -62,7 +62,7 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
         if (mob != null) {
             ZombieMainGoal zombieMainGoal = this.createMainGoal(mob);
             zombieMainGoal.getZombie().goalSelector.removeAllGoals();
-            //zombieMainGoal.getZombie().targetSelector.removeAllGoals();
+            zombieMainGoal.getZombie().targetSelector.removeAllGoals();
             zombieMainGoal.getZombie().goalSelector.addGoal(1, zombieMainGoal);
             this.registerAbilities(zombieMainGoal);
             this.registerGoals(zombieMainGoal);

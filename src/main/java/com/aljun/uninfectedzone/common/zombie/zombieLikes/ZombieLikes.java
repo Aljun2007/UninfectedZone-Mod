@@ -9,11 +9,13 @@ import java.util.function.Supplier;
 public class ZombieLikes {
 
     public static Supplier<ZombieLike> VANILLA_ZOMBIE;
-    public static Supplier<ZombieLike> TEST_ZOMBIE;
+    public static Supplier<ZombieLike> BREAK_AND_BUILD_ZOMBIE;
+    public static Supplier<ZombieLike> NORMAL_ZOMBIE;
 
     public static void register(IForgeRegistry<ZombieLike> registry) {
         VANILLA_ZOMBIE = register(registry, VanillaZombie::new, "vanilla_zombie");
-        TEST_ZOMBIE = register(registry, TestZombie::new, "test_zombie");
+        BREAK_AND_BUILD_ZOMBIE = register(registry, BuildAndBreakZombie::new, "break_and_build_zombie");
+        NORMAL_ZOMBIE = register(registry, BuildAndBreakZombie::new, "normal_zombie");
     }
 
     private static Supplier<ZombieLike> register(IForgeRegistry<ZombieLike> registry, Supplier<ZombieLike> instance, String key) {

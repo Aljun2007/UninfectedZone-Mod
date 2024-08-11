@@ -85,7 +85,7 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
         if (jsonObject.has("candidates")) {
             if (jsonObject.get("candidates").isJsonArray()) {
                 JsonArray candidates = jsonObject.getAsJsonArray("candidates");
-                candidates.forEach((jsonElement -> {
+                candidates.forEach(jsonElement -> {
                     if (jsonElement.isJsonObject()) {
                         int i = POOL_VALUE.size();
                         JsonObject candidate = jsonElement.getAsJsonObject();
@@ -122,23 +122,22 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
                         List<LootItemCondition> conditionList = new ArrayList<>();
                         if (candidate.has("conditions")) {
                             if (candidate.get("conditions").isJsonArray()) {
-                                JsonArray conditions = jsonObject.getAsJsonArray("conditions");
-                                try {
-                                    LootItemCondition[] itemConditions = DESERIALIZATION_CONTEXT.deserializeConditions(conditions, "c", LootContextParamSets.ENTITY);
-                                    conditionList.addAll(List.of(itemConditions));
-                                } catch (Throwable throwable) {
-                                    LOGGER.error("Loading Conditions({}) failed : {}", candidate, throwable.toString());
-                                    return;
-                                }
+                                JsonArray conditionsArray = candidate.getAsJsonArray("conditions");
+                                conditionsArray.forEach(jsonElement1 -> {
+                                    try {
+                                        conditionList.add(predicateGson.fromJson(jsonElement1, LootItemCondition.class));
+                                    } catch (Throwable throwable) {
+                                        LOGGER.error("Loading Conditions(\n{}\n) failed : {}", jsonElement1, throwable.toString());
+                                    }
+                                });
                             }
                         }
 
                         POOL_VALUE.put(i, new ResourceLocation(zombieLike));
                         POOL_WEIGHT.put(i, weight);
                         POOL_CONDITIONS.put(i, conditionList);
-
                     }
-                }));
+                });
             }
         }
     }
@@ -229,16 +228,15 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
 
         List<Integer> legalList = new ArrayList<>();
 
-        LootContext context = (new LootContext.Builder(serverLevel)
+        LootContext context = new LootContext.Builder(serverLevel)
                 .withRandom(mob.getRandom())
                 .withParameter(LootContextParams.THIS_ENTITY, mob)
-                .withParameter(LootContextParams.ORIGIN, mob.position())
-        ).create(LootContextParamSets.ENTITY);
+                .withParameter(LootContextParams.ORIGIN, mob.position()).create(LootContextParamSets.ENTITY);
 
 
         this.POOL_CONDITIONS.forEach((key, conditions) -> {
             final boolean[] b = {true};
-            conditions.forEach((condition) -> {
+            conditions.forEach(condition -> {
                 if (!b[0]) return;
                 b[0] = condition.test(context);
             });
