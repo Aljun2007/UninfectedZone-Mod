@@ -27,11 +27,7 @@ public class VanillaZombie extends ZombieLike {
     }
 
     @Override
-    protected void registerAbilities(ZombieMainGoal zombieMainGoal) {
-    }
-
-    @Override
-    protected void registerGoals(ZombieMainGoal zombieMainGoal) {
+    protected void loadGoals(ZombieMainGoal zombieMainGoal) {
         zombieMainGoal.getZombie().goalSelector.addGoal(8, new LookAtPlayerGoal(zombieMainGoal.getZombie(), Player.class, 8.0F));
         zombieMainGoal.getZombie().goalSelector.addGoal(8, new RandomLookAroundGoal(zombieMainGoal.getZombie()));
         zombieMainGoal.getZombie().goalSelector.addGoal(2, new ZombieAttackGoal((Zombie) zombieMainGoal.getZombie(), 1.0D, false));
@@ -47,6 +43,10 @@ public class VanillaZombie extends ZombieLike {
         if (zombieMainGoal.getZombie() instanceof Zombie zombie) {
             zombieMainGoal.getZombie().goalSelector.addGoal(6, new MoveThroughVillageGoal(zombie, 1.0D, true, 4, zombie::canBreakDoors));
         }
+    }
+
+    @Override
+    protected void loadAbilities(ZombieMainGoal zombieMainGoal) {
     }
 
     static class ZombieAttackTurtleEggGoal extends RemoveBlockGoal {

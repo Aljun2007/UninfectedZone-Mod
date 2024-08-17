@@ -1,7 +1,10 @@
 package com.aljun.uninfectedzone.core.game.mode;
 
+import com.aljun.uninfectedzone.core.event.provider.UninfectedZoneEventFactory;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.function.Function;
@@ -21,6 +24,13 @@ public abstract class GameMode {
         this.name = builder.getRegistryName();
     }
 
+    public final double modifyAndPostEvent(double value, Attribute attribute, Mob mob) {
+        return UninfectedZoneEventFactory.onModifyingAttributes(this, mob, this.modify(value, attribute, mob), attribute).getValue();
+    }
+
+    protected abstract double modify(double value, Attribute attribute, Mob mob);
+
+
     public abstract void load(JsonObject dataJson);
 
     public abstract void save(JsonObject dataJson);
@@ -29,6 +39,11 @@ public abstract class GameMode {
 
         protected DisabledMode(Builder builder) {
             super(builder);
+        }
+
+        @Override
+        protected double modify(double value, Attribute attribute, Mob mob) {
+            return value;
         }
 
         @Override

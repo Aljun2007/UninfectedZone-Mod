@@ -7,10 +7,7 @@ import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import com.aljun.uninfectedzone.common.config.ConfigSets;
 import com.aljun.uninfectedzone.core.data.loot_table.conditions.UninfectedZoneLootItemConditions;
 import com.aljun.uninfectedzone.core.game.mode.GameMode;
-import com.aljun.uninfectedzone.core.network.ByteNetWorking;
-import com.aljun.uninfectedzone.core.network.ChunkBorderCommandNetworking;
-import com.aljun.uninfectedzone.core.network.ConfigNetworking;
-import com.aljun.uninfectedzone.core.network.UninfectedChuckNetworking;
+import com.aljun.uninfectedzone.core.network.*;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -46,7 +43,8 @@ public class UninfectedZoneRegisterEvent {
         UninfectedZoneLootItemConditions.register();
         event.enqueueWork(() -> {
             ChunkBorderCommandNetworking.registerMessage();
-            ConfigNetworking.registerMessage();
+            ConfigJsonNetworking.registerMessage();
+            ConfigEnquiringNetworking.registerMessage();
             UninfectedChuckNetworking.registerMessage();
             ByteNetWorking.registerMessage();
             UninfectedZone.afterRegister();

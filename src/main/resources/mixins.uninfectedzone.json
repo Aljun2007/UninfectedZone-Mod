@@ -11,6 +11,10 @@
     "ZombieMixin"
   ],
   "client": [
+    "client.AbstractZombieRendererMixin",
+    "client.DrownedRendererMixin",
+    "client.HuskRendererMixin",
+    "client.ZombieRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -20,6 +20,11 @@ public class CustomZombieRender extends HumanoidMobRenderer<CustomZombie, Custom
     public CustomZombieRender(EntityRendererProvider.Context context, boolean slim) {
         this(context, slim ? ModelLayers.PLAYER_SLIM : ModelLayers.ZOMBIE, slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.ZOMBIE_INNER_ARMOR, slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.ZOMBIE_OUTER_ARMOR, slim);
         this.slim = slim;
+        if (!slim) {
+            if (TextureUtils.useEye()) {
+                this.addLayer(new ZombieEyeLayer<>(this, context.getModelSet()));
+            }
+        }
     }
 
     public CustomZombieRender(EntityRendererProvider.Context p_174458_, ModelLayerLocation p_174459_, ModelLayerLocation p_174460_, ModelLayerLocation p_174461_, boolean slim) {

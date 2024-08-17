@@ -1,13 +1,11 @@
 package com.aljun.uninfectedzone.core.config;
 
 import com.aljun.uninfectedzone.core.file.config.ConfigFileUtils;
-import com.aljun.uninfectedzone.core.network.ConfigNetworking;
-import com.aljun.uninfectedzone.core.utils.ComponentUtils;
+import com.aljun.uninfectedzone.core.network.ConfigJsonNetworking;
 import com.aljun.uninfectedzone.core.utils.JsonManager;
 import com.aljun.uninfectedzone.core.utils.VarSet;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.PacketDistributor;
@@ -15,10 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Function;
+import java.util.*;
 import java.util.function.Supplier;
 
 
@@ -89,9 +84,9 @@ public class UninfectedZoneConfig {
         if (!jsonObject.get("type").getAsString().equals(configType.getName())) return;
         JsonManager jsonManager = new JsonManager(jsonObject);
         HashMap<String, ConfigHolder<?>> config = CONFIGS_HOLDERS.get(configType);
-        config.forEach(((s, configHolder) -> {
+        config.forEach((s, configHolder) -> {
             configHolder.saveToJson(jsonManager);
-        }));
+        });
     }
 
     public static void saveGlobal() {
@@ -107,21 +102,21 @@ public class UninfectedZoneConfig {
     }
 
     public static void sendToClient(ServerPlayer player) {
-        ConfigNetworking.INSTANCE.send(
+        ConfigJsonNetworking.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> player),
-                ConfigNetworking.createPack(toJsonObject(ConfigType.COMMON))
+                ConfigJsonNetworking.createPack(toJsonObject(ConfigType.COMMON))
         );
-        ConfigNetworking.INSTANCE.send(
+        ConfigJsonNetworking.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> player),
-                ConfigNetworking.createPack(toJsonObject(ConfigType.GAME_RULE))
+                ConfigJsonNetworking.createPack(toJsonObject(ConfigType.GAME_RULE))
         );
-        ConfigNetworking.INSTANCE.send(
+        ConfigJsonNetworking.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> player),
-                ConfigNetworking.createPack(toJsonObject(ConfigType.GAME_PROPERTY))
+                ConfigJsonNetworking.createPack(toJsonObject(ConfigType.GAME_PROPERTY))
         );
-        ConfigNetworking.INSTANCE.send(
+        ConfigJsonNetworking.INSTANCE.send(
                 PacketDistributor.PLAYER.with(() -> player),
-                ConfigNetworking.createPack(toJsonObject(ConfigType.GAME_DATA))
+                ConfigJsonNetworking.createPack(toJsonObject(ConfigType.GAME_DATA))
         );
     }
 
@@ -168,26 +163,26 @@ public class UninfectedZoneConfig {
             ConfigFileUtils.saveConfig(ConfigType.GAME_DATA, gameData, server);
         }
 
-        server.getPlayerList().getPlayers().forEach((player -> {
+        server.getPlayerList().getPlayers().forEach(player -> {
             if (gameData != null) {
-                ConfigNetworking.INSTANCE.send(
+                ConfigJsonNetworking.INSTANCE.send(
                         PacketDistributor.PLAYER.with(() -> player),
-                        ConfigNetworking.createPack(gameData)
+                        ConfigJsonNetworking.createPack(gameData)
                 );
             }
             if (gameProperty != null) {
-                ConfigNetworking.INSTANCE.send(
+                ConfigJsonNetworking.INSTANCE.send(
                         PacketDistributor.PLAYER.with(() -> player),
-                        ConfigNetworking.createPack(gameProperty)
+                        ConfigJsonNetworking.createPack(gameProperty)
                 );
             }
             if (gameRule != null) {
-                ConfigNetworking.INSTANCE.send(
+                ConfigJsonNetworking.INSTANCE.send(
                         PacketDistributor.PLAYER.with(() -> player),
-                        ConfigNetworking.createPack(gameRule)
+                        ConfigJsonNetworking.createPack(gameRule)
                 );
             }
-        }));
+        });
     }
 
     public static void loadGlobal() {
@@ -203,7 +198,26 @@ public class UninfectedZoneConfig {
         if (!jsonObject.get("type").getAsString().equals(configType.getName())) return;
         JsonManager jsonManager = new JsonManager(jsonObject);
         HashMap<String, ConfigHolder<?>> config = CONFIGS_HOLDERS.get(configType);
-        config.forEach(((s, configHolder) -> configHolder.loadFromJson(jsonManager)));
+        config.forEach((s, configHolder) -> configHolder.loadFromJsonOrDefault(jsonManager));
+    }
+
+    public static void receive(JsonObject jsonObject) {
+        if (jsonObject.get("type").isJsonNull()) return;
+        String name = jsonObject.get("type").getAsString();
+        Optional<ConfigType> type = Arrays.stream(ConfigType.values()).filter(type1 -> type1.getName().equals(name)).findFirst();
+        type.ifPresent(configType -> {
+            if (!configType.is(ConfigType.CLIENT)) {
+                UninfectedZoneConfig.loadOrAbsent(jsonObject, configType);
+            }
+        });
+    }
+
+    public static void loadOrAbsent(JsonObject jsonObject, ConfigType configType) {
+        if (jsonObject.get("type").isJsonNull()) return;
+        if (!jsonObject.get("type").getAsString().equals(configType.getName())) return;
+        JsonManager jsonManager = new JsonManager(jsonObject);
+        HashMap<String, ConfigHolder<?>> config = CONFIGS_HOLDERS.get(configType);
+        config.forEach((s, configHolder) -> configHolder.loadFromJsonOrAbsent(jsonManager));
     }
 
     public static void init() {
@@ -227,15 +241,10 @@ public class UninfectedZoneConfig {
         public final VarSet<T> varSet;
         public String description = null;
         public Supplier<Boolean> active = () -> true;
-        public Function<T, Component> valueDisplay = t -> ComponentUtils.literature(t.toString());
 
         Builder(VarSet<T> varSet, ConfigType configType) {
             this.varSet = varSet;
             this.configType = configType;
-        }
-
-        public void setValueDisplay(Function<T, Component> valueDisplay) {
-            this.valueDisplay = valueDisplay;
         }
 
         public Builder<T> setDescription() {
@@ -251,8 +260,6 @@ public class UninfectedZoneConfig {
             this.active = booleanSupplier;
             return this;
         }
-
-
     }
 
 }

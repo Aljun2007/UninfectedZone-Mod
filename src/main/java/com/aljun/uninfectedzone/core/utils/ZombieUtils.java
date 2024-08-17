@@ -4,55 +4,49 @@ import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.api.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
 import com.aljun.uninfectedzone.common.zombie.attribute.ZombieAttributes;
+import com.aljun.uninfectedzone.core.game.GameUtils;
 import com.aljun.uninfectedzone.core.zombie.goal.ZombieMainGoal;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 
 public class ZombieUtils {
 
     public static final VarSet<String> ZOMBIE_LIKE = VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.STRING).defaultVar("uninfectedzone:dummy").create("zombie_like");
 
-    public static final VarSet<Boolean> LOADED = VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.BOOLEAN).defaultVar(false).create("loaded");
+    public static final VarSet<Boolean> REGISTERED = VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.BOOLEAN).defaultVar(false).create("registered");
 
-    public static final VarSet<Boolean> MARKED_TO_LOAD = VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.BOOLEAN).defaultVar(false).create("marked_to_load");
+    public static final VarSet<Boolean> MARKED_TO_REGISTER = VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.BOOLEAN).defaultVar(false).create("marked_to_register");
+    public static VarSet<Boolean> SUN_SENSITIVE = VarSet.builder(UninfectedZone.MOD_ID, VarSet.VarType.BOOLEAN).defaultVar(true).create("sun_sensitive");
 
     public static boolean isMarkedToLoad(Mob mob) {
-        return TagUtils.fastRead(TagUtils.getRoot(mob), MARKED_TO_LOAD);
+        return TagUtils.fastRead(TagUtils.getRoot(mob), MARKED_TO_REGISTER);
     }
 
     public static void clean(Mob mob) {
         if (isLoaded(mob)) {
             mob.goalSelector.removeAllGoals();
             mob.targetSelector.removeAllGoals();
-            TagUtils.fastWrite(TagUtils.getRoot(mob), LOADED, false);
+            TagUtils.fastWrite(TagUtils.getRoot(mob), REGISTERED, false);
         }
     }
 
     public static boolean isLoaded(Mob mob) {
-        return TagUtils.fastRead(TagUtils.getRoot(mob), LOADED);
+        return TagUtils.fastRead(TagUtils.getRoot(mob), REGISTERED);
     }
 
     public static void markToLoad(Mob mob) {
         if (!isLoaded(mob)) {
-            TagUtils.fastWrite(TagUtils.getRoot(mob), MARKED_TO_LOAD, true);
+            TagUtils.fastWrite(TagUtils.getRoot(mob), MARKED_TO_REGISTER, true);
         }
-    }
-
-    public static void loadOrCover(Mob mob, ZombieLike zombieLike) {
-        try {
-            TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.ZOMBIE_LIKE, Objects.requireNonNull(zombieLike.getRegistryName()).toString());
-        } catch (NullPointerException e) {
-            TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.ZOMBIE_LIKE, "uninfectedzone:dummy");
-        }
-        TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.LOADED, true);
     }
 
     public static ZombieLike getZombieLike(Mob mob) {
@@ -64,7 +58,7 @@ public class ZombieUtils {
         return TagUtils.fastRead(TagUtils.getRoot(mob), ZOMBIE_LIKE);
     }
 
-    public static boolean canAttack(LivingEntity target) {
+    public static boolean isTarget(LivingEntity target) {
         return true;
     }
 
@@ -94,22 +88,36 @@ public class ZombieUtils {
     }
 
     public static double getAttributeOrDefault(Mob mob, Attribute attribute) {
+        double value;
         try {
-            return mob.getAttributeValue(attribute);
+            value = mob.getAttributeValue(attribute);
         } catch (Throwable throwable) {
-            return attribute.getDefaultValue();
+            value = attribute.getDefaultValue();
         }
+        return GameUtils.getGameMode().modifyAndPostEvent(value, attribute, mob);
     }
 
     public static double getZombieDigSpeed(Mob mob) {
         return getAttributeOrDefault(mob, ZombieAttributes.DIG_SPEED.get());
     }
 
-    public static boolean canZombieFollow(Mob mob, LivingEntity target) {
-        return mob.distanceToSqr(target) <= getZombieSmellingDistance(mob) * 4;
+    public static boolean canZombieFollowTarget(Mob mob, LivingEntity target) {
+        return mob.distanceToSqr(target) <= getZombieSmellingDistance(mob) * 3;
     }
 
     public static double getZombieSmellingDistance(Mob mob) {
         return getAttributeOrDefault(mob, ZombieAttributes.SMELLING_DISTANCE.get());
+    }
+
+    public static void randomSunSensitive(Zombie zombie) {
+        double chance = getAttributeOrDefault(zombie, ZombieAttributes.SUN_SENSITIVE.get());
+        TagUtils.fastWrite(TagUtils.getRoot(zombie), SUN_SENSITIVE, RandomHelper.booleanByChance(chance));
+    }
+
+    public static void reloadAttribute(Mob mob, Attribute attribute) {
+        AttributeInstance instance = mob.getAttribute(attribute);
+        if (instance != null) {
+            instance.setBaseValue(getAttributeOrDefault(mob, attribute));
+        }
     }
 }

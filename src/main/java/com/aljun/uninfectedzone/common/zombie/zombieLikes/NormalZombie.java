@@ -17,15 +17,15 @@ public class NormalZombie extends ZombieLike {
     }
 
     @Override
-    protected void registerAbilities(ZombieMainGoal zombieMainGoal) {
-        zombieMainGoal.addAbility(ZombieAbilities.HEARING.get());
-    }
-
-    @Override
-    protected void registerGoals(ZombieMainGoal zombieMainGoal) {
+    protected void loadGoals(ZombieMainGoal zombieMainGoal) {
         this.registerAttackingGoal(zombieMainGoal);
         this.registerBehavingGoals(zombieMainGoal);
         this.registerTargetChoosingGoal(zombieMainGoal);
+    }
+
+    @Override
+    protected void loadAbilities(ZombieMainGoal zombieMainGoal) {
+        zombieMainGoal.addAbility(ZombieAbilities.HEARING.get());
     }
 
     protected void registerAttackingGoal(ZombieMainGoal zombieMainGoal) {

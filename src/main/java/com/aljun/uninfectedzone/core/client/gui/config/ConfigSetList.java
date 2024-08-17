@@ -1,7 +1,6 @@
 package com.aljun.uninfectedzone.core.client.gui.config;
 
-import com.aljun.uninfectedzone.core.client.ClientConfigUtils;
-import com.aljun.uninfectedzone.core.client.gui.config.modify.AbstractConfigModifyScreen;
+import com.aljun.uninfectedzone.core.client.gui.modify.AbstractConfigModifyScreen;
 import com.aljun.uninfectedzone.core.config.ConfigSet;
 import com.aljun.uninfectedzone.core.config.UninfectedZoneConfig;
 import com.aljun.uninfectedzone.core.utils.ComponentUtils;
@@ -17,9 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -28,22 +24,19 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
     private static Collator collator;
 
     private final ConfigSetScreen screen;
-    private final List<ConfigSet<?>> configList;
 
 
     public ConfigSetList(ConfigSetScreen screen, Minecraft minecraft, int x, int y, int width, int height) {
         super(minecraft, x, y, width, height, 20);
         this.screen = screen;
-        List<ConfigSet<?>> configSetList = new ArrayList<>(UninfectedZoneConfig.createAllSetsList().stream().filter((ConfigSet::isActive)).toList());
-        configSetList.sort(new ConfigSetComparator());
-        this.configList = configSetList;
-        this.refreshEntries((configSet -> true));
+        this.refreshEntries(configSet -> true);
+        this.setRenderBackground(false);
 
     }
 
     public void refreshEntries(Function<ConfigSet<?>, Boolean> filter) {
         this.clearEntries();
-        this.configList.forEach(configSet -> {
+        this.screen.configList.forEach(configSet -> {
             if (filter.apply(configSet)) {
                 this.addEntry(new ConfigSetEntry<>(configSet));
             }
@@ -52,7 +45,7 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
 
     public void refreshEntries() {
         this.clearEntries();
-        this.configList.forEach(configSet -> {
+        this.screen.configList.forEach(configSet -> {
             this.addEntry(new ConfigSetEntry<>(configSet));
         });
     }
@@ -67,12 +60,10 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
         return this.screen.getFocused() == this;
     }
 
-    private static class ConfigSetComparator implements Comparator<ConfigSet<?>> {
-        @Override
-        public int compare(ConfigSet<?> o1, ConfigSet<?> o2) {
-            return o1.VAR_SET.ID.compareTo(o2.VAR_SET.ID);
-        }
+    public void filter(String string) {
+        this.refreshEntries(configSet -> configSet.VAR_SET.ID.matches(string) || I18n.get("screen.uninfectedzone.config." + configSet.VAR_SET.getNameSpace() + ".name").matches(string));
     }
+
 
     public class ConfigSetEntry<T> extends Entry<ConfigSetEntry<?>> {
 
@@ -85,9 +76,10 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
             this.configSet = configSet;
             this.tSupplier = UninfectedZoneConfig.getSupplier(configSet);
             this.title = ComponentUtils.translate("screen.uninfectedzone.config." + configSet.VAR_SET.getNameSpace() + ".name");
+
             this.display =
                     new TextComponent("")
-                            .append(this.title.withStyle(Style.EMPTY.withHoverEvent(
+                            .append(this.title.copy().withStyle(Style.EMPTY.withHoverEvent(
                                     new HoverEvent(
                                             HoverEvent.Action.SHOW_TEXT,
                                             ComponentUtils.translate("screen.uninfectedzone.config." + configSet.VAR_SET.getNameSpace() + ".description")
@@ -110,6 +102,7 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
             if (this.configSet.VAR_SET.verify(t)) {
                 UninfectedZoneConfig.setOrOrigin(this.configSet, t);
                 ConfigSetList.this.screen.isDirty = true;
+                ConfigSetList.this.screen.isDirtyList.put(this.configSet, true);
             }
         }
 
@@ -121,7 +114,6 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
         @Override
         public void render(@NotNull PoseStack poseStack, int index, int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY, boolean hover, float partialTick) {
             Component component = this.getDisplayComponent();
-            //drawCenteredString(poseStack, ConfigSetList.this.screen.font(), this.getDisplayComponent(), (rowLeft + 90 - this.getDisplayWidth()), (rowTop + itemHeight / 2 - 9 / 2), ConfigSetScreen.WHITE);
             drawCenteredString(poseStack, ConfigSetList.this.screen.font(), this.getDisplayComponent(), rowLeft + this.getDisplayWidth() / 2, rowTop + ConfigSetList.this.screen.font().lineHeight / 2, ConfigSetScreen.WHITE);
         }
 
@@ -140,13 +132,16 @@ public class ConfigSetList extends ObjectSelectionList<ConfigSetList.ConfigSetEn
         }
 
         public AbstractConfigModifyScreen<T> modifyScreen() {
-            return ClientConfigUtils.createModifyScreen(this, this.getValue());
+            return this.configSet.VAR_SET.varType.createModifyScreen(this.getValue(), this.configSet.VAR_SET, this::setValue, this.getTitle());
+        }
+
+        public MutableComponent getTitle() {
+            return this.title.copy();
         }
 
         public void defaultValue(T t) {
             UninfectedZoneConfig.setDefault(this.configSet);
         }
-
 
     }
 }

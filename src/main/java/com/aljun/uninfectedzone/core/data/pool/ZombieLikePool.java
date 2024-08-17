@@ -2,6 +2,9 @@ package com.aljun.uninfectedzone.core.data.pool;
 
 import com.aljun.uninfectedzone.api.registry.UninfectedZoneRegistry;
 import com.aljun.uninfectedzone.api.zombie.zombielike.ZombieLike;
+import com.aljun.uninfectedzone.core.client.gui.modify.AbstractConfigModifyScreen;
+import com.aljun.uninfectedzone.core.client.gui.modify.DummyModifyScreen;
+import com.aljun.uninfectedzone.core.utils.ComponentUtils;
 import com.aljun.uninfectedzone.core.utils.RandomHelper;
 import com.aljun.uninfectedzone.core.utils.VarSet;
 import com.google.gson.Gson;
@@ -11,6 +14,8 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
@@ -20,6 +25,8 @@ import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
 
@@ -42,6 +50,27 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
     public static VarSet.VarType<ZombieLikePool> ZOMBIE_LIKE_POOL = new VarSet.VarType<>("zombie_pool") {
 
         private static final Gson GSON = new Gson();
+
+        @OnlyIn(Dist.CLIENT)
+        @Override
+        public AbstractConfigModifyScreen<ZombieLikePool> createModifyScreen(ZombieLikePool origin, VarSet<ZombieLikePool> varSet, Consumer<ZombieLikePool> consumer, MutableComponent displayName) {
+            return DummyModifyScreen.create(origin, varSet, consumer, displayName);
+        }
+
+        @Override
+        public String asString(ZombieLikePool zombieLikePool) {
+            return "";
+        }
+
+        @Override
+        public ZombieLikePool fromString(String tString) {
+            return null;
+        }
+
+        @Override
+        public Component asText(ZombieLikePool zombieLikePool) {
+            return ComponentUtils.literature("...");
+        }
 
         @Contract(pure = true)
         @Deprecated
@@ -58,7 +87,7 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
         }
 
         @Override
-        public ZombieLikePool getFromJsonObject(JsonObject jsonObject, String key) {
+        public ZombieLikePool deserialize(JsonObject jsonObject, String key) {
             if (jsonObject.has(key)) {
                 if (jsonObject.get(key).isJsonObject()) {
                     JsonObject poolJson = jsonObject.getAsJsonObject(key);
@@ -69,7 +98,7 @@ public class ZombieLikePool extends AbstractPool<ZombieLikePool> {
         }
 
         @Override
-        public void addToJsonObject(JsonObject jsonObject, String key, ZombieLikePool zombieLikePool) {
+        public void serialize(JsonObject jsonObject, String key, ZombieLikePool zombieLikePool) {
             jsonObject.add(key, zombieLikePool.toJson());
         }
     };

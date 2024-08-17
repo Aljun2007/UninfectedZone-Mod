@@ -49,7 +49,7 @@ public class ConfigFileUtils {
     }
 
     public static String getCommonPath() {
-        return gamePath() + "\\global\\common\\" + ConfigType.COMMON.getName() + ".json";
+        return gamePath() + "\\global\\server\\" + ConfigType.COMMON.getName() + ".json";
     }
 
     public static String getClientPath() {
@@ -103,16 +103,16 @@ public class ConfigFileUtils {
     }
 
     public static String getGameRulePath(MinecraftServer server) {
-        return worldPath(server) + "\\" + ConfigType.GAME_RULE.getName() + ".json";
+        return worldPath(server) + "\\config\\server\\" + ConfigType.GAME_RULE.getName() + ".json";
     }
 
     public static String getGameDataPath(MinecraftServer server) {
-        return worldPath(server) + "\\" + ConfigType.GAME_DATA.getName() + ".json";
+        return worldPath(server) + "\\config\\server\\" + ConfigType.GAME_DATA.getName() + ".json";
 
     }
 
     public static String getGamePropertyPath(MinecraftServer server) {
-        return worldPath(server) + "\\" + ConfigType.GAME_PROPERTY.getName() + ".json";
+        return worldPath(server) + "\\config\\server\\" + ConfigType.GAME_PROPERTY.getName() + ".json";
     }
 
     public static String worldPath(MinecraftServer server) {

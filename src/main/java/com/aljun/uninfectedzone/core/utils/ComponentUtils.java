@@ -9,8 +9,10 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class ComponentUtils {
 
+    public static final Component EMPTY = literature("");
+
     public static Component literature(String string) {
-        return string == null ? EMPTY : Component.nullToEmpty(string);
+        return Component.nullToEmpty(string);
     }
 
     public static TranslatableComponent translate(String string) {
@@ -23,9 +25,7 @@ public class ComponentUtils {
 
     public static MutableComponent createModIDComponent(String modId) {
         return new TextComponent(modId).withStyle(ChatFormatting.DARK_BLUE);
-    }    public static final Component EMPTY = literature("");
-
-
+    }
 
 
 }

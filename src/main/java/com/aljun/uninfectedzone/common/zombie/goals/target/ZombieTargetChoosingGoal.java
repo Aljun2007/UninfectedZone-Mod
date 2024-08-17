@@ -60,7 +60,7 @@ public class ZombieTargetChoosingGoal extends Goal {
             }
         }
         if (!ZombieUtils.isTargetLegal(target)) {
-            if (!ZombieUtils.canZombieFollow(this.mob, target)) {
+            if (!ZombieUtils.canZombieFollowTarget(this.mob, target)) {
                 this.mob.setTarget(null);
             }
         }

@@ -6,6 +6,7 @@ import com.aljun.uninfectedzone.core.utils.TagUtils;
 import com.aljun.uninfectedzone.core.utils.ZombieUtils;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -28,6 +29,9 @@ public class OnMobLoadAndSpawn {
                     mob.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                     mob.removeAllEffects();
                     zombieLike.weaponAndAttribute(mob);
+                    if (mob instanceof Zombie zombie) {
+                        ZombieUtils.randomSunSensitive(zombie);
+                    }
                     UninfectedZoneEventFactory.onZombieSpawn(mob);
                 }
             }
@@ -38,13 +42,13 @@ public class OnMobLoadAndSpawn {
     public static void onMobLoad(EntityJoinWorldEvent event) {
         if (event.getEntity() instanceof Mob mob) {
             if (ZombieUtils.isMarkedToLoad(mob)) {
-                TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.MARKED_TO_LOAD, false);
+                TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.MARKED_TO_REGISTER, false);
 
             }
             if (ZombieUtils.isLoaded(mob)) {
                 ZombieLike zombieLike = ZombieUtils.getZombieLike(mob);
                 if (zombieLike != null) {
-                    zombieLike.loadOrCover(mob);
+                    zombieLike.load(mob);
                     UninfectedZoneEventFactory.onZombieLoad(mob);
                 }
             }

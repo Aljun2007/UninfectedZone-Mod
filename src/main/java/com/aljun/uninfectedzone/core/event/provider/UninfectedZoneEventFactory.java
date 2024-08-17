@@ -2,9 +2,11 @@ package com.aljun.uninfectedzone.core.event.provider;
 
 import com.aljun.uninfectedzone.api.event.world.MobMaxCountEvent;
 import com.aljun.uninfectedzone.api.event.zombie.*;
+import com.aljun.uninfectedzone.core.game.mode.GameMode;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -17,6 +19,12 @@ public class UninfectedZoneEventFactory {
 
     public static SetZombieSunSensitiveEvent onGettingZombieSunSensitive(Zombie zombie, boolean defaultSunSensitive) {
         SetZombieSunSensitiveEvent event = new SetZombieSunSensitiveEvent(zombie, defaultSunSensitive);
+        MinecraftForge.EVENT_BUS.post(event);
+        return event;
+    }
+
+    public static ZombieAttributeModifyEvent onModifyingAttributes(GameMode gameMode, Mob mob, double defaultValue, Attribute attribute) {
+        ZombieAttributeModifyEvent event = new ZombieAttributeModifyEvent(gameMode, mob, defaultValue, attribute);
         MinecraftForge.EVENT_BUS.post(event);
         return event;
     }
@@ -42,4 +50,6 @@ public class UninfectedZoneEventFactory {
         ZombieSpawnEvent event = new ZombieSpawnEvent(mob);
         MinecraftForge.EVENT_BUS.post(event);
     }
+
+
 }

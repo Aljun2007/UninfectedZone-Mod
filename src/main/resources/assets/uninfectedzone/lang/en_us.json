@@ -7,13 +7,15 @@
   "screen.uninfectedzone.base.back": "Back",
   "screen.uninfectedzone.base.cancel": "Cancel",
   "screen.uninfectedzone.base.close": "Close",
+  "screen.uninfectedzone.base.save_button.name": "Save",
   "screen.uninfectedzone.config.modify_button.name": "Modify",
-  "screen.uninfectedzone.config.save_button.name": "Save",
   "screen.uninfectedzone.config.config_type.common.name": "Common",
   "screen.uninfectedzone.config.config_type.client.name": "Client",
   "screen.uninfectedzone.config.config_type.game_data.name": "Game Data",
   "screen.uninfectedzone.config.config_type.game_property.name": "Game Property",
   "screen.uninfectedzone.config.config_type.game_rule.name": "Game Rule",
   "screen.uninfectedzone.config.config_location.client.name": "Client",
-  "screen.uninfectedzone.config.config_location.server.name": "Server"
+  "screen.uninfectedzone.config.config_location.server.name": "Server",
+  "screen.uninfectedzone.default_modify_screen.open_file_folder_button.name": "Open File Folder",
+  "screen.uninfectedzone.default_modify_screen.recreate_button.name": "Recreate File"
 }

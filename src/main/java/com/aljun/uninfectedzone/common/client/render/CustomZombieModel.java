@@ -11,4 +11,5 @@ public class CustomZombieModel extends ZombieModel<CustomZombie> {
         super(modelPart);
     }
 
+
 }

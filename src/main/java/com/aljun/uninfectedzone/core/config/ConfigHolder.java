@@ -16,8 +16,8 @@ public class ConfigHolder<T> {
         return var;
     }
 
-    public void loadFromJson(JsonManager jsonManager) {
-        this.setOrDefault(jsonManager.read(this.CONFIG_SET.VAR_SET));
+    public void loadFromJsonOrDefault(JsonManager jsonManager) {
+        this.setOrDefault(jsonManager.readOrDefalut(this.CONFIG_SET.VAR_SET));
     }
 
     public boolean setOrDefault(T t) {
@@ -28,6 +28,10 @@ public class ConfigHolder<T> {
             this.var = this.CONFIG_SET.VAR_SET.defaultVar();
             return false;
         }
+    }
+
+    public void loadFromJsonOrAbsent(JsonManager jsonManager) {
+        this.setOrOrigin(jsonManager.readOrAbsent(this.CONFIG_SET.VAR_SET, this.var));
     }
 
     public boolean setOrOrigin(T t) {

@@ -4,17 +4,12 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-public class JsonManager {
+public record JsonManager(JsonObject jsonObject) {
     private static final Logger LOGGER = LogUtils.getLogger();
-    public final JsonObject jsonObject;
-
-    public JsonManager(JsonObject jsonObject) {
-        this.jsonObject = jsonObject;
-    }
 
     public <T> void refresh(VarSet<T> varSet) {
         final JsonObject[] jsonObjects = {jsonObject};
-        varSet.NAMESPACE.forEach((var1) -> {
+        varSet.NAMESPACE.forEach(var1 -> {
             if (!jsonObjects[0].has(var1))
                 jsonObjects[0].add(var1, new JsonObject());
             jsonObjects[0] = (JsonObject) jsonObjects[0].get(var1);
@@ -33,37 +28,55 @@ public class JsonManager {
                 jsonObjects[0].add(var1, new JsonObject());
             jsonObjects[0] = (JsonObject) jsonObjects[0].get(var1);
         });
-        varSet.varType.addToJsonObject(jsonObjects[0], varSet.KEY, varSet.defaultVar());
+        varSet.varType.serialize(jsonObjects[0], varSet.KEY, varSet.defaultVar());
     }
 
-    public <T> T read(VarSet<T> varSet) {
+    public <T> T readOrAbsent(VarSet<T> varSet, T replace) {
         final JsonObject[] jsonObjects = {jsonObject};
-        varSet.NAMESPACE.forEach((var1) -> {
+        varSet.NAMESPACE.forEach(var1 -> {
+            if (!jsonObjects[0].has(var1))
+                return;
+            jsonObjects[0] = (JsonObject) jsonObjects[0].get(var1);
+        });
+        if (!jsonObjects[0].has(varSet.KEY)) {
+            return replace;
+        }
+        T t = varSet.varType.deserialize(jsonObjects[0], varSet.KEY);
+        return t == null ? replace : t;
+    }
+
+    public <T> T readOrDefalut(VarSet<T> varSet) {
+        return this.readOrReplace(varSet, varSet.defaultVar());
+    }
+
+    public <T> T readOrReplace(VarSet<T> varSet, T replace) {
+        final JsonObject[] jsonObjects = {jsonObject};
+        varSet.NAMESPACE.forEach(var1 -> {
             if (!jsonObjects[0].has(var1))
                 jsonObjects[0].add(var1, new JsonObject());
             jsonObjects[0] = (JsonObject) jsonObjects[0].get(var1);
         });
         if (!jsonObjects[0].has(varSet.KEY)) {
-            varSet.varType.addToJsonObject(jsonObjects[0], varSet.KEY, varSet.defaultVar());
+            varSet.varType.serialize(jsonObjects[0], varSet.KEY, varSet.defaultVar());
         }
-        T t = varSet.varType.getFromJsonObject(jsonObjects[0], varSet.KEY);
-        return t == null ? varSet.defaultVar() : t;
+        T t = varSet.varType.deserialize(jsonObjects[0], varSet.KEY);
+        return t == null ? replace : t;
     }
 
     public <T> T readOrCreate(VarSet<T> varSet) {
         final JsonObject[] jsonObjects = {jsonObject};
-        varSet.NAMESPACE.forEach((var1) -> {
+        varSet.NAMESPACE.forEach(var1 -> {
             if (!jsonObjects[0].has(var1))
                 jsonObjects[0].add(var1, new JsonObject());
             jsonObjects[0] = (JsonObject) jsonObjects[0].get(var1);
         });
         if (!jsonObjects[0].has(varSet.KEY)) {
-            varSet.varType.addToJsonObject(jsonObjects[0], varSet.KEY, varSet.defaultVar());
+            varSet.varType.serialize(jsonObjects[0], varSet.KEY, varSet.defaultVar());
         }
-        T t = varSet.varType.getFromJsonObject(jsonObjects[0], varSet.KEY);
+        T t = varSet.varType.deserialize(jsonObjects[0], varSet.KEY);
         if (t == null) {
             t = varSet.defaultVar();
-            varSet.varType.addToJsonObject(jsonObjects[0], varSet.KEY, varSet.defaultVar());
+            varSet.varType.serialize(jsonObjects[0], varSet.KEY, varSet.defaultVar());
         }
         return t;
     }

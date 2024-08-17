@@ -18,7 +18,7 @@ public class EntityHandler {
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
         if (!event.getEntityLiving().getLevel().isClientSide()) {
-            if (ZombieUtils.canAttack(event.getEntityLiving())) {
+            if (ZombieUtils.isTarget(event.getEntityLiving())) {
                 Hearing.Utils.sound(Hearing.SoundType.BLOOD, (ServerLevel) event.getEntityLiving().getLevel(), event.getEntityLiving().blockPosition());
             }
         }
@@ -27,7 +27,7 @@ public class EntityHandler {
     @SubscribeEvent
     public static void onLivingHurt(LivingAttackEvent event) {
         if (!event.getEntityLiving().getLevel().isClientSide()) {
-            if (ZombieUtils.canAttack(event.getEntityLiving())) {
+            if (ZombieUtils.isTarget(event.getEntityLiving())) {
                 Hearing.Utils.sound(Hearing.SoundType.BLOOD, (ServerLevel) event.getEntityLiving().getLevel(), event.getEntityLiving().blockPosition());
             }
         }
@@ -44,7 +44,7 @@ public class EntityHandler {
     @SubscribeEvent
     public static void onUsingItem(LivingEntityUseItemEvent.Stop event) {
         if (!event.getEntityLiving().getLevel().isClientSide()) {
-            if (ZombieUtils.canAttack(event.getEntityLiving())) {
+            if (ZombieUtils.isTarget(event.getEntityLiving())) {
                 Hearing.Utils.sound(Hearing.SoundType.ACTION, (ServerLevel) event.getEntityLiving().getLevel(), event.getEntityLiving().blockPosition());
             }
         }
@@ -53,7 +53,7 @@ public class EntityHandler {
     @SubscribeEvent
     public static void onUsingItem(LivingEntityUseItemEvent.Start event) {
         if (!event.getEntityLiving().getLevel().isClientSide()) {
-            if (ZombieUtils.canAttack(event.getEntityLiving())) {
+            if (ZombieUtils.isTarget(event.getEntityLiving())) {
                 Hearing.Utils.sound(Hearing.SoundType.ACTION, (ServerLevel) event.getEntityLiving().getLevel(), event.getEntityLiving().blockPosition());
             }
         }
@@ -63,7 +63,7 @@ public class EntityHandler {
     @SubscribeEvent
     public static void onOpenChest(PlayerContainerEvent.Open event) {
         if (!event.getEntityLiving().getLevel().isClientSide()) {
-            if (ZombieUtils.canAttack(event.getEntityLiving())) {
+            if (ZombieUtils.isTarget(event.getEntityLiving())) {
                 Hearing.Utils.sound(Hearing.SoundType.ACTION, (ServerLevel) event.getEntityLiving().getLevel(), event.getEntityLiving().blockPosition());
             }
         }
@@ -72,7 +72,7 @@ public class EntityHandler {
     @SubscribeEvent
     public static void onOpenCloseChest(PlayerContainerEvent.Close event) {
         if (!event.getEntityLiving().getLevel().isClientSide()) {
-            if (ZombieUtils.canAttack(event.getEntityLiving())) {
+            if (ZombieUtils.isTarget(event.getEntityLiving())) {
                 Hearing.Utils.sound(Hearing.SoundType.ACTION, (ServerLevel) event.getEntityLiving().getLevel(), event.getEntityLiving().blockPosition());
             }
         }

@@ -10,11 +10,11 @@ public class DummyZombie extends ZombieLike {
     }
 
     @Override
-    protected void registerAbilities(ZombieMainGoal zombieMainGoal) {
+    protected void loadGoals(ZombieMainGoal zombieMainGoal) {
     }
 
     @Override
-    protected void registerGoals(ZombieMainGoal zombieMainGoal) {
+    protected void loadAbilities(ZombieMainGoal zombieMainGoal) {
     }
 
 

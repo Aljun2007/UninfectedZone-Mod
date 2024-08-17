@@ -16,15 +16,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class ConfigNetworking {
-    public static final String NAME = "config_server_to_client_networking";
+public class ConfigJsonNetworking {
+    public static final String NAME = "config_json_networking";
     public static final String VERSION = "1.0";
     public static SimpleChannel INSTANCE;
     private static int ID = 0;
 
     public static void registerMessage() {
         INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(UninfectedZone.MOD_ID, NAME), () -> VERSION,
-                (version) -> version.equals(VERSION), (version) -> version.equals(VERSION));
+                version -> version.equals(VERSION), version -> version.equals(VERSION));
         INSTANCE.messageBuilder(PackJson.class, nextID()).encoder(PackJson::toBytes).decoder(
                 PackJson::new).consumer(PackJson::handler).add();
     }
@@ -64,7 +64,9 @@ public class ConfigNetworking {
         private void serverReceive(ServerPlayer player) {
             if (this.configJson == null) return;
             if (this.configJson.isJsonNull()) return;
-            UninfectedZoneConfig.sendToClient(player);
+            if (player.hasPermissions(2)) {
+                UninfectedZoneConfig.receive(this.configJson);
+            }
         }
 
         private void clientReceive() {

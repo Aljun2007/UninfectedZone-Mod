@@ -21,6 +21,12 @@ public class RandomHelper {
         return HORIZONTAL_DIRECTIONS.nextValue();
     }
 
+    public static boolean booleanByChance(double chance) {
+        if (chance <= 0) return false;
+        else if (chance >= 1) return true;
+        else return RANDOM.nextDouble(0d, 1d) <= chance;
+    }
+
     public static class RandomPool<T> {
         private final List<T> VAR;
         private final List<Double> WEIGHT;

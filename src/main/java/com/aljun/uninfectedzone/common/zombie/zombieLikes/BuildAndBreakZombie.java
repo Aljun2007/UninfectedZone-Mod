@@ -13,16 +13,16 @@ public class BuildAndBreakZombie extends NormalZombie {
     }
 
     @Override
-    protected void registerAbilities(ZombieMainGoal zombieMainGoal) {
-        super.registerAbilities(zombieMainGoal);
-        zombieMainGoal.addAbility(ZombieAbilities.BREAKING.get());
-        zombieMainGoal.addAbility(ZombieAbilities.PLACING.get());
-        zombieMainGoal.addAbility(ZombieAbilities.PATH_CONSTRUCTING.get());
+    protected void loadGoals(ZombieMainGoal zombieMainGoal) {
+        super.loadAbilities(zombieMainGoal);
     }
 
     @Override
-    protected void registerGoals(ZombieMainGoal zombieMainGoal) {
-        super.registerAbilities(zombieMainGoal);
+    protected void loadAbilities(ZombieMainGoal zombieMainGoal) {
+        super.loadAbilities(zombieMainGoal);
+        zombieMainGoal.addAbility(ZombieAbilities.BREAKING.get());
+        zombieMainGoal.addAbility(ZombieAbilities.PLACING.get());
+        zombieMainGoal.addAbility(ZombieAbilities.PATH_CONSTRUCTING.get());
     }
 
     @Override

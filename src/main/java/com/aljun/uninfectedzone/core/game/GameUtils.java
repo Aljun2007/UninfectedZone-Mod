@@ -27,10 +27,10 @@ public class GameUtils {
 
         try {
             if (!jsonObject.has("mode")) {
-                jsonObject.addProperty("mode", (Objects.requireNonNull(gameMode == null ? GameMode.DISABLED.get().getRegistryName() : gameMode.name)).toString());
+                jsonObject.addProperty("mode", Objects.requireNonNull(gameMode == null ? GameMode.DISABLED.get().getRegistryName() : gameMode.name).toString());
             }
             if (!jsonObject.get("mode").isJsonPrimitive()) {
-                jsonObject.addProperty("mode", (Objects.requireNonNull(gameMode == null ? GameMode.DISABLED.get().getRegistryName() : gameMode.name)).toString());
+                jsonObject.addProperty("mode", Objects.requireNonNull(gameMode == null ? GameMode.DISABLED.get().getRegistryName() : gameMode.name).toString());
             }
             ResourceLocation location = new ResourceLocation(jsonObject.get("mode").getAsString());
             if (gameMode.name.equals(location)) {
@@ -66,7 +66,7 @@ public class GameUtils {
 
     private static void saveToJson(JsonObject jsonObject) {
         try {
-            jsonObject.addProperty("mode", (Objects.requireNonNull(gameMode == null ? GameMode.DISABLED.get().getRegistryName() : gameMode.name)).toString());
+            jsonObject.addProperty("mode", Objects.requireNonNull(gameMode == null ? GameMode.DISABLED.get().getRegistryName() : gameMode.name).toString());
             if (!jsonObject.has("mode_data")) {
                 jsonObject.add("mode_data", new JsonObject());
             }

@@ -2,6 +2,7 @@ package com.aljun.uninfectedzone.api.zombie.zombielike;
 
 import com.aljun.uninfectedzone.UninfectedZone;
 import com.aljun.uninfectedzone.common.minecraft.entity.UninfectedZoneEntityTypes;
+import com.aljun.uninfectedzone.common.zombie.attribute.ZombieAttributes;
 import com.aljun.uninfectedzone.core.utils.ComponentUtils;
 import com.aljun.uninfectedzone.core.utils.TagUtils;
 import com.aljun.uninfectedzone.core.utils.ZombieUtils;
@@ -10,6 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.HashMap;
@@ -25,7 +28,7 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
             if (this.isSupported(mobType)) {
                 Mob mob = (Mob) mobType.create(level);
                 if (mob != null) {
-                    TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.LOADED, true);
+                    TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.REGISTERED, true);
                     try {
                         TagUtils.fastWrite(TagUtils.getRoot(mob), ZombieUtils.ZOMBIE_LIKE, Objects.requireNonNull(this.getRegistryName()).toString());
                     } catch (NullPointerException e) {
@@ -58,23 +61,23 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
         DEFAULT_MOBS.put(UninfectedZoneEntityTypes.CUSTOM_ZOMBIE_SLIM.get().getRegistryName(), UninfectedZoneEntityTypes.CUSTOM_ZOMBIE_SLIM.get());
     }
 
-    public void loadOrCover(Mob mob) {
+    public void load(Mob mob) {
         if (mob != null) {
             ZombieMainGoal zombieMainGoal = this.createMainGoal(mob);
             zombieMainGoal.getZombie().goalSelector.removeAllGoals();
             zombieMainGoal.getZombie().targetSelector.removeAllGoals();
             zombieMainGoal.getZombie().goalSelector.addGoal(1, zombieMainGoal);
-            this.registerAbilities(zombieMainGoal);
-            this.registerGoals(zombieMainGoal);
+            this.loadAbilities(zombieMainGoal);
+            this.loadGoals(zombieMainGoal);
             zombieMainGoal.stopInitialization();
         }
     }
 
     protected abstract ZombieMainGoal createMainGoal(Mob mob);
 
-    protected abstract void registerAbilities(ZombieMainGoal zombieMainGoal);
+    protected abstract void loadAbilities(ZombieMainGoal zombieMainGoal);
 
-    protected abstract void registerGoals(ZombieMainGoal zombieMainGoal);
+    protected abstract void loadGoals(ZombieMainGoal zombieMainGoal);
 
     public void weaponAndAttribute(Mob mob) {
         this.weapon(mob);
@@ -85,6 +88,15 @@ public abstract class ZombieLike extends ForgeRegistryEntry<ZombieLike> {
     }
 
     protected void attributes(Mob mob) {
-
+        ZombieUtils.reloadAttribute(mob, Attributes.MAX_HEALTH);
+        ZombieUtils.reloadAttribute(mob, Attributes.ARMOR);
+        ZombieUtils.reloadAttribute(mob, Attributes.ARMOR_TOUGHNESS);
+        ZombieUtils.reloadAttribute(mob, Attributes.ATTACK_DAMAGE);
+        ZombieUtils.reloadAttribute(mob, Attributes.MOVEMENT_SPEED);
+        ZombieUtils.reloadAttribute(mob, ForgeMod.SWIM_SPEED.get());
+        ZombieUtils.reloadAttribute(mob, ZombieAttributes.DIG_SPEED.get());
+        ZombieUtils.reloadAttribute(mob, ZombieAttributes.SMELLING_DISTANCE.get());
+        ZombieUtils.reloadAttribute(mob, ZombieAttributes.HEARING_DISTANCE.get());
+        ZombieUtils.reloadAttribute(mob, ZombieAttributes.SUN_SENSITIVE.get());
     }
 }

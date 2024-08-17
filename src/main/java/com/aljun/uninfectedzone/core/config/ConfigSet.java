@@ -4,7 +4,6 @@ import com.aljun.uninfectedzone.core.utils.ComponentUtils;
 import com.aljun.uninfectedzone.core.utils.VarSet;
 import net.minecraft.network.chat.Component;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ConfigSet<T> {
@@ -13,15 +12,10 @@ public class ConfigSet<T> {
     public final ConfigType CONFIG_TYPE;
     private String description = null;
     private Supplier<Boolean> active = () -> true;
-    private Function<T, Component> valueDisplay = t -> ComponentUtils.literature(t.toString());
 
     ConfigSet(VarSet<T> varSet, ConfigType configType) {
         VAR_SET = varSet;
         CONFIG_TYPE = configType;
-    }
-
-    void setValueDisplay(Function<T, Component> valueDisplay) {
-        this.valueDisplay = valueDisplay;
     }
 
     public boolean isActive() {
@@ -47,6 +41,6 @@ public class ConfigSet<T> {
 
 
     public Component getValueDisplay(T value) {
-        return this.valueDisplay.apply(value);
+        return this.VAR_SET.varType.asText(value);
     }
 }
